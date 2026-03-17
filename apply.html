@@ -4,124 +4,173 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ใบสมัครงาน</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --primary: #1a3a5c;
-  --accent: #c8963e;
-  --light: #f5f0e8;
-  --bg: #eee9df;
-  --white: #fff;
-  --border: #c5b99a;
-  --text: #2c2c2c;
-  --muted: #7a7060;
-  --danger: #c0392b;
-  --success: #1a7a4a;
+  --bg:        #eee9df;
+  --surface:   #ffffff;
+  --surface2:  #fdfaf5;
+  --border:    #c5b99a;
+  --border2:   #ddd5c4;
+  --teal:      #1a3a5c;
+  --teal-dim:  rgba(26,58,92,.08);
+  --teal-glow: rgba(26,58,92,.2);
+  --text:      #2c2c2c;
+  --muted:     #7a7060;
+  --danger:    #c0392b;
+  --success:   #1a7a4a;
+  --white:     #ffffff;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Sarabun',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
+/* HEADER */
 header {
-  background:var(--primary);
-  padding:1rem 2rem;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:.9rem 2rem;
   display:flex; align-items:center; gap:1rem;
-  box-shadow:0 2px 12px rgba(0,0,0,.25);
+  position:sticky; top:0; z-index:50;
+  backdrop-filter:blur(8px);
 }
-.header-logo { width:48px; height:48px; border-radius:8px; object-fit:contain; background:white; padding:4px; }
-.header-logo-placeholder { width:48px; height:48px; background:rgba(255,255,255,.15); border-radius:8px; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.5); font-size:.65rem; text-align:center; }
-.header-text h1 { font-family:'Noto Serif Thai',serif; color:white; font-size:1.1rem; font-weight:700; }
-.header-text p { color:rgba(255,255,255,.65); font-size:.78rem; }
+.header-logo-placeholder { width:42px; height:42px; background:var(--teal-dim); border:1px solid var(--teal); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; }
+.header-logo-placeholder img { width:100%; height:100%; object-fit:contain; border-radius:10px; }
+.header-text h1 { font-size:1rem; font-weight:600; color:var(--text); letter-spacing:.01em; }
+.header-text p { color:var(--muted); font-size:.75rem; margin-top:1px; }
 
-.container { max-width:860px; margin:0 auto; padding:1.5rem; }
+/* CONTAINER */
+.container { max-width:860px; margin:0 auto; padding:1.8rem 1.5rem; }
 
-.progress-bar { background:white; border-radius:50px; height:6px; margin-bottom:1.5rem; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.1); }
-.progress-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--accent)); border-radius:50px; transition:width .4s ease; }
-.progress-label { text-align:right; font-size:.72rem; color:var(--muted); margin-top:.3rem; }
+/* PROGRESS */
+.progress-bar { background:var(--border2); border-radius:50px; height:4px; margin-bottom:1.5rem; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--teal),#38bdf8); border-radius:50px; transition:width .4s ease; box-shadow:0 0 8px var(--teal-glow); }
+.progress-label { text-align:right; font-size:.7rem; color:var(--muted); margin-top:.35rem; }
 
 .step { display:none; }
 .step.active { display:block; }
 
-.card { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:1.4rem; margin-bottom:1rem; box-shadow:0 2px 8px rgba(0,0,0,.04); }
-.card-title { font-family:'Noto Serif Thai',serif; font-size:.95rem; font-weight:700; color:var(--primary); margin-bottom:1rem; padding-bottom:.5rem; border-bottom:2px solid var(--accent); display:flex; align-items:center; gap:.4rem; }
-.card-title::before { content:''; width:5px; height:15px; background:var(--accent); border-radius:3px; flex-shrink:0; }
+/* CARD */
+.card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.4rem; margin-bottom:1rem; }
+.card-title {
+  font-size:.82rem; font-weight:600; color:var(--teal); margin-bottom:1rem;
+  padding-bottom:.55rem; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:.5rem;
+  text-transform:uppercase; letter-spacing:.06em;
+}
+.card-title::before { content:''; width:3px; height:14px; background:var(--teal); border-radius:2px; flex-shrink:0; }
 
-.fg2 { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
-.fg3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:.75rem; }
+/* GRID */
+.fg2 { display:grid; grid-template-columns:1fr 1fr; gap:.85rem; }
+.fg3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:.85rem; }
 .s2 { grid-column:span 2; }
 .s3 { grid-column:span 3; }
 
-.field label { display:block; font-size:.76rem; font-weight:600; color:var(--primary); margin-bottom:.22rem; }
-.req { color:var(--danger); }
+/* FIELD */
+.field label { display:block; font-size:.72rem; font-weight:500; color:var(--muted); margin-bottom:.28rem; letter-spacing:.02em; }
+.req { color:var(--teal); }
 .field input,.field select,.field textarea {
-  width:100%; padding:.46rem .7rem; border:1.5px solid var(--border); border-radius:7px;
-  font-family:'Sarabun',sans-serif; font-size:.88rem; color:var(--text); background:#fdfaf5; outline:none;
+  width:100%; padding:.52rem .75rem;
+  border:1px solid var(--border); border-radius:8px;
+  font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif;
+  font-size:.88rem; color:var(--text);
+  background:var(--surface2); outline:none;
   transition:border-color .2s,box-shadow .2s;
 }
-.field input:focus,.field select:focus,.field textarea:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(26,58,92,.1); background:white; }
+.field input::placeholder,.field textarea::placeholder { color:#aaa; }
+.field select option { background:var(--surface2); }
+.field input:focus,.field select:focus,.field textarea:focus {
+  border-color:var(--teal);
+  box-shadow:0 0 0 3px var(--teal-dim);
+  background:white;
+}
 .field textarea { resize:vertical; min-height:64px; }
 .field-error { border-color:var(--danger) !important; }
-.err-msg { font-size:.7rem; color:var(--danger); margin-top:.2rem; display:none; }
+.err-msg { font-size:.68rem; color:var(--danger); margin-top:.2rem; display:none; }
 .err-msg.show { display:block; }
 
-.radio-group { display:flex; gap:.9rem; flex-wrap:wrap; padding:.3rem 0; }
-.radio-item { display:flex; align-items:center; gap:.28rem; font-size:.84rem; cursor:pointer; }
-.radio-item input { accent-color:var(--primary); }
+/* RADIO */
+.radio-group { display:flex; gap:1rem; flex-wrap:wrap; padding:.3rem 0; }
+.radio-item { display:flex; align-items:center; gap:.3rem; font-size:.84rem; cursor:pointer; color:var(--text); }
+.radio-item input { accent-color:var(--teal); }
 
-/* Photo */
-.photo-box { width:110px; height:138px; border:2px dashed var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; background:#fdfaf5; overflow:hidden; transition:all .2s; flex-shrink:0; }
-.photo-box:hover { border-color:var(--accent); }
+/* PHOTO */
+.photo-box { width:110px; height:138px; border:1.5px dashed var(--border); border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; background:var(--surface2); overflow:hidden; transition:all .2s; flex-shrink:0; }
+.photo-box:hover { border-color:var(--teal); box-shadow:0 0 12px var(--teal-dim); }
 .photo-box img { width:100%; height:100%; object-fit:cover; }
-.ph-hint { font-size:.7rem; color:var(--muted); text-align:center; padding:.35rem; line-height:1.5; }
+.ph-hint { font-size:.68rem; color:var(--muted); text-align:center; padding:.4rem; line-height:1.6; }
 
-/* Edu table */
+/* EDU TABLE */
 .edu-table { width:100%; border-collapse:collapse; font-size:.82rem; }
-.edu-table th { background:#e8e2d8; color:var(--primary); padding:.38rem .5rem; border:1px solid var(--border); text-align:left; font-weight:700; font-size:.76rem; }
-.edu-table td { padding:.18rem .35rem; border:1px solid var(--border); }
-.edu-table tr:nth-child(even) td { background:#faf8f4; }
-.edu-inp { width:100%; border:1px solid var(--border); border-radius:4px; padding:.26rem .38rem; font-size:.8rem; font-family:'Sarabun',sans-serif; background:#fdfaf5; outline:none; }
-.edu-inp:focus { border-color:var(--primary); background:white; }
-.edu-sel { width:100%; border:1px solid var(--border); border-radius:4px; padding:.26rem .3rem; font-size:.78rem; font-family:'Sarabun',sans-serif; background:#fdfaf5; outline:none; }
+.edu-table th { background:var(--surface2); color:var(--muted); padding:.4rem .5rem; border:1px solid var(--border); text-align:left; font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; }
+.edu-table td { padding:.2rem .35rem; border:1px solid var(--border2); }
+.edu-table tr:hover td { background:rgba(255,255,255,.02); }
+.edu-inp { width:100%; border:1px solid var(--border2); border-radius:5px; padding:.26rem .4rem; font-size:.8rem; font-family:'IBM Plex Sans Thai',sans-serif; background:var(--surface2); color:var(--text); outline:none; }
+.edu-inp:focus { border-color:var(--teal); background:white; }
+.edu-sel { width:100%; border:1px solid var(--border2); border-radius:5px; padding:.26rem .3rem; font-size:.78rem; font-family:'IBM Plex Sans Thai',sans-serif; background:var(--surface2); color:var(--text); outline:none; }
 
-/* Dynamic rows */
+/* DYNAMIC ROWS */
 .dyn-row { display:grid; gap:.4rem; align-items:flex-end; margin-bottom:.4rem; }
-.btn-rm { background:#fde8e8; border:1px solid #f5b7b1; color:var(--danger); border-radius:6px; width:32px; height:32px; cursor:pointer; font-size:.95rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.btn-rm:hover { background:#f5b7b1; }
-.btn-add { background:var(--light); border:1.5px dashed var(--border); color:var(--primary); border-radius:6px; padding:.34rem .85rem; cursor:pointer; font-size:.78rem; font-family:'Sarabun',sans-serif; font-weight:600; display:flex; align-items:center; gap:.3rem; margin-top:.3rem; }
-.btn-add:hover { border-color:var(--accent); color:var(--accent); }
+.btn-rm { background:rgba(248,81,73,.12); border:1px solid rgba(248,81,73,.3); color:var(--danger); border-radius:6px; width:32px; height:32px; cursor:pointer; font-size:.95rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
+.btn-rm:hover { background:rgba(248,81,73,.25); }
+.btn-add { background:var(--teal-dim); border:1px dashed rgba(45,212,191,.4); color:var(--teal); border-radius:7px; padding:.36rem .9rem; cursor:pointer; font-size:.78rem; font-family:'IBM Plex Sans Thai',sans-serif; font-weight:500; display:flex; align-items:center; gap:.3rem; margin-top:.35rem; transition:all .2s; }
+.btn-add:hover { background:rgba(45,212,191,.18); border-color:var(--teal); }
 
-/* Lang */
+/* LANG TABLE */
 .lang-table { width:100%; border-collapse:collapse; font-size:.8rem; }
-.lang-table th,.lang-table td { border:1px solid var(--border); padding:.32rem .42rem; text-align:center; }
-.lang-table th { background:#e8e2d8; color:var(--primary); font-weight:700; }
-.lang-table td:first-child { text-align:left; font-weight:600; }
+.lang-table th,.lang-table td { border:1px solid var(--border2); padding:.34rem .42rem; text-align:center; }
+.lang-table th { background:var(--surface2); color:var(--muted); font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.03em; }
+.lang-table td:first-child { text-align:left; font-weight:500; color:var(--text); }
+.lang-table tr:hover td { background:rgba(255,255,255,.02); }
 
-/* Nav buttons */
-.step-nav { display:flex; gap:.8rem; justify-content:space-between; margin-top:1.2rem; flex-wrap:wrap; }
-.btn-next { background:var(--primary); color:white; border:none; padding:.7rem 2rem; border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.95rem; font-weight:600; cursor:pointer; box-shadow:0 4px 12px rgba(26,58,92,.3); transition:all .2s; display:flex; align-items:center; gap:.4rem; }
-.btn-next:hover { background:#234d7a; transform:translateY(-1px); }
-.btn-back { background:white; color:var(--primary); border:1.5px solid var(--primary); padding:.7rem 1.6rem; border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.95rem; font-weight:600; cursor:pointer; }
-.btn-submit { background:var(--success); color:white; border:none; padding:.75rem 2.5rem; border-radius:8px; font-family:'Sarabun',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(26,122,74,.35); transition:all .2s; display:flex; align-items:center; gap:.5rem; }
-.btn-submit:hover { background:#155c38; transform:translateY(-1px); }
-.btn-submit:disabled { background:#aaa; box-shadow:none; cursor:not-allowed; transform:none; }
+/* NAV BUTTONS */
+.step-nav { display:flex; gap:.8rem; justify-content:space-between; margin-top:1.3rem; flex-wrap:wrap; }
+.btn-next {
+  background:var(--teal); color:#0d1117; border:none;
+  padding:.68rem 1.8rem; border-radius:8px;
+  font-family:'IBM Plex Sans Thai',sans-serif; font-size:.92rem; font-weight:700;
+  cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:.4rem;
+  box-shadow:0 4px 14px var(--teal-glow);
+}
+.btn-next:hover { background:#5eead4; transform:translateY(-1px); box-shadow:0 6px 20px var(--teal-glow); }
+.btn-back {
+  background:transparent; color:var(--text);
+  border:1px solid var(--border); padding:.68rem 1.5rem; border-radius:8px;
+  font-family:'IBM Plex Sans Thai',sans-serif; font-size:.92rem; font-weight:500; cursor:pointer;
+  transition:all .2s;
+}
+.btn-back:hover { border-color:var(--teal); color:var(--teal); }
+.btn-submit {
+  background:var(--teal); color:#0d1117; border:none;
+  padding:.72rem 2.4rem; border-radius:8px;
+  font-family:'IBM Plex Sans Thai',sans-serif; font-size:.95rem; font-weight:700;
+  cursor:pointer; box-shadow:0 4px 14px var(--teal-glow); transition:all .2s;
+  display:flex; align-items:center; gap:.5rem;
+}
+.btn-submit:hover { background:#5eead4; transform:translateY(-1px); }
+.btn-submit:disabled { background:#30363d; color:var(--muted); box-shadow:none; cursor:not-allowed; transform:none; }
 
-/* Step indicators */
-.step-dots { display:flex; gap:.5rem; justify-content:center; margin-bottom:1.2rem; flex-wrap:wrap; }
-.step-dot { display:flex; align-items:center; gap:.3rem; font-size:.72rem; color:var(--muted); font-weight:500; }
-.step-dot .dot { width:28px; height:28px; border-radius:50%; background:#ddd; display:flex; align-items:center; justify-content:center; font-size:.7rem; font-weight:700; color:#999; transition:all .3s; }
-.step-dot.done .dot { background:var(--success); color:white; }
-.step-dot.active .dot { background:var(--primary); color:white; box-shadow:0 0 0 3px rgba(26,58,92,.2); }
+/* STEP DOTS */
+.step-dots { display:flex; gap:.5rem; justify-content:center; margin-bottom:1.3rem; flex-wrap:wrap; }
+.step-dot { display:flex; align-items:center; gap:.3rem; font-size:.7rem; color:var(--muted); font-weight:500; }
+.step-dot .dot { width:28px; height:28px; border-radius:50%; background:var(--surface2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:.68rem; font-weight:700; color:var(--muted); transition:all .3s; }
+.step-dot.done .dot { background:rgba(63,185,80,.15); border-color:var(--success); color:var(--success); }
+.step-dot.active .dot { background:var(--teal-dim); border-color:var(--teal); color:var(--teal); box-shadow:0 0 0 3px var(--teal-dim); }
 .step-dot .dot-label { display:none; }
 @media(min-width:600px) { .step-dot .dot-label { display:block; } }
 
-/* Success screen */
+/* SUCCESS */
 #successScreen { display:none; text-align:center; padding:3rem 1.5rem; }
-.success-icon { width:80px; height:80px; background:linear-gradient(135deg,#1a7a4a,#2ecc71); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:2.2rem; box-shadow:0 8px 24px rgba(26,122,74,.35); animation:pop .5s cubic-bezier(.34,1.56,.64,1); }
+.success-icon { width:80px; height:80px; background:rgba(63,185,80,.15); border:2px solid var(--success); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:2.2rem; box-shadow:0 0 30px rgba(63,185,80,.2); animation:pop .5s cubic-bezier(.34,1.56,.64,1); }
 @keyframes pop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
-.success-title { font-family:'Noto Serif Thai',serif; font-size:1.5rem; font-weight:700; color:var(--primary); margin-bottom:.5rem; }
-.success-sub { color:var(--muted); font-size:.9rem; line-height:1.7; }
-.ref-code { background:var(--light); border:1px solid var(--border); border-radius:8px; padding:.8rem 1.4rem; display:inline-block; margin:1.2rem 0; font-family:monospace; font-size:1.1rem; font-weight:700; color:var(--primary); letter-spacing:.1em; }
+.success-title { font-size:1.4rem; font-weight:700; color:var(--text); margin-bottom:.5rem; }
+.success-sub { color:var(--muted); font-size:.88rem; line-height:1.8; }
+.ref-code { background:var(--surface2); border:1px solid var(--teal); border-radius:8px; padding:.8rem 1.6rem; display:inline-block; margin:1.2rem 0; font-family:'IBM Plex Mono',monospace; font-size:1rem; font-weight:600; color:var(--teal); letter-spacing:.12em; box-shadow:0 0 16px var(--teal-dim); }
 
-.toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(80px); background:var(--primary); color:white; padding:.65rem 1.4rem; border-radius:8px; font-size:.86rem; font-weight:600; box-shadow:0 6px 20px rgba(0,0,0,.25); opacity:0; transition:all .3s cubic-bezier(.34,1.56,.64,1); z-index:999; white-space:nowrap; }
+/* CERT BOX */
+.cert-box { background:rgba(45,212,191,.05); border:1px solid rgba(45,212,191,.2); border-radius:10px; }
+
+/* TOAST */
+.toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(80px); background:var(--surface); border:1px solid var(--border); color:var(--text); padding:.65rem 1.4rem; border-radius:8px; font-size:.84rem; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,.4); opacity:0; transition:all .3s cubic-bezier(.34,1.56,.64,1); z-index:999; white-space:nowrap; }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 
 @media(max-width:600px) {
@@ -153,8 +202,8 @@ header {
       <div class="card-title">ตำแหน่งที่สมัคร</div>
       <div class="fg2">
         <div class="field s2"><label>ตำแหน่งที่ต้องการ <span class="req">*</span></label><input type="text" id="position" placeholder="ชื่อตำแหน่งงาน"><div class="err-msg" id="err-position">กรุณากรอกตำแหน่งที่ต้องการ</div></div>
-        <div class="field"><label>เงินเดือนที่ต้องการ (บาท/เดือน)</label><input type="text" id="salary" placeholder="25,000"></div>
-        <div class="field"><label>วันที่สมัคร</label><input type="date" id="applyDate"></div>
+        <div class="field"><label>เงินเดือนที่ต้องการ (บาท/เดือน) <span class="req">*</span></label><input type="text" id="salary" placeholder="25,000"></div>
+        <div class="field"><label>วันที่สมัคร <span class="req">*</span></label><input type="date" id="applyDate"></div>
       </div>
     </div>
 
@@ -162,7 +211,7 @@ header {
       <div class="card-title">ข้อมูลส่วนตัว</div>
       <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap;">
         <div>
-          <label style="font-size:.76rem;font-weight:600;color:var(--primary);display:block;margin-bottom:.28rem;">รูปถ่าย 1 นิ้ว</label>
+          <label style="font-size:.76rem;font-weight:500;color:var(--muted);display:block;margin-bottom:.28rem;">รูปถ่าย 1 นิ้ว</label>
           <div class="photo-box" onclick="document.getElementById('photoIn').click()">
             <img id="photoPreview" src="" style="display:none;">
             <div class="ph-hint" id="photoHint">📷<br>คลิกอัปโหลด</div>
@@ -170,29 +219,28 @@ header {
           <input type="file" id="photoIn" accept="image/*" style="display:none;" onchange="handlePhoto(event)">
         </div>
         <div style="flex:1;min-width:200px;" class="fg2">
-          <div class="field"><label>คำนำหน้า</label><select id="prefix"><option value="">--</option><option>นาย</option><option>นาง</option><option>นางสาว</option></select></div>
+          <div class="field"><label>คำนำหน้า <span class="req">*</span></label><select id="prefix"><option value="">--</option><option>นาย</option><option>นาง</option><option>นางสาว</option></select></div>
           <div class="field"><label>ชื่อ-นามสกุล (ไทย) <span class="req">*</span></label><input type="text" id="nameTH" placeholder="ชื่อ นามสกุล"><div class="err-msg" id="err-nameTH">กรุณากรอกชื่อ-นามสกุล</div></div>
-          <div class="field s2"><label>Name - Surname (EN)</label><input type="text" id="nameEN" placeholder="First Last"></div>
-          <div class="field"><label>วัน/เดือน/ปีเกิด</label><input type="date" id="birthDate" onchange="calcAge()"></div>
-          <div class="field"><label>อายุ (ปี)</label><input type="number" id="age" placeholder="25" min="15" max="80"></div>
-          <div class="field"><label>เพศ</label><div class="radio-group"><label class="radio-item"><input type="radio" name="gender" value="ชาย"> ชาย</label><label class="radio-item"><input type="radio" name="gender" value="หญิง"> หญิง</label></div></div>
-          <div class="field"><label>เชื้อชาติ</label><input type="text" id="race" value="ไทย"></div>
-          <div class="field"><label>สัญชาติ</label><input type="text" id="nationality" value="ไทย"></div>
-          <div class="field"><label>ศาสนา</label><input type="text" id="religion" placeholder="พุทธ"></div>
-          <div class="field"><label>ส่วนสูง (ซม.)</label><input type="number" id="height" placeholder="170"></div>
-          <div class="field"><label>น้ำหนัก (กก.)</label><input type="number" id="weight" placeholder="65"></div>
+          <div class="field s2"><label>Name - Surname (EN) <span class="req">*</span></label><input type="text" id="nameEN" placeholder="First Last"></div>
+          <div class="field"><label>วัน/เดือน/ปีเกิด <span class="req">*</span></label><input type="date" id="birthDate" onchange="calcAge()"></div>
+          <div class="field"><label>อายุ (ปี) <span class="req">*</span></label><input type="number" id="age" placeholder="25" min="15" max="80"></div>
+          <div class="field"><label>เพศ <span class="req">*</span></label><div class="radio-group"><label class="radio-item"><input type="radio" name="gender" value="ชาย" onchange="toggleMilitary(this.value)"> ชาย</label><label class="radio-item"><input type="radio" name="gender" value="หญิง" onchange="toggleMilitary(this.value)"> หญิง</label></div><div class="err-msg" id="err-gender">กรุณาเลือกเพศ</div></div>
+          <div class="field"><label>เชื้อชาติ <span class="req">*</span></label><input type="text" id="race" value="ไทย"></div>
+          <div class="field"><label>สัญชาติ <span class="req">*</span></label><input type="text" id="nationality" value="ไทย"></div>
+          <div class="field"><label>ศาสนา <span class="req">*</span></label><input type="text" id="religion" placeholder="พุทธ"></div>
+          <div class="field"><label>ส่วนสูง (ซม.) <span class="req">*</span></label><input type="number" id="height" placeholder="170"></div>
+          <div class="field"><label>น้ำหนัก (กก.) <span class="req">*</span></label><input type="number" id="weight" placeholder="65"></div>
         </div>
       </div>
       <div class="fg2" style="margin-top:.75rem;">
         <div class="field s2"><label>ที่อยู่ปัจจุบัน <span class="req">*</span></label><textarea id="address" rows="2" placeholder="บ้านเลขที่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"></textarea><div class="err-msg" id="err-address">กรุณากรอกที่อยู่</div></div>
         <div class="field"><label>เบอร์โทรศัพท์มือถือ <span class="req">*</span></label><input type="tel" id="mobile" placeholder="08x-xxx-xxxx"><div class="err-msg" id="err-mobile">กรุณากรอกเบอร์โทร</div></div>
         <div class="field"><label>อีเมล</label><input type="email" id="email" placeholder="email@example.com"></div>
-        <div class="field"><label>ไอดีไลน์</label><input type="text" id="lineId"></div>
-        <div class="field"><label>ลักษณะที่อยู่อาศัย</label><select id="livingArr"><option value="">--</option><option>อาศัยอยู่กับครอบครัว</option><option>บ้านตัวเอง</option><option>บ้านเช่า</option><option>หอพัก/อพาร์ตเมนต์</option></select></div>
-        <div class="field"><label>เลขบัตรประชาชน</label><input type="text" id="idCard" placeholder="1-2345-67890-12-3" maxlength="17"></div>
-        <div class="field"><label>วันหมดอายุบัตร</label><input type="date" id="idExpiry"></div>
-        <div class="field"><label>ภาวะทางทหาร</label><select id="military"><option value="">--</option><option>ยังไม่ได้รับการเกณฑ์</option><option>ผ่านการเรียนวิชาทหาร (รด.)</option><option>ได้รับการยกเว้น</option><option>ปลดเป็นทหารกองหนุน</option></select></div>
-        <div class="field"><label>สถานภาพ</label><select id="marital"><option value="">--</option><option>โสด</option><option>แต่งงาน</option><option>หม้าย</option><option>แยกทางกัน</option></select></div>
+        <div class="field"><label>ไอดีไลน์ <span class="req">*</span></label><input type="text" id="lineId"></div>
+        <div class="field"><label>ลักษณะที่อยู่อาศัย <span class="req">*</span></label><select id="livingArr"><option value="">--</option><option>อาศัยอยู่กับครอบครัว</option><option>บ้านตัวเอง</option><option>บ้านเช่า</option><option>หอพัก/อพาร์ตเมนต์</option></select></div>
+        
+        <div class="field" id="militaryField" style="display:none;"><label>ภาวะทางทหาร <span class="req">*</span></label><select id="military"><option value="">--</option><option>ยังไม่ได้รับการเกณฑ์</option><option>ผ่านการเรียนวิชาทหาร (รด.)</option><option>ได้รับการยกเว้น</option><option>ปลดเป็นทหารกองหนุน</option></select><div class="err-msg" id="err-military">กรุณาเลือกภาวะทางทหาร</div></div>
+        <div class="field"><label>สถานภาพ <span class="req">*</span></label><select id="marital"><option value="">--</option><option>โสด</option><option>แต่งงาน</option><option>หม้าย</option><option>แยกทางกัน</option></select></div>
       </div>
     </div>
 
@@ -207,9 +255,9 @@ header {
     <div class="card">
       <div class="card-title">ประวัติครอบครัว</div>
       <div class="fg3">
-        <div class="field s2"><label>ชื่อ-นามสกุล บิดา</label><input type="text" id="fatherName"></div>
+        <div class="field s2"><label>ชื่อ-นามสกุล บิดา <span class="req">*</span></label><input type="text" id="fatherName"></div>
         <div class="field"><label>อายุ / อาชีพ บิดา</label><div style="display:grid;grid-template-columns:65px 1fr;gap:.4rem;"><input type="number" id="fatherAge" placeholder="อายุ"><input type="text" id="fatherOcc" placeholder="อาชีพ" class="dyn-inp"></div></div>
-        <div class="field s2"><label>ชื่อ-นามสกุล มารดา</label><input type="text" id="motherName"></div>
+        <div class="field s2"><label>ชื่อ-นามสกุล มารดา <span class="req">*</span></label><input type="text" id="motherName"></div>
         <div class="field"><label>อายุ / อาชีพ มารดา</label><div style="display:grid;grid-template-columns:65px 1fr;gap:.4rem;"><input type="number" id="motherAge" placeholder="อายุ"><input type="text" id="motherOcc" placeholder="อาชีพ" class="dyn-inp"></div></div>
         <div class="field s2"><label>ชื่อคู่สมรส</label><input type="text" id="spouseName" placeholder="-"></div>
         <div class="field"><label>อาชีพ / ที่ทำงานคู่สมรส</label><input type="text" id="spouseOcc" placeholder="-"></div>
@@ -296,10 +344,10 @@ header {
     <div class="card">
       <div class="card-title">ผู้ติดต่อฉุกเฉิน</div>
       <div class="fg2">
-        <div class="field"><label>ชื่อ-นามสกุล</label><input type="text" id="emergName"></div>
-        <div class="field"><label>ความสัมพันธ์</label><input type="text" id="emergRelation" placeholder="เช่น พ่อ แม่ คู่สมรส"></div>
-        <div class="field s2"><label>ที่อยู่</label><textarea id="emergAddr" rows="2"></textarea></div>
-        <div class="field"><label>เบอร์โทร</label><input type="tel" id="emergTel"></div>
+        <div class="field"><label>ชื่อ-นามสกุล <span class="req">*</span></label><input type="text" id="emergName"></div>
+        <div class="field"><label>ความสัมพันธ์ <span class="req">*</span></label><input type="text" id="emergRelation" placeholder="เช่น พ่อ แม่ คู่สมรส"></div>
+        <div class="field s2"><label>ที่อยู่ <span class="req">*</span></label><textarea id="emergAddr" rows="2"></textarea></div>
+        <div class="field"><label>เบอร์โทร <span class="req">*</span></label><input type="tel" id="emergTel"></div>
       </div>
     </div>
 
@@ -315,17 +363,17 @@ header {
     <div class="card">
       <div class="card-title">ข้อมูลเพิ่มเติม</div>
       <div class="fg2">
-        <div class="field"><label>ทราบข่าวการรับสมัครจาก</label><input type="text" id="jobSource" placeholder="Jobsdb, เพื่อน, บอร์ดประกาศ"></div>
+        <div class="field"><label>ทราบข่าวการรับสมัครจาก <span class="req">*</span></label><input type="text" id="jobSource" placeholder="Jobsdb, เพื่อน, บอร์ดประกาศ"></div>
         <div class="field"><label>ญาติ/เพื่อนที่ทำงานในบริษัทนี้</label><input type="text" id="friendInCo" placeholder="-"></div>
         <div class="field s2"><label>เคยป่วยหนักหรือโรคติดต่อ?</label><div class="radio-group"><label class="radio-item"><input type="radio" name="illness" value="ไม่เคย"> ไม่เคย</label><label class="radio-item"><input type="radio" name="illness" value="เคย"> เคย</label></div></div>
         <div class="field"><label>ถ้าเคย โปรดระบุ</label><input type="text" id="illnessDetail" placeholder="-"></div>
         <div class="field s2"><label>เคยสมัครงานกับบริษัทนี้มาก่อน?</label><div class="radio-group"><label class="radio-item"><input type="radio" name="prevApply" value="ไม่เคย"> ไม่เคย</label><label class="radio-item"><input type="radio" name="prevApply" value="เคย"> เคย</label></div></div>
-        <div class="field s2"><label>แนะนำตัว / เหตุผลที่สมัครตำแหน่งนี้</label><textarea id="selfIntro" rows="3" placeholder="แนะนำตัวสั้นๆ..."></textarea></div>
+        <div class="field s2"><label>แนะนำตัว / เหตุผลที่สมัครตำแหน่งนี้ <span class="req">*</span></label><textarea id="selfIntro" rows="3" placeholder="แนะนำตัวสั้นๆ..."></textarea></div>
       </div>
     </div>
 
-    <div class="card" style="background:#fffbe6;border-color:#ffe066;">
-      <div style="font-size:.82rem;color:#7a5f00;line-height:1.7;">
+    <div class="card cert-box" style="padding:1rem;">
+      <div style="font-size:.82rem;color:var(--muted);line-height:1.7;">
         <strong>📋 คำรับรอง:</strong> ข้าพเจ้าขอรับรองว่าข้อมูลที่กรอกในใบสมัครนี้เป็นความจริงทุกประการ หากพบว่าข้อมูลไม่เป็นความจริง บริษัทฯ มีสิทธิ์เลิกจ้างโดยไม่ต้องจ่ายเงินชดเชยใดๆ
       </div>
     </div>
@@ -422,17 +470,79 @@ function goStep(n) {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
+function toggleMilitary(gender) {
+  const mf = document.getElementById('militaryField');
+  mf.style.display = gender === 'ชาย' ? 'block' : 'none';
+  if (gender !== 'ชาย') {
+    document.getElementById('military').value = '';
+    document.getElementById('err-military').classList.remove('show');
+  }
+}
+
+function chkField(id, eid) {
+  const el = document.getElementById(id);
+  const err = document.getElementById(eid);
+  if (!el || el.closest('[style*="display:none"]')) return true; // skip hidden fields
+  const empty = el.tagName === 'SELECT' ? !el.value : !el.value.trim();
+  if (empty) { el.classList.add('field-error'); if(err) err.classList.add('show'); return false; }
+  el.classList.remove('field-error'); if(err) err.classList.remove('show'); return true;
+}
+
+function chkRadio(name, eid) {
+  const checked = document.querySelector(`input[name="${name}"]:checked`);
+  const err = document.getElementById(eid);
+  if (!checked) { if(err) err.classList.add('show'); return false; }
+  if(err) err.classList.remove('show'); return true;
+}
+
 function validateStep(step) {
   let ok = true;
   if (step === 1) {
-    [['position','err-position'],['nameTH','err-nameTH'],['address','err-address'],['mobile','err-mobile']].forEach(([id, eid]) => {
-      const el = document.getElementById(id);
-      const err = document.getElementById(eid);
-      if (!el.value.trim()) { el.classList.add('field-error'); err.classList.add('show'); ok = false; }
-      else { el.classList.remove('field-error'); err.classList.remove('show'); }
-    });
+    // Position card
+    ok = chkField('position','err-position') && ok;
+    ok = chkField('salary', null) && ok;
+    ok = chkField('applyDate', null) && ok;
+    // Personal
+    ok = chkField('prefix', null) && ok;
+    ok = chkField('nameTH','err-nameTH') && ok;
+    ok = chkField('nameEN', null) && ok;
+    ok = chkField('birthDate', null) && ok;
+    ok = chkField('age', null) && ok;
+    ok = chkRadio('gender','err-gender') && ok;
+    ok = chkField('race', null) && ok;
+    ok = chkField('nationality', null) && ok;
+    ok = chkField('religion', null) && ok;
+    ok = chkField('height', null) && ok;
+    ok = chkField('weight', null) && ok;
+    ok = chkField('address','err-address') && ok;
+    ok = chkField('mobile','err-mobile') && ok;
+    ok = chkField('lineId', null) && ok;
+    ok = chkField('livingArr', null) && ok;
+    ok = chkField('marital', null) && ok;
+    // Military only if male
+    if (getRadio('gender') === 'ชาย') ok = chkField('military','err-military') && ok;
   }
-  if (!ok) showToast('⚠️ กรุณากรอกข้อมูลที่จำเป็น');
+  if (step === 2) {
+    ok = chkField('fatherName', null) && ok;
+    ok = chkField('motherName', null) && ok;
+  }
+  if (step === 5) {
+    ok = chkField('emergName', null) && ok;
+    ok = chkField('emergRelation', null) && ok;
+    ok = chkField('emergAddr', null) && ok;
+    ok = chkField('emergTel', null) && ok;
+    ok = chkField('jobSource', null) && ok;
+    ok = chkField('selfIntro', null) && ok;
+    ok = chkRadio('illness', null) && ok;
+    ok = chkRadio('prevApply', null) && ok;
+  }
+  // highlight missing fields
+  if (!ok) {
+    showToast('⚠️ กรุณากรอกข้อมูลที่จำเป็นให้ครบ');
+    // scroll to first error
+    const first = document.querySelector('.step.active .field-error, .step.active .err-msg.show');
+    if (first) first.scrollIntoView({behavior:'smooth', block:'center'});
+  }
   return ok;
 }
 
