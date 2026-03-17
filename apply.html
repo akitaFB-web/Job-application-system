@@ -694,30 +694,32 @@ function collectData() {
   };
 }
 
+// ===== GOOGLE SHEETS ENDPOINT =====
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyBHJrTK9WuXXMLrothDsxqhXTY3JX6zaAyfb-2t0t-z2cO4Dc3AAlfEL_9HsAvr_fABQ/exec';
+
 // ===== SUBMIT =====
 async function submitApplication() {
   if (!validateStep(5)) return;
   const btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...';
+  btn.disabled = true;
+  btn.innerHTML = '⏳ กำลังส่ง...';
   try {
     const data = collectData();
-    // Save to shared storage (HR can see)
-    await window.storage.set('app:' + data.id, JSON.stringify(data), true);
-    // Update index
-    let index = [];
-    try {
-      const idxRes = await window.storage.get('hr:app_index', true);
-      if (idxRes) index = JSON.parse(idxRes.value);
-    } catch(e) {}
-    index.push({ id: data.id, name: (data.prefix||'')+data.nameTH, position: data.position, submittedAt: data.submittedAt, status: data.status });
-    await window.storage.set('hr:app_index', JSON.stringify(index), true);
-    // Show success
+    // ส่งข้อมูลไปยัง Google Sheets ผ่าน Apps Script
+    const res = await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    // no-cors ไม่สามารถอ่าน response ได้ แต่ถ้าไม่ throw = สำเร็จ
     document.getElementById('mainContent').style.display = 'none';
     document.getElementById('successScreen').style.display = 'block';
     document.getElementById('refCodeDisplay').textContent = data.id;
   } catch(e) {
-    showToast('❌ เกิดข้อผิดพลาด กรุณาลองใหม่');
-    btn.disabled = false; btn.innerHTML = '✅ ส่งใบสมัคร';
+    showToast('❌ เกิดข้อผิดพลาด กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่');
+    btn.disabled = false;
+    btn.innerHTML = '✅ ส่งใบสมัคร';
   }
 }
 
