@@ -648,6 +648,7 @@ async function deleteApp() {
 
 // ===== RENDER APP DETAIL (for modal + print) =====
 function renderAppDetail(d, forPrint=false) {
+  if (forPrint) return renderAkitaForm(d);
   const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const fl = (lbl,val) => `<div class="d-field"><span class="d-lbl">${lbl}</span><span class="d-val">${esc(val)}</span></div>`;
   const fmtD = iso => { if(!iso)return''; const dt=new Date(iso); if(isNaN(dt))return iso; return dt.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}); };
@@ -905,6 +906,137 @@ async function saveSettings() {
   document.getElementById('settingsSaved').style.display = 'block';
   setTimeout(() => document.getElementById('settingsSaved').style.display = 'none', 4000);
   showToast('✅ บันทึกและเผยแพร่ให้ผู้สมัครเห็นแล้ว');
+}
+
+
+// ===== AKITA FB PRINT FORM =====
+function renderAkitaForm(d) {
+  const esc2 = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const fmtD2 = iso => { if(!iso)return''; const dt=new Date(iso); if(isNaN(dt))return iso; return dt.toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'}); };
+  const chk2 = (val,ref) => { const ok=val===ref; return `<span style="display:inline-block;width:10pt;height:10pt;border:1pt solid #000;text-align:center;line-height:10pt;font-size:8pt;font-weight:700;vertical-align:middle;margin-right:2pt;${ok?'background:#000;color:#fff':''}">${ok?'\u2713':' '}</span>`; };
+  const valW2 = (v,w) => `<span style="display:inline-block;border-bottom:1pt solid #000;width:${w};min-height:9pt;padding:0 2px;vertical-align:bottom;font-size:8pt;">${esc2(v||'')}</span>`;
+  const S = "font-family:'Sarabun',sans-serif;font-size:8pt;line-height:1.5;color:#000;";
+  const TH = "font-size:7.5pt;font-weight:700;";
+  const ROW = "display:flex;align-items:baseline;gap:3pt;margin-bottom:3pt;flex-wrap:wrap;";
+  const SECHEAD = "font-weight:700;font-size:8.5pt;margin:6pt 0 3pt;border-bottom:1pt solid #000;padding-bottom:1pt;";
+  const coLogo = coSettings.logo ? `<img src="${coSettings.logo}" style="height:48px;width:auto;object-fit:contain;">` : '';
+  const coName = esc2(coSettings.nameTH||'');
+  const name = esc2((d.prefix||'')+( d.nameTH||''));
+  const EDU_LEVELS = [
+    ['มัธยมศึกษาตอนต้น (ม.3)','Secondary School'],
+    ['มัธยมศึกษาตอนปลาย (ม.6)','High school'],
+    ['ปวช.','Vocational'],['ปวท./ปวส.','Diploma'],
+    ['ปริญญาตรี','Bachelor degree'],['สูงกว่าปริญญาตรี','Post-Graduate'],['อื่น ๆ','Others']
+  ];
+  const LANGS = ['ภาษาไทย (Thai)','ภาษาอังกฤษ (English)','ภาษาญี่ปุ่น (Japan)','ภาษาอื่น ๆ (Other)'];
+  const workRows = d.workHistory||[];
+  const eduData = d.education||[];
+  const langs = d.languages||[];
+
+  // PAGE 1
+  let p1 = `<div style="${S}width:190mm;margin:0 auto;">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5pt;">
+    <div style="display:flex;align-items:center;gap:6pt;">${coLogo}<div style="font-size:7pt;line-height:1.4;">${coName}</div></div>
+    <div style="text-align:center;flex:1;"><div style="font-size:13pt;font-weight:700;">APPLICATION FOR EMPLOYMENT</div><div style="font-size:11pt;font-weight:700;">ใบสมัครงาน</div><div style="font-size:7pt;">กรอกข้อมูลด้วยตัวท่านเอง (To be completed in own handwriting)</div></div>
+    <div style="width:24mm;height:30mm;border:1pt solid #000;display:flex;align-items:center;justify-content:center;overflow:hidden;">${d.photo?`<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`:'<span style="font-size:6pt;color:#aaa;">รูปถ่าย</span>'}</div>
+  </div>
+  <div style="border-bottom:1pt solid #000;margin-bottom:1pt;"><span style="${TH}">ชื่อ</span>&nbsp;${valW2(name,'150mm')}</div>
+  <div style="font-size:6pt;color:#555;margin-bottom:3pt;">Name</div>
+  <div style="${ROW}"><span style="${TH}min-width:26mm;">ตำแหน่งที่ต้องการ</span><span style="font-size:6pt;color:#555;">1</span>${valW2(d.position,'60mm')}<span style="${TH}margin-left:8pt;">เงินเดือนที่ต้องการ</span>${valW2(d.salary,'24mm')}<span style="${TH}">บาท/เดือน</span></div>
+  <div style="font-size:6pt;color:#555;margin-bottom:3pt;">Position Applied for &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Salary &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Baht/Month</div>
+  <div style="${SECHEAD}">Personal Information (ประวัติส่วนตัว)</div>
+  <div style="${ROW}"><span style="${TH}min-width:20mm;">ที่อยู่ปัจจุบัน</span>${valW2(d.address,'148mm')}</div>
+  <div style="font-size:6pt;color:#555;margin-bottom:3pt;">Present address</div>
+  <div style="${ROW}"><span style="${TH}min-width:26mm;">เบอร์โทรศัพท์มือถือ</span>${valW2(d.mobile,'26mm')}<span style="${TH}margin-left:4pt;">อีเมล</span>${valW2(d.email,'40mm')}<span style="${TH}margin-left:4pt;">ไอดีไลน์</span>${valW2(d.lineId,'26mm')}</div>
+  <div style="font-size:6pt;color:#555;margin-bottom:3pt;">Mobile &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; E-mail &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ID Line</div>
+  <div style="${ROW}">${['อาศัยอยู่กับครอบครัว','บ้านตัวเอง','บ้านเช่า','หอพัก/อพาร์ตเมนต์'].map(v=>`${chk2(d.livingArr,v)}<span style="font-size:7pt;margin-right:4pt;">${v}</span>`).join('')}</div>
+  <div style="font-size:6pt;color:#555;margin-bottom:3pt;">Current Living Arrangement &nbsp; Living with parent &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Own home &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Hired house &nbsp;&nbsp;&nbsp;&nbsp; Hired flat/Hostel</div>
+  <div style="${ROW}"><span style="${TH}min-width:22mm;">วัน เดือน ปีเกิด</span>${valW2(fmtD2(d.birthDate),'28mm')}<span style="${TH}margin:0 2pt;">อายุ</span>${valW2(d.age,'10mm')}<span style="${TH}margin:0 2pt;">ปี</span><span style="${TH}margin:0 2pt;">เชื้อชาติ</span>${valW2(d.race,'20mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:14mm;">สัญชาติ</span>${valW2(d.nationality,'20mm')}<span style="${TH}margin:0 2pt;">ศาสนา</span>${valW2(d.religion,'20mm')}<span style="${TH}margin:0 2pt;">ส่วนสูง</span>${valW2(d.height,'11mm')}<span style="${TH}margin:0 2pt;">ซม.</span><span style="${TH}margin:0 2pt;">น้ำหนัก</span>${valW2(d.weight,'11mm')}<span style="${TH}margin:0 2pt;">กก.</span></div>
+  <div style="${ROW}">${['ยังไม่ได้รับการเกณฑ์','ผ่านการเรียนวิชาทหาร (รด.)','ได้รับการยกเว้น','ปลดเป็นทหารกองหนุน'].map(v=>`${chk2(d.military,v)}<span style="font-size:7pt;margin-right:4pt;">${v}</span>`).join('')}</div>
+  <div style="font-size:6pt;color:#555;margin-bottom:3pt;">Military status</div>
+  <div style="${ROW}">${['โสด','แต่งงาน','หม้าย','แยกทางกัน'].map(v=>`${chk2(d.marital,v)}<span style="font-size:7pt;margin-right:6pt;">${v}</span>`).join('')}</div>
+  <div style="font-size:6pt;color:#555;margin-bottom:3pt;">Marital status</div>
+  <div style="${ROW}">${['ชาย','หญิง'].map(v=>`${chk2(d.gender,v)}<span style="font-size:7pt;margin-right:8pt;">${v}</span>`).join('')}</div>
+  <div style="font-size:6pt;color:#555;margin-bottom:4pt;">Gender</div>
+  <div style="${SECHEAD}">Family Information (ประวัติครอบครัว)</div>
+  <div style="${ROW}"><span style="${TH}min-width:26mm;">ชื่อ-นามสกุล บิดา</span>${valW2(d.fatherName,'40mm')}<span style="${TH}margin:0 2pt;">อายุ</span>${valW2(d.fatherAge,'9mm')}<span style="${TH}margin:0 2pt;">ปี</span><span style="${TH}margin:0 2pt;">อาชีพ</span>${valW2(d.fatherOcc,'32mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:26mm;">ชื่อ-นามสกุล มารดา</span>${valW2(d.motherName,'40mm')}<span style="${TH}margin:0 2pt;">อายุ</span>${valW2(d.motherAge,'9mm')}<span style="${TH}margin:0 2pt;">ปี</span><span style="${TH}margin:0 2pt;">อาชีพ</span>${valW2(d.motherOcc,'32mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:20mm;">ชื่อภรรยา/สามี</span>${valW2(d.spouseName,'38mm')}<span style="${TH}margin-left:6pt;">สถานที่ทำงาน</span>${valW2(d.spouseWork,'38mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:16mm;">ตำแหน่งงาน</span>${valW2(d.spouseOcc,'28mm')}<span style="${TH}margin:0 4pt;">มีบุตร</span>${valW2(d.children,'8mm')}<span style="${TH}margin:0 2pt;">คน</span><span style="margin-left:auto;font-size:7pt;">วันที่เขียนใบสมัคร ${valW2(fmtD2(d.applyDate||d.submittedAt),'26mm')}</span></div>
+  </div>`;
+
+  // PAGE 2
+  let p2 = `<div style="${S}width:190mm;margin:0 auto;page-break-before:always;">
+  <div style="${ROW}"><span style="${TH}min-width:28mm;">มีพี่น้อง (รวมผู้สมัคร)</span>${valW2(d.siblings,'8mm')}<span style="${TH}margin:0 2pt;">แบ่งเป็นผู้ชาย</span>${valW2(d.sibMale,'8mm')}<span style="${TH}margin:0 2pt;">คน ผู้หญิง</span>${valW2(d.sibFemale,'8mm')}<span style="${TH}margin:0 2pt;">คน เป็นบุตรคนที่</span>${valW2(d.childOrder,'8mm')}</div>
+  <div style="${SECHEAD}">Education (การศึกษา)</div>
+  <table style="width:100%;border-collapse:collapse;font-size:7.5pt;margin-bottom:5pt;">
+    <thead><tr style="background:#f0f0f0;"><th style="border:1pt solid #999;padding:2pt 4pt;width:30%;">ระดับการศึกษา</th><th style="border:1pt solid #999;padding:2pt 4pt;width:28%;">สถาบันการศึกษา</th><th style="border:1pt solid #999;padding:2pt 4pt;width:22%;">สาขาวิชา</th><th style="border:1pt solid #999;padding:2pt 4pt;width:20%;">ระยะเวลา</th></tr></thead>
+    <tbody>${EDU_LEVELS.map(([th,en])=>{ const row=eduData.find(e2=>e2.level===th)||{}; return `<tr><td style="border:1pt solid #ccc;padding:2pt 4pt;">${th}<br><span style="font-size:6pt;color:#666;">${en}</span></td><td style="border:1pt solid #ccc;padding:2pt 4pt;">${esc2(row.inst||'')}</td><td style="border:1pt solid #ccc;padding:2pt 4pt;">${esc2(row.major||'')}</td><td style="border:1pt solid #ccc;padding:2pt 4pt;">${esc2(row.period||'')}</td></tr>`; }).join('')}</tbody>
+  </table>
+  <div style="${SECHEAD}">Working experience in chronological (รายละเอียดของงานที่ผ่านมา เรียงลำดับก่อน-หลัง)</div>
+  <table style="width:100%;border-collapse:collapse;font-size:7.5pt;margin-bottom:5pt;">
+    <thead><tr style="background:#f0f0f0;"><th style="border:1pt solid #999;padding:2pt 3pt;width:22%;">สถานที่ทำงาน</th><th style="border:1pt solid #999;padding:2pt 3pt;width:13%;">ระยะเวลา</th><th style="border:1pt solid #999;padding:2pt 3pt;width:16%;">ตำแหน่งงาน</th><th style="border:1pt solid #999;padding:2pt 3pt;width:18%;">ลักษณะงาน</th><th style="border:1pt solid #999;padding:2pt 3pt;width:12%;">ค่าจ้าง</th><th style="border:1pt solid #999;padding:2pt 3pt;width:19%;">เหตุผลที่ลาออก</th></tr></thead>
+    <tbody>${workRows.length?workRows.map(w=>`<tr><td style="border:1pt solid #ccc;padding:2pt 3pt;">${esc2(w.company||'')}</td><td style="border:1pt solid #ccc;padding:2pt 3pt;">${esc2(w.period||'')}</td><td style="border:1pt solid #ccc;padding:2pt 3pt;">${esc2(w.pos||'')}</td><td style="border:1pt solid #ccc;padding:2pt 3pt;">${esc2(w.desc||'')}</td><td style="border:1pt solid #ccc;padding:2pt 3pt;">${esc2(w.salary||'')}</td><td style="border:1pt solid #ccc;padding:2pt 3pt;">${esc2(w.resign||'')}</td></tr>`).join(''):`<tr><td colspan="6" style="border:1pt solid #ccc;padding:8pt;text-align:center;color:#999;">-</td></tr>`}</tbody>
+  </table>
+  <div style="${SECHEAD}">Language Ability (ภาษา)</div>
+  <table style="width:100%;border-collapse:collapse;font-size:7.5pt;margin-bottom:5pt;">
+    <thead><tr style="background:#f0f0f0;"><th rowspan="2" style="border:1pt solid #999;padding:2pt 4pt;width:20%;">ภาษา</th><th colspan="3" style="border:1pt solid #999;padding:2pt 4pt;text-align:center;">การพูด (Speaking)</th><th colspan="3" style="border:1pt solid #999;padding:2pt 4pt;text-align:center;">การเขียน (Writing)</th><th colspan="3" style="border:1pt solid #999;padding:2pt 4pt;text-align:center;">การอ่าน (Reading)</th></tr>
+    <tr style="background:#f0f0f0;">${['ดี','ปานกลาง','พอใช้','ดี','ปานกลาง','พอใช้','ดี','ปานกลาง','พอใช้'].map(h=>`<th style="border:1pt solid #999;padding:2pt;text-align:center;font-size:6.5pt;">${h}</th>`).join('')}</tr></thead>
+    <tbody>${LANGS.map((lang,i)=>{ const lg=langs[i]||{}; const lbl=i===3&&d.langOther?lang+' ('+esc2(d.langOther)+')':lang; return `<tr><td style="border:1pt solid #ccc;padding:2pt 4pt;">${lbl}</td>${['ดี','ปานกลาง','พอใช้'].map(lv=>`<td style="border:1pt solid #ccc;padding:2pt;text-align:center;">${lg.speak===lv?'\u2713':''}</td>`).join('')}${['ดี','ปานกลาง','พอใช้'].map(lv=>`<td style="border:1pt solid #ccc;padding:2pt;text-align:center;">${lg.write===lv?'\u2713':''}</td>`).join('')}${['ดี','ปานกลาง','พอใช้'].map(lv=>`<td style="border:1pt solid #ccc;padding:2pt;text-align:center;">${lg.read===lv?'\u2713':''}</td>`).join('')}</tr>`; }).join('')}</tbody>
+  </table>
+  </div>`;
+
+  // PAGE 3
+  let p3 = `<div style="${S}width:190mm;margin:0 auto;page-break-before:always;">
+  <div style="${SECHEAD}">Special Ability (ความสามารถพิเศษ)</div>
+  <div style="${ROW}"><span style="${TH}min-width:22mm;">การพิมพ์ดีด</span>${chk2(d.typing,'ไม่ได้')}<span style="font-size:7pt;margin-right:4pt;">ไม่ได้ (No)</span>${chk2(d.typing,'ได้')}<span style="font-size:7pt;margin-right:4pt;">ได้ (Yes)</span><span style="font-size:7pt;">${esc2(d.typingSpeed||'')}</span></div>
+  <div style="${ROW}"><span style="${TH}min-width:26mm;">การใช้คอมพิวเตอร์</span>${chk2(d.computer,'ไม่ได้')}<span style="font-size:7pt;margin-right:4pt;">ไม่ได้ (No)</span>${chk2(d.computer,'ได้')}<span style="font-size:7pt;margin-right:4pt;">ได้ (Yes)</span><span style="font-size:7pt;">${esc2(d.computerPrograms||'')}</span></div>
+  <div style="${ROW}"><span style="${TH}min-width:20mm;">การขับรถยนต์</span>${chk2(d.driving,'ไม่สามารถขับได้')}<span style="font-size:7pt;margin-right:4pt;">ไม่สามารถขับได้</span>${chk2(d.driving,'ขับได้ ไม่มีใบขับขี่')}<span style="font-size:7pt;margin-right:4pt;">ขับได้ ไม่มีใบอนุญาต</span>${chk2(d.driving,'ขับได้มีใบขับขี่')}<span style="font-size:7pt;margin-right:4pt;">ขับได้มีใบอนุญาต</span><span style="${TH}margin:0 2pt;">เลขที่ใบขับขี่</span>${valW2(d.driveNo,'20mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:40mm;">ความสามารถในการใช้เครื่องใช้สำนักงาน</span>${valW2(d.officeMachine,'80mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:18mm;">งานอดิเรก</span><span style="font-size:7pt;margin-right:2pt;">ระบุ</span>${valW2(d.hobby,'100mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:18mm;">กีฬาที่ชอบ</span><span style="font-size:7pt;margin-right:2pt;">ระบุ</span>${valW2(d.sport,'100mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:18mm;">ความรู้พิเศษ</span><span style="font-size:7pt;margin-right:2pt;">ระบุ</span>${valW2(d.specialKnowledge,'100mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:10mm;">อื่น ๆ</span><span style="font-size:7pt;margin-right:2pt;">ระบุ</span>${valW2(d.abilityOther,'100mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:38mm;">สามารถไปปฏิบัติงานต่างจังหวัด</span>${chk2(d.upcountry,'ไม่ได้')}<span style="font-size:7pt;margin-right:4pt;">ไม่ได้ (No)</span>${chk2(d.upcountry,'ได้')}<span style="font-size:7pt;margin-right:4pt;">ได้ (Yes)</span>${chk2(d.upcountry,'other')}<span style="font-size:7pt;margin-right:2pt;">อื่น ๆ ระบุ</span>${valW2(d.upcountryNote,'25mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:58mm;">กรณีเกิดเหตุฉุกเฉิน ติดต่อ ชื่อ-นามสกุล</span>${valW2(d.emergName,'36mm')}<span style="${TH}margin:0 2pt;">เกี่ยวข้องเป็น</span>${valW2(d.emergRelation,'20mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:12mm;">ที่อยู่</span>${valW2(d.emergAddr,'66mm')}<span style="${TH}margin:0 2pt;">เบอร์โทร</span>${valW2(d.emergTel,'26mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:30mm;">ทราบข่าวการรับสมัครจาก</span>${valW2(d.jobSource,'80mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:58mm;">เคยป่วยหนักหรือเป็นโรคติดต่อร้ายแรงมาก่อนหรือไม่</span>${chk2(d.illness,'ไม่เคย')}<span style="font-size:7pt;margin-right:4pt;">ไม่เคย (No)</span>${chk2(d.illness,'เคย')}<span style="font-size:7pt;">เคย (Yes)</span></div>
+  <div style="${ROW}"><span style="${TH}min-width:28mm;">ถ้าเคยโปรดระบุชื่อโรค</span>${valW2(d.illnessDetail,'80mm')}</div>
+  <div style="${ROW}"><span style="${TH}min-width:52mm;">เคยสมัครงานกับบริษัทฯ นี้มาก่อนหรือไม่</span>${chk2(d.prevApply,'ไม่เคย')}<span style="font-size:7pt;margin-right:4pt;">ไม่เคย (No)</span>${chk2(d.prevApply,'เคย')}<span style="font-size:7pt;margin-right:4pt;">เคย (Yes)</span></div>
+  <div style="${ROW}"><span style="${TH}min-width:52mm;">ระบุชื่อญาติ/เพื่อนที่ทำงานในบริษัทฯ</span>${valW2(d.friendInCo,'60mm')}</div>
+  <div style="font-size:7.5pt;margin:4pt 0 2pt;">กรอกชื่อ/ ที่อยู่/ เบอร์โทรศัพท์ และอาชีพของผู้ที่อ้างอิงจำนวน 2 คน (ไม่ใช่ญาติหรือนายจ้างเดิม)</div>
+  ${([...(d.references||[]),{},{}]).slice(0,2).map(r=>`<div style="${ROW}">${valW2(r.name||'','40mm')}<span style="${TH}margin:0 2pt;">ที่อยู่</span>${valW2(r.addr||'','36mm')}<span style="${TH}margin:0 2pt;">โทร</span>${valW2(r.tel||'','20mm')}<span style="${TH}margin:0 2pt;">อาชีพ</span>${valW2(r.occ||'','20mm')}</div>`).join('')}
+  </div>`;
+
+  // PAGE 4
+  const nm = esc2((d.prefix||'')+(d.nameTH||''));
+  let p4 = `<div style="${S}width:190mm;margin:0 auto;page-break-before:always;">
+  <div style="font-size:7.5pt;font-weight:700;margin-bottom:2pt;">กรุณาแนะนำตัวท่านเอง เพื่อให้บริษัทรู้จักตัวท่านดีขึ้น</div>
+  <div style="font-size:6.5pt;color:#555;margin-bottom:3pt;">Please provide any further information about yourself which will allow our company to know you better</div>
+  <div style="border:1pt solid #999;min-height:32mm;padding:3pt;font-size:8pt;margin-bottom:6pt;">${esc2(d.selfIntro||'')}</div>
+  <div style="font-size:7.5pt;line-height:1.6;padding:4pt;border:1pt solid #ccc;background:#fafafa;margin-bottom:6pt;">
+    ข้าพเจ้าขอรับรองว่า ข้อความดังกล่าวทั้งหมดในใบสมัครนี้เป็นความจริงทุกประการ หลังจากบริษัทฯ จ้างเข้ามาทำงานแล้วปรากฎว่า ข้อความในใบสมัครงานเอกสารที่นำมาแสดงหรือรายละเอียดที่ให้ไว้ไม่เป็นความจริง บริษัทฯ มีสิทธิ์ที่จะเลิกจ้างข้าพเจ้าได้โดยไม่ต้องจ่ายเงินชดเชยหรือค่าเสียหายใด ๆ ทั้งสิ้น<br>
+    <em style="font-size:6.5pt;color:#555;">I certify that all statements given in this application form are true. If any information is found to be untrue after employment, the company has the right to terminate my employment without any compensation or severance pay whatsoever.</em>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12mm;margin:10mm 0 12mm;">
+    <div style="text-align:center;"><div style="border-bottom:1pt solid #000;margin:14mm auto 3pt;width:48mm;"></div><div style="font-size:7pt;">ลายมือชื่อผู้สมัคร (Applicants signature)</div><div style="font-size:7pt;">(${nm})</div></div>
+    <div style="text-align:center;"><div style="border-bottom:1pt solid #000;margin:14mm auto 3pt;width:48mm;"></div><div style="font-size:7pt;">วันที่ / Date</div></div>
+  </div>
+  <div style="border-top:2pt solid #000;padding-top:5pt;">
+    <div style="font-weight:700;font-size:8.5pt;margin-bottom:4pt;">การพิจารณาว่าจ้าง</div>
+    <div style="display:flex;gap:6pt;margin-bottom:4pt;font-size:7.5pt;flex-wrap:wrap;"><span style="font-weight:700;">ตำแหน่ง</span>${valW2('','30mm')}<span style="font-weight:700;margin-left:4pt;">แผนก</span>${valW2('','30mm')}<span style="font-weight:700;margin-left:4pt;">เงินเดือน</span>${valW2('','20mm')}<span style="font-weight:700;">บาท/เดือน</span></div>
+    <div style="display:flex;gap:6pt;margin-bottom:8pt;font-size:7.5pt;flex-wrap:wrap;"><span style="font-weight:700;">วันที่เริ่มงาน</span>${valW2('','30mm')}<span style="font-weight:700;margin-left:4pt;">ค่าใช้จ่ายพิเศษ</span>${valW2('','30mm')}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8mm;margin-top:8mm;">
+      <div style="text-align:center;"><div style="border-bottom:1pt solid #000;margin:12mm auto 3pt;width:44mm;"></div><div style="font-size:7pt;">ฝ่ายทรัพยากรบุคคล (Human resource department)</div><div style="font-size:7pt;">…......../…......../…..........</div></div>
+      <div style="text-align:center;"><div style="border-bottom:1pt solid #000;margin:12mm auto 3pt;width:44mm;"></div><div style="font-size:7pt;">ผู้อนุมัติ (Authorized signature)</div><div style="font-size:7pt;">…......../…......../…..........</div></div>
+      <div style="text-align:center;"><div style="border-bottom:1pt solid #000;margin:12mm auto 3pt;width:44mm;"></div><div style="font-size:7pt;">ผู้สมัครงาน (Applicants signature)</div><div style="font-size:7pt;">…......../…......../…..........</div></div>
+    </div>
+  </div>
+  </div>`;
+
+  return p1 + p2 + p3 + p4;
 }
 
 // ===== HELPERS =====
