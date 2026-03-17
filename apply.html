@@ -211,12 +211,13 @@ header {
       <div class="card-title">ข้อมูลส่วนตัว</div>
       <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap;">
         <div>
-          <label style="font-size:.76rem;font-weight:500;color:var(--muted);display:block;margin-bottom:.28rem;">รูปถ่าย 1 นิ้ว</label>
+          <label style="font-size:.76rem;font-weight:500;color:var(--muted);display:block;margin-bottom:.28rem;">รูปถ่าย 1 นิ้ว <span class="req">*</span></label>
           <div class="photo-box" onclick="document.getElementById('photoIn').click()">
             <img id="photoPreview" src="" style="display:none;">
             <div class="ph-hint" id="photoHint">📷<br>คลิกอัปโหลด</div>
           </div>
           <input type="file" id="photoIn" accept="image/*" style="display:none;" onchange="handlePhoto(event)">
+          <div class="err-msg" id="err-photo" style="margin-top:.3rem;">กรุณาอัปโหลดรูปถ่าย</div>
         </div>
         <div style="flex:1;min-width:200px;" class="fg2">
           <div class="field"><label>คำนำหน้า <span class="req">*</span></label><select id="prefix"><option value="">--</option><option>นาย</option><option>นาง</option><option>นางสาว</option></select></div>
@@ -498,6 +499,13 @@ function chkRadio(name, eid) {
 function validateStep(step) {
   let ok = true;
   if (step === 1) {
+    // Photo
+    if (!photoData) {
+      document.getElementById('err-photo').classList.add('show');
+      ok = false;
+    } else {
+      document.getElementById('err-photo').classList.remove('show');
+    }
     // Position card
     ok = chkField('position','err-position') && ok;
     ok = chkField('salary', null) && ok;
