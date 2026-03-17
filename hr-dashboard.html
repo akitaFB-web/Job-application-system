@@ -72,7 +72,7 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
 .filter-field input,.filter-field select { padding:.35rem .6rem; border:1px solid var(--border); border-radius:6px; font-family:'IBM Plex Sans Thai',sans-serif; font-size:.82rem; background:var(--surface2); color:var(--text); outline:none; }
 .filter-field input::placeholder { color:#aaa; }
 .filter-field input:focus,.filter-field select:focus { border-color:var(--teal); box-shadow:0 0 0 2px var(--teal-dim); }
-.btn-filter { background:var(--teal); color:#0d1117; border:none; padding:.35rem 1rem; border-radius:6px; font-family:'IBM Plex Sans Thai',sans-serif; font-size:.82rem; font-weight:700; cursor:pointer; align-self:flex-end; }
+.btn-filter { background:var(--teal); color:#ffffff; border:none; padding:.35rem 1rem; border-radius:6px; font-family:'IBM Plex Sans Thai',sans-serif; font-size:.82rem; font-weight:700; cursor:pointer; align-self:flex-end; }
 .btn-reset { background:transparent; color:var(--muted); border:1px solid var(--border); padding:.35rem .8rem; border-radius:6px; font-family:'IBM Plex Sans Thai',sans-serif; font-size:.82rem; cursor:pointer; align-self:flex-end; transition:all .2s; }
 .btn-reset:hover { color:var(--text); border-color:var(--teal); }
 
@@ -101,7 +101,7 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
 .select-all-row { display:flex; align-items:center; gap:.7rem; padding:.55rem .7rem; background:var(--surface2); border-radius:7px; margin-bottom:.6rem; font-size:.8rem; border:1px solid var(--border2); }
 .bulk-btns { display:flex; gap:.4rem; flex-wrap:wrap; }
 .btn-bulk { font-family:'IBM Plex Sans Thai',sans-serif; font-size:.76rem; font-weight:600; padding:.32rem .9rem; border-radius:6px; cursor:pointer; border:none; }
-.btn-bulk-print { background:var(--teal); color:#0d1117; }
+.btn-bulk-print { background:var(--teal); color:#ffffff; }
 .btn-bulk-shortlist { background:rgba(63,185,80,.2); color:var(--success); border:1px solid rgba(63,185,80,.4); }
 .btn-bulk-reject { background:rgba(248,81,73,.15); color:var(--danger); border:1px solid rgba(248,81,73,.3); }
 
@@ -152,11 +152,11 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
 .photo-box-lg:hover { border-color:var(--teal); box-shadow:0 0 12px var(--teal-dim); }
 
 /* BUTTONS */
-.btn-primary { background:var(--teal); color:#0d1117; border:none; padding:.62rem 1.8rem; border-radius:8px; font-family:'IBM Plex Sans Thai',sans-serif; font-size:.88rem; font-weight:700; cursor:pointer; transition:all .2s; }
+.btn-primary { background:var(--teal); color:#ffffff; border:none; padding:.62rem 1.8rem; border-radius:8px; font-family:'IBM Plex Sans Thai',sans-serif; font-size:.88rem; font-weight:700; cursor:pointer; transition:all .2s; }
 .btn-primary:hover { background:#5eead4; }
 .btn-secondary { background:transparent; color:var(--text); border:1px solid var(--border); padding:.62rem 1.3rem; border-radius:8px; font-family:'IBM Plex Sans Thai',sans-serif; font-size:.88rem; font-weight:500; cursor:pointer; transition:all .2s; }
 .btn-secondary:hover { border-color:var(--teal); color:var(--teal); }
-.btn-accent { background:var(--teal); color:#0d1117; border:none; padding:.62rem 1.6rem; border-radius:8px; font-family:'IBM Plex Sans Thai',sans-serif; font-size:.88rem; font-weight:700; cursor:pointer; transition:all .2s; }
+.btn-accent { background:var(--teal); color:#ffffff; border:none; padding:.62rem 1.6rem; border-radius:8px; font-family:'IBM Plex Sans Thai',sans-serif; font-size:.88rem; font-weight:700; cursor:pointer; transition:all .2s; }
 .btn-accent:hover { background:#5eead4; }
 
 .toast { position:fixed; bottom:1.5rem; right:1.5rem; background:var(--surface); border:1px solid var(--border); color:var(--text); padding:.6rem 1.3rem; border-radius:8px; font-size:.82rem; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,.4); transform:translateY(80px); opacity:0; transition:all .3s cubic-bezier(.34,1.56,.64,1); z-index:999; }
@@ -364,6 +364,10 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
 <div class="toast" id="toast"></div>
 
 <script>
+// ===== GOOGLE SHEETS =====
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyBHJrTK9WuXXMLrothDsxqhXTY3JX6zaAyfb-2t0t-z2cO4Dc3AAlfEL_9HsAvr_fABQ/exec';
+let appsCache = []; // local cache with full data
+
 // ===== STATE =====
 let allApps = [];
 let filteredApps = [];
@@ -390,10 +394,18 @@ function showView(v) {
 // ===== LOAD APPS =====
 async function refreshApps() {
   try {
-    const res = await window.storage.get('hr:app_index', true);
-    if (!res) { allApps = []; }
-    else { allApps = JSON.parse(res.value); }
-  } catch(e) { allApps = []; }
+    document.getElementById('topNewCount').textContent = '⏳ กำลังโหลด...';
+    const res = await fetch(SHEETS_URL + '?action=getAll&t=' + Date.now());
+    const json = await res.json();
+    if (json.apps) {
+      appsCache = json.apps;
+      allApps = json.apps.map(d => ({
+        id: d.id, name: (d.prefix||'') + d.nameTH, position: d.position,
+        submittedAt: d.submittedAt, status: d.status || 'new',
+        age: d.age, gender: d.gender, mobile: d.mobile, education: d.education
+      }));
+    } else { allApps = []; }
+  } catch(e) { allApps = []; showToast('⚠️ ไม่สามารถโหลดข้อมูลได้'); }
   filteredApps = [...allApps];
   renderStats();
   renderRecentTable();
@@ -473,25 +485,16 @@ function renderAppTable(apps) {
 }
 
 async function loadAppDetail(id) {
-  try {
-    const res = await window.storage.get('app:'+id, true);
-    if (!res) return;
-    const d = JSON.parse(res.value);
-    // Thumb
-    const th = document.getElementById('thumb-'+id);
-    if (th && d.photo) th.innerHTML = `<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`;
-    // Edu
-    const edu = document.getElementById('edu-'+id);
-    if (edu && d.education && d.education.length) {
-      const lvls = ['สูงกว่าปริญญาตรี','ปริญญาตรี','ปวส.','ปวช.','ม.6','ม.3'];
-      const eduLvlMap = {
-        'สูงกว่าปริญญาตรี':6,'ปริญญาตรี':5,'ปวท./ปวส.':4,'ปวช.':3,
-        'มัธยมศึกษาตอนปลาย (ม.6)':2,'มัธยมศึกษาตอนต้น (ม.3)':1
-      };
-      const topEdu = d.education.reduce((best, e) => (eduLvlMap[e.level]||0) > (eduLvlMap[best.level]||0) ? e : best, d.education[0]);
-      edu.textContent = topEdu ? topEdu.level.replace(/\(.*\)/,'').trim() : '-';
-    }
-  } catch(e) {}
+  const d = appsCache.find(a => a.id === id);
+  if (!d) return;
+  const th = document.getElementById('thumb-'+id);
+  if (th && d.photo) th.innerHTML = `<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`;
+  const edu = document.getElementById('edu-'+id);
+  if (edu && d.education && d.education.length) {
+    const eduLvlMap = {'สูงกว่าปริญญาตรี':6,'ปริญญาตรี':5,'ปวท./ปวส.':4,'ปวช.':3,'มัธยมศึกษาตอนปลาย (ม.6)':2,'มัธยมศึกษาตอนต้น (ม.3)':1};
+    const topEdu = d.education.reduce((best,e)=>(eduLvlMap[e.level]||0)>(eduLvlMap[best.level]||0)?e:best,d.education[0]);
+    edu.textContent = topEdu ? topEdu.level.replace(/\(.*\)/,'').trim() : '-';
+  }
 }
 
 // ===== FILTERS =====
@@ -557,17 +560,16 @@ async function quickStatus(id, status) {
   showToast(status==='shortlisted'?'⭐ ผ่านคุณสมบัติแล้ว':'❌ ไม่ผ่านคุณสมบัติ');
 }
 async function updateStatus(id, status) {
-  // Update index
   const idx = allApps.findIndex(a => a.id === id);
   if (idx >= 0) allApps[idx].status = status;
-  await window.storage.set('hr:app_index', JSON.stringify(allApps), true);
-  // Update full record
+  const cidx = appsCache.findIndex(a => a.id === id);
+  if (cidx >= 0) appsCache[cidx].status = status;
   try {
-    const res = await window.storage.get('app:'+id, true);
-    if (res) {
-      const d = JSON.parse(res.value); d.status = status;
-      await window.storage.set('app:'+id, JSON.stringify(d), true);
-    }
+    await fetch(SHEETS_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'updateStatus', id, status})
+    });
   } catch(e) {}
 }
 async function bulkStatus(status) {
@@ -605,15 +607,13 @@ function renderShortlisted() {
 
 // ===== MODAL =====
 async function openModal(id) {
-  try {
-    const res = await window.storage.get('app:'+id, true);
-    if (!res) { showToast('❌ ไม่พบข้อมูล'); return; }
-    currentModalApp = JSON.parse(res.value);
-    document.getElementById('modalTitle').textContent = `ใบสมัคร — ${currentModalApp.prefix||''}${currentModalApp.nameTH}`;
-    document.getElementById('modalStatus').value = currentModalApp.status || 'new';
-    document.getElementById('modalBody').innerHTML = renderAppDetail(currentModalApp, false);
-    document.getElementById('detailModal').classList.add('open');
-  } catch(e) { showToast('❌ เกิดข้อผิดพลาด'); }
+  const d = appsCache.find(a => a.id === id);
+  if (!d) { showToast('❌ ไม่พบข้อมูล'); return; }
+  currentModalApp = d;
+  document.getElementById('modalTitle').textContent = `ใบสมัคร — ${d.prefix||''}${d.nameTH}`;
+  document.getElementById('modalStatus').value = d.status || 'new';
+  document.getElementById('modalBody').innerHTML = renderAppDetail(d, false);
+  document.getElementById('detailModal').classList.add('open');
 }
 function closeModal() {
   document.getElementById('detailModal').classList.remove('open');
@@ -632,11 +632,17 @@ function setModalStatus(s) {
 async function deleteApp() {
   if (!currentModalApp) return;
   if (!confirm(`ลบใบสมัครของ "${currentModalApp.nameTH}" ใช่ไหม?`)) return;
+  try {
+    await fetch(SHEETS_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'deleteApp', id: currentModalApp.id})
+    });
+  } catch(e) {}
   allApps = allApps.filter(a => a.id !== currentModalApp.id);
-  await window.storage.set('hr:app_index', JSON.stringify(allApps), true);
-  await window.storage.delete('app:'+currentModalApp.id, true);
+  appsCache = appsCache.filter(a => a.id !== currentModalApp.id);
   closeModal();
-  await refreshApps(); applyFilters();
+  renderStats(); renderRecentTable(); renderAppTable(allApps); renderShortlisted();
   showToast('🗑 ลบแล้ว');
 }
 
@@ -801,22 +807,14 @@ function renderAppDetail(d, forPrint=false) {
 
 // ===== PRINT =====
 async function printById(id) {
-  try {
-    const res = await window.storage.get('app:'+id, true);
-    if (!res) { showToast('❌ ไม่พบข้อมูล'); return; }
-    doPrint([JSON.parse(res.value)]);
-  } catch(e) { showToast('❌ เกิดข้อผิดพลาด'); }
+  const d = appsCache.find(a => a.id === id);
+  if (!d) { showToast('❌ ไม่พบข้อมูล'); return; }
+  doPrint([d]);
 }
 
 async function printSelected() {
   if (!selectedIds.size) { showToast('⚠️ เลือกผู้สมัครก่อน'); return; }
-  const apps = [];
-  for (const id of selectedIds) {
-    try {
-      const res = await window.storage.get('app:'+id, true);
-      if (res) apps.push(JSON.parse(res.value));
-    } catch(e) {}
-  }
+  const apps = appsCache.filter(a => selectedIds.has(a.id));
   if (apps.length) doPrint(apps);
 }
 
@@ -825,16 +823,9 @@ function printSingle() {
 }
 
 async function printAllShortlisted() {
-  const short = allApps.filter(a => a.status === 'shortlisted');
-  if (!short.length) { showToast('⚠️ ไม่มีผู้สมัครที่ผ่านคุณสมบัติ'); return; }
-  const apps = [];
-  for (const a of short) {
-    try {
-      const res = await window.storage.get('app:'+a.id, true);
-      if (res) apps.push(JSON.parse(res.value));
-    } catch(e) {}
-  }
-  if (apps.length) doPrint(apps);
+  const apps = appsCache.filter(a => a.status === 'shortlisted');
+  if (!apps.length) { showToast('⚠️ ไม่มีผู้สมัครที่ผ่านคุณสมบัติ'); return; }
+  doPrint(apps);
 }
 
 function doPrint(apps) {
@@ -852,9 +843,10 @@ function doPrint(apps) {
 // ===== SETTINGS =====
 async function loadSettings() {
   try {
-    const res = await window.storage.get('hr:company_settings', true);
-    if (res && res.value) {
-      coSettings = JSON.parse(res.value);
+    const res = localStorage.getItem('hr_company_settings'); const resWrapped = res ? {value: res} : null; const resOrig = resWrapped;
+    const _res = res || resOrig;
+    if (_res && _res.value) {
+      coSettings = JSON.parse(_res.value);
       applyBranding();
       // Fill settings form
       document.getElementById('setNameTH').value = coSettings.nameTH||'';
@@ -908,7 +900,7 @@ async function saveSettings() {
     web: document.getElementById('setWeb').value,
     logo: logoDataSet||''
   };
-  await window.storage.set('hr:company_settings', JSON.stringify(coSettings), true);
+  localStorage.setItem('hr_company_settings', JSON.stringify(coSettings));
   applyBranding();
   document.getElementById('settingsSaved').style.display = 'block';
   setTimeout(() => document.getElementById('settingsSaved').style.display = 'none', 4000);
