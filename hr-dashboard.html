@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HR Dashboard — ระบบรับสมัครงาน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #1a3a5c;
+  --accent: #c8963e;
+  --light: #f5f0e8;
+  --bg: #e8e3d8;
+  --white: #fff;
+  --border: #c5b99a;
+  --text: #2c2c2c;
+  --muted: #7a7060;
+  --danger: #c0392b;
+  --success: #1a7a4a;
+  --warning: #d4720a;
+  --info: #1460aa;
+  --sidebar: #0f2438;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Sarabun',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; }
+
+/* TOP BAR */
+.topbar { background:var(--primary); height:54px; display:flex; align-items:center; padding:0 1.5rem; gap:1rem; box-shadow:0 2px 12px rgba(0,0,0,.3); flex-shrink:0; z-index:50; }
+.topbar-logo { display:flex; align-items:center; gap:.7rem; }
+.topbar-logo img { height:36px; width:36px; object-fit:contain; border-radius:6px; background:white; padding:2px; }
+.topbar-logo-ph { width:36px; height:36px; background:rgba(255,255,255,.15); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
+.topbar-title { font-family:'Noto Serif Thai',serif; color:white; font-size:1rem; font-weight:700; }
+.topbar-sub { color:rgba(255,255,255,.5); font-size:.72rem; }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:.8rem; }
+.badge-count { background:var(--accent); color:white; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:20px; }
+
+/* LAYOUT */
+.layout { display:flex; flex:1; overflow:hidden; }
+.sidebar { width:220px; background:var(--sidebar); flex-shrink:0; padding:.8rem 0; overflow-y:auto; }
+.sidebar-section { font-size:.65rem; font-weight:700; color:rgba(255,255,255,.3); padding:.6rem 1.1rem .2rem; text-transform:uppercase; letter-spacing:.08em; }
+.sidebar-item { display:flex; align-items:center; gap:.55rem; padding:.5rem 1.1rem; cursor:pointer; color:rgba(255,255,255,.6); font-size:.82rem; font-weight:500; border-left:3px solid transparent; transition:all .15s; }
+.sidebar-item:hover { color:white; background:rgba(255,255,255,.06); }
+.sidebar-item.active { color:var(--accent); border-left-color:var(--accent); background:rgba(200,150,62,.08); }
+.sidebar-item .icon { font-size:1rem; flex-shrink:0; }
+
+.main { flex:1; overflow-y:auto; padding:1.4rem; }
+
+/* VIEWS */
+.view { display:none; }
+.view.active { display:block; }
+
+/* STATS */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:.9rem; margin-bottom:1.3rem; }
+.stat-card { background:var(--white); border:1px solid var(--border); border-radius:10px; padding:1rem 1.1rem; box-shadow:0 2px 6px rgba(0,0,0,.04); }
+.stat-num { font-size:1.8rem; font-weight:700; color:var(--primary); font-family:'Noto Serif Thai',serif; line-height:1; margin-bottom:.2rem; }
+.stat-label { font-size:.74rem; color:var(--muted); font-weight:500; }
+.stat-card.accent .stat-num { color:var(--accent); }
+.stat-card.success .stat-num { color:var(--success); }
+.stat-card.danger .stat-num { color:var(--danger); }
+
+/* SECTION CARD */
+.card { background:var(--white); border:1px solid var(--border); border-radius:10px; margin-bottom:1rem; box-shadow:0 2px 6px rgba(0,0,0,.04); overflow:hidden; }
+.card-head { display:flex; align-items:center; gap:.6rem; padding:.85rem 1.1rem; border-bottom:1px solid var(--border); }
+.card-head h2 { font-family:'Noto Serif Thai',serif; font-size:.92rem; font-weight:700; color:var(--primary); flex:1; }
+.card-body { padding:1rem 1.1rem; }
+
+/* FILTERS */
+.filters { display:flex; gap:.6rem; flex-wrap:wrap; align-items:flex-end; }
+.filter-field { display:flex; flex-direction:column; gap:.2rem; }
+.filter-field label { font-size:.7rem; font-weight:600; color:var(--muted); }
+.filter-field input,.filter-field select { padding:.36rem .6rem; border:1.5px solid var(--border); border-radius:6px; font-family:'Sarabun',sans-serif; font-size:.82rem; background:#fdfaf5; outline:none; color:var(--text); }
+.filter-field input:focus,.filter-field select:focus { border-color:var(--primary); }
+.btn-filter { background:var(--primary); color:white; border:none; padding:.36rem 1rem; border-radius:6px; font-family:'Sarabun',sans-serif; font-size:.82rem; font-weight:600; cursor:pointer; align-self:flex-end; }
+.btn-reset { background:var(--light); color:var(--primary); border:1.5px solid var(--border); padding:.36rem .8rem; border-radius:6px; font-family:'Sarabun',sans-serif; font-size:.82rem; cursor:pointer; align-self:flex-end; }
+
+/* TABLE */
+.app-table { width:100%; border-collapse:collapse; font-size:.82rem; }
+.app-table th { background:#f0ece4; color:var(--primary); padding:.5rem .65rem; text-align:left; font-weight:700; font-size:.74rem; border-bottom:2px solid var(--border); white-space:nowrap; }
+.app-table td { padding:.5rem .65rem; border-bottom:1px solid #ede8df; vertical-align:middle; }
+.app-table tr:hover td { background:#fdfaf5; }
+.app-table tr.selected td { background:#eef3ff; }
+
+.status-badge { display:inline-flex; align-items:center; gap:.25rem; font-size:.7rem; font-weight:700; padding:2px 8px; border-radius:20px; }
+.status-new { background:#e8f0fe; color:#1460aa; }
+.status-shortlisted { background:#e6ffed; color:#1a7a4a; }
+.status-rejected { background:#fde8e8; color:#c0392b; }
+.status-hired { background:#fff0e0; color:#d4720a; }
+
+.btn-sm { font-family:'Sarabun',sans-serif; font-size:.75rem; font-weight:600; padding:3px 10px; border-radius:5px; cursor:pointer; border:none; white-space:nowrap; }
+.btn-view { background:#e8f0fe; color:#1460aa; }
+.btn-view:hover { background:#d0e2ff; }
+.btn-print-sm { background:#fff0e0; color:#d4720a; }
+.btn-print-sm:hover { background:#ffe4c0; }
+.btn-shortlist { background:#e6ffed; color:#1a7a4a; }
+.btn-reject { background:#fde8e8; color:#c0392b; }
+.btn-delete-sm { background:#f5f5f5; color:#999; }
+
+.select-all-row { display:flex; align-items:center; gap:.7rem; padding:.6rem; background:#f0ece4; border-radius:6px; margin-bottom:.6rem; font-size:.82rem; }
+.bulk-btns { display:flex; gap:.4rem; flex-wrap:wrap; }
+.btn-bulk { font-family:'Sarabun',sans-serif; font-size:.78rem; font-weight:600; padding:.35rem .9rem; border-radius:6px; cursor:pointer; border:none; }
+.btn-bulk-print { background:var(--accent); color:white; }
+.btn-bulk-shortlist { background:var(--success); color:white; }
+.btn-bulk-reject { background:var(--danger); color:white; }
+
+/* DETAIL MODAL */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; display:none; align-items:flex-start; justify-content:center; padding:1.5rem; overflow-y:auto; }
+.modal-overlay.open { display:flex; }
+.modal { background:white; border-radius:12px; width:100%; max-width:900px; box-shadow:0 20px 60px rgba(0,0,0,.3); animation:slideUp .3s ease; }
+@keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+.modal-head { display:flex; align-items:center; gap:.8rem; padding:1rem 1.3rem; border-bottom:1px solid var(--border); }
+.modal-head h2 { font-family:'Noto Serif Thai',serif; font-size:1rem; font-weight:700; color:var(--primary); flex:1; }
+.modal-close { background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--muted); padding:.2rem; }
+.modal-body { padding:1.2rem 1.3rem; max-height:75vh; overflow-y:auto; }
+.modal-actions { padding:.8rem 1.3rem; border-top:1px solid var(--border); display:flex; gap:.6rem; flex-wrap:wrap; }
+
+/* DETAIL sections */
+.d-sec-title { background:var(--primary); color:white; font-family:'Noto Serif Thai',serif; font-size:.8rem; font-weight:700; padding:2px 8px; margin-bottom:2.5mm; }
+.d-2col { display:grid; grid-template-columns:1fr 1fr; gap:.6mm 4mm; }
+.d-field { display:flex; gap:1.5mm; padding:1px 0; border-bottom:.4pt dotted #d5cfc4; align-items:baseline; font-size:8pt; }
+.d-field:last-child { border-bottom:none; }
+.d-lbl { font-size:7.5pt; color:var(--muted); min-width:22mm; flex-shrink:0; font-weight:600; }
+.d-val { flex:1; }
+.d-table { width:100%; border-collapse:collapse; font-size:7.5pt; margin-bottom:1.5mm; }
+.d-table th { background:#e8e2d8; color:var(--primary); padding:2px 5px; font-weight:700; border:.4pt solid var(--border); text-align:left; }
+.d-table td { padding:2px 5px; border:.4pt solid var(--border); }
+
+/* PRINT */
+@media print {
+  .topbar,.sidebar,.modal-overlay,.toast,.no-print,.filters,.bulk-btns { display:none !important; }
+  .layout { display:block; }
+  .main { padding:0; overflow:visible; }
+  .view { display:none !important; }
+  body.print-apps { background:white; }
+  #printZone { display:block !important; }
+  @page { margin:0; size:A4; }
+}
+#printZone { display:none; }
+
+/* SETTINGS */
+.settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.field label { display:block; font-size:.76rem; font-weight:600; color:var(--primary); margin-bottom:.22rem; }
+.field input,.field select,.field textarea { width:100%; padding:.44rem .65rem; border:1.5px solid var(--border); border-radius:6px; font-family:'Sarabun',sans-serif; font-size:.86rem; background:#fdfaf5; outline:none; transition:border-color .2s; }
+.field input:focus,.field select:focus,.field textarea:focus { border-color:var(--primary); }
+.field textarea { resize:vertical; min-height:56px; }
+.s2 { grid-column:span 2; }
+.photo-box-lg { width:150px; height:90px; border:2px dashed var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; background:#fdfaf5; overflow:hidden; }
+.photo-box-lg:hover { border-color:var(--accent); }
+
+/* BTNs */
+.btn-primary { background:var(--primary); color:white; border:none; padding:.65rem 1.8rem; border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.9rem; font-weight:600; cursor:pointer; }
+.btn-secondary { background:white; color:var(--primary); border:1.5px solid var(--primary); padding:.65rem 1.3rem; border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.9rem; font-weight:600; cursor:pointer; }
+.btn-accent { background:var(--accent); color:white; border:none; padding:.65rem 1.6rem; border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.9rem; font-weight:700; cursor:pointer; }
+
+.toast { position:fixed; bottom:1.5rem; right:1.5rem; background:var(--primary); color:white; padding:.6rem 1.3rem; border-radius:8px; font-size:.84rem; font-weight:600; box-shadow:0 6px 20px rgba(0,0,0,.25); transform:translateY(80px); opacity:0; transition:all .3s cubic-bezier(.34,1.56,.64,1); z-index:999; }
+.toast.show { transform:translateY(0); opacity:1; }
+
+.empty-state { text-align:center; padding:3rem; color:var(--muted); }
+.empty-state .icon { font-size:2.5rem; margin-bottom:.8rem; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="topbar-logo-ph" id="topLogoBox">🏢</div>
+    <div>
+      <div class="topbar-title" id="topCoName">HR Dashboard</div>
+      <div class="topbar-sub" id="topCoSub">ระบบจัดการใบสมัครงาน</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span style="color:rgba(255,255,255,.5);font-size:.78rem;" id="topNewCount"></span>
+    <button onclick="refreshApps()" style="background:rgba(255,255,255,.12);border:none;color:rgba(255,255,255,.7);padding:.35rem .8rem;border-radius:6px;cursor:pointer;font-family:'Sarabun',sans-serif;font-size:.78rem;">🔄 รีเฟรช</button>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-section">เมนูหลัก</div>
+    <div class="sidebar-item active" onclick="showView('dashboard')" id="nav-dashboard"><span class="icon">📊</span> ภาพรวม</div>
+    <div class="sidebar-item" onclick="showView('applicants')" id="nav-applicants"><span class="icon">👥</span> รายชื่อผู้สมัคร</div>
+    <div class="sidebar-item" onclick="showView('shortlisted')" id="nav-shortlisted"><span class="icon">⭐</span> ผ่านคุณสมบัติ</div>
+    <div class="sidebar-section">ตั้งค่า</div>
+    <div class="sidebar-item" onclick="showView('settings')" id="nav-settings"><span class="icon">⚙️</span> ตั้งค่าบริษัท</div>
+  </div>
+
+  <div class="main">
+
+    <!-- DASHBOARD VIEW -->
+    <div class="view active" id="dashboardView">
+      <div style="margin-bottom:1.1rem;">
+        <h1 style="font-family:'Noto Serif Thai',serif;color:var(--primary);font-size:1.3rem;font-weight:700;">ภาพรวมการรับสมัครงาน</h1>
+        <p style="color:var(--muted);font-size:.8rem;">อัปเดตล่าสุด: <span id="lastUpdate">-</span></p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">📋 ใบสมัครทั้งหมด</div></div>
+        <div class="stat-card accent"><div class="stat-num" id="statNew">0</div><div class="stat-label">🆕 รับเข้าใหม่</div></div>
+        <div class="stat-card success"><div class="stat-num" id="statShort">0</div><div class="stat-label">⭐ ผ่านคุณสมบัติ</div></div>
+        <div class="stat-card danger"><div class="stat-num" id="statReject">0</div><div class="stat-label">❌ ไม่ผ่าน</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>📋 ใบสมัครเข้าใหม่ล่าสุด</h2><button class="btn-sm btn-view" onclick="showView('applicants')">ดูทั้งหมด →</button></div>
+        <div class="card-body" style="padding:0;">
+          <table class="app-table" id="recentTable">
+            <thead><tr><th>ชื่อ-นามสกุล</th><th>ตำแหน่งที่สมัคร</th><th>วันที่ส่ง</th><th>สถานะ</th><th>การดำเนินการ</th></tr></thead>
+            <tbody id="recentBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPLICANTS VIEW -->
+    <div class="view" id="applicantsView">
+      <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+        <h1 style="font-family:'Noto Serif Thai',serif;color:var(--primary);font-size:1.2rem;font-weight:700;">รายชื่อผู้สมัครงานทั้งหมด</h1>
+        <div style="display:flex;gap:.5rem;">
+          <button class="btn-accent" onclick="printSelected()">🖨️ ปริ้นที่เลือก</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>🔍 กรองข้อมูล</h2></div>
+        <div class="card-body">
+          <div class="filters">
+            <div class="filter-field"><label>ชื่อผู้สมัคร</label><input type="text" id="fName" placeholder="ค้นหาชื่อ..." oninput="applyFilters()"></div>
+            <div class="filter-field"><label>ตำแหน่งที่สมัคร</label><input type="text" id="fPosition" placeholder="ชื่อตำแหน่ง..." oninput="applyFilters()"></div>
+            <div class="filter-field"><label>อายุ (ต่ำสุด)</label><input type="number" id="fAgeMin" placeholder="เช่น 20" style="width:80px;" oninput="applyFilters()"></div>
+            <div class="filter-field"><label>อายุ (สูงสุด)</label><input type="number" id="fAgeMax" placeholder="เช่น 40" style="width:80px;" oninput="applyFilters()"></div>
+            <div class="filter-field"><label>การศึกษา (ต่ำสุด)</label>
+              <select id="fEdu" onchange="applyFilters()">
+                <option value="">ทุกระดับ</option>
+                <option value="ม.3">ม.3 ขึ้นไป</option>
+                <option value="ม.6">ม.6 ขึ้นไป</option>
+                <option value="ปวช.">ปวช. ขึ้นไป</option>
+                <option value="ปวส.">ปวส. ขึ้นไป</option>
+                <option value="ปริญญาตรี">ปริญญาตรี ขึ้นไป</option>
+                <option value="สูงกว่าปริญญาตรี">สูงกว่าปริญญาตรี</option>
+              </select>
+            </div>
+            <div class="filter-field"><label>เพศ</label><select id="fGender" onchange="applyFilters()"><option value="">ทั้งหมด</option><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option></select></div>
+            <div class="filter-field"><label>ขับรถได้</label><select id="fDriving" onchange="applyFilters()"><option value="">ทั้งหมด</option><option value="yes">ขับได้</option></select></div>
+            <div class="filter-field"><label>สถานะ</label><select id="fStatus" onchange="applyFilters()"><option value="">ทั้งหมด</option><option value="new">ใหม่</option><option value="shortlisted">ผ่านคุณสมบัติ</option><option value="rejected">ไม่ผ่าน</option><option value="hired">รับเข้าทำงาน</option></select></div>
+            <button class="btn-reset" onclick="resetFilters()">↺ ล้างตัวกรอง</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body" style="padding:.7rem .8rem 0;">
+          <div class="select-all-row no-print">
+            <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;font-weight:600;"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)"> เลือกทั้งหมดในหน้านี้</label>
+            <span id="selectedCount" style="color:var(--muted);">เลือก 0 คน</span>
+            <div class="bulk-btns">
+              <button class="btn-bulk btn-bulk-print" onclick="printSelected()">🖨️ ปริ้นที่เลือก</button>
+              <button class="btn-bulk btn-bulk-shortlist" onclick="bulkStatus('shortlisted')">⭐ ผ่านคุณสมบัติ</button>
+              <button class="btn-bulk btn-bulk-reject" onclick="bulkStatus('rejected')">❌ ไม่ผ่าน</button>
+            </div>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="app-table">
+            <thead><tr>
+              <th class="no-print" style="width:32px;"><input type="checkbox" id="selectAllTh" onchange="toggleSelectAll(this.checked)"></th>
+              <th>#</th><th>รูป</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th>อายุ</th><th>การศึกษา</th><th>เพศ</th><th>โทรศัพท์</th><th>วันที่ส่ง</th><th>สถานะ</th><th class="no-print">การดำเนินการ</th>
+            </tr></thead>
+            <tbody id="appTableBody"></tbody>
+          </table>
+        </div>
+        <div id="tableEmpty" class="empty-state" style="display:none;"><div class="icon">📭</div><div>ไม่พบผู้สมัครที่ตรงเงื่อนไข</div></div>
+      </div>
+    </div>
+
+    <!-- SHORTLISTED VIEW -->
+    <div class="view" id="shortlistedView">
+      <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+        <h1 style="font-family:'Noto Serif Thai',serif;color:var(--primary);font-size:1.2rem;font-weight:700;">⭐ ผู้สมัครที่ผ่านคุณสมบัติ</h1>
+        <button class="btn-accent" onclick="printAllShortlisted()">🖨️ ปริ้นทั้งหมด</button>
+      </div>
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table class="app-table">
+            <thead><tr>
+              <th class="no-print" style="width:32px;"><input type="checkbox" id="selectAllShort" onchange="toggleSelectShortlist(this.checked)"></th>
+              <th>#</th><th>รูป</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th>อายุ</th><th>การศึกษาสูงสุด</th><th>โทรศัพท์</th><th>วันที่ส่ง</th><th class="no-print">การดำเนินการ</th>
+            </tr></thead>
+            <tbody id="shortlistedBody"></tbody>
+          </table>
+        </div>
+        <div id="shortEmpty" class="empty-state" style="display:none;"><div class="icon">⭐</div><div>ยังไม่มีผู้สมัครที่ผ่านคุณสมบัติ<br><small style="color:var(--muted);">ไปที่รายชื่อผู้สมัครแล้วกด "ผ่านคุณสมบัติ"</small></div></div>
+      </div>
+    </div>
+
+    <!-- SETTINGS VIEW -->
+    <div class="view" id="settingsView">
+      <div style="margin-bottom:1rem;"><h1 style="font-family:'Noto Serif Thai',serif;color:var(--primary);font-size:1.2rem;font-weight:700;">⚙️ ตั้งค่าบริษัท</h1></div>
+      <div class="card">
+        <div class="card-head"><h2>โลโก้และข้อมูลบริษัท</h2></div>
+        <div class="card-body">
+          <div style="display:flex;gap:2rem;align-items:flex-start;flex-wrap:wrap;">
+            <div>
+              <label style="font-size:.76rem;font-weight:600;color:var(--primary);display:block;margin-bottom:.3rem;">โลโก้บริษัท</label>
+              <div class="photo-box-lg" onclick="document.getElementById('logoFile').click()">
+                <img id="logoPreviewSet" src="" style="display:none;width:100%;height:100%;object-fit:contain;padding:4px;">
+                <div id="logoHintSet" style="font-size:.7rem;color:var(--muted);text-align:center;padding:.4rem;">🖼️ คลิกอัปโหลด<br>PNG/JPG</div>
+              </div>
+              <input type="file" id="logoFile" accept="image/*" style="display:none;" onchange="handleLogoSet(event)">
+              <button onclick="clearLogoSet()" style="background:none;border:none;color:var(--muted);font-size:.7rem;cursor:pointer;font-family:'Sarabun',sans-serif;margin-top:.3rem;">✕ ลบ</button>
+            </div>
+            <div style="flex:1;min-width:260px;" class="settings-grid">
+              <div class="field s2"><label>ชื่อบริษัท (ภาษาไทย) *</label><input type="text" id="setNameTH" placeholder="บริษัท เอบีซี จำกัด"></div>
+              <div class="field s2"><label>ชื่อบริษัท (ภาษาอังกฤษ)</label><input type="text" id="setNameEN" placeholder="ABC Co., Ltd."></div>
+              <div class="field s2"><label>ที่อยู่บริษัท</label><textarea id="setAddr" rows="2"></textarea></div>
+              <div class="field"><label>โทรศัพท์</label><input type="text" id="setPhone" placeholder="02-xxx-xxxx"></div>
+              <div class="field"><label>เว็บไซต์</label><input type="text" id="setWeb" placeholder="www.company.com"></div>
+            </div>
+          </div>
+          <div style="margin-top:1.2rem;display:flex;gap:.8rem;">
+            <button class="btn-primary" onclick="saveSettings()">💾 บันทึกและเผยแพร่</button>
+            <button class="btn-secondary" onclick="loadSettings()">↺ โหลดค่าที่บันทึกไว้</button>
+          </div>
+          <div id="settingsSaved" style="display:none;margin-top:.7rem;font-size:.78rem;color:var(--success);font-weight:600;">✅ บันทึกแล้ว — ผู้สมัครจะเห็นชื่อและโลโก้บริษัทในหน้ากรอกใบสมัคร</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- APPLICANT DETAIL MODAL -->
+<div class="modal-overlay" id="detailModal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">รายละเอียดใบสมัคร</h2>
+      <select id="modalStatus" onchange="updateStatusFromModal()" style="font-size:.78rem;padding:.28rem .5rem;border:1.5px solid var(--border);border-radius:6px;font-family:'Sarabun',sans-serif;background:#fdfaf5;cursor:pointer;">
+        <option value="new">🆕 ใหม่</option>
+        <option value="shortlisted">⭐ ผ่านคุณสมบัติ</option>
+        <option value="rejected">❌ ไม่ผ่าน</option>
+        <option value="hired">✅ รับเข้าทำงาน</option>
+      </select>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn-accent" onclick="printSingle()">🖨️ ปริ้นใบสมัครนี้</button>
+      <button class="btn-sm btn-shortlist" style="padding:.5rem 1rem;font-size:.85rem;" onclick="setModalStatus('shortlisted')">⭐ ผ่านคุณสมบัติ</button>
+      <button class="btn-sm btn-reject" style="padding:.5rem 1rem;font-size:.85rem;" onclick="setModalStatus('rejected')">❌ ไม่ผ่าน</button>
+      <button class="btn-sm btn-delete-sm" style="padding:.5rem 1rem;font-size:.85rem;" onclick="deleteApp()">🗑 ลบ</button>
+      <button class="btn-secondary" onclick="closeModal()" style="margin-left:auto;">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRINT ZONE -->
+<div id="printZone"></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STATE =====
+let allApps = [];
+let filteredApps = [];
+let selectedIds = new Set();
+let currentModalApp = null;
+let logoDataSet = null;
+let coSettings = { nameTH:'', nameEN:'', addr:'', phone:'', web:'', logo:'' };
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadSettings();
+  await refreshApps();
+});
+
+// ===== VIEWS =====
+function showView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  document.getElementById(v+'View').classList.add('active');
+  document.getElementById('nav-'+v).classList.add('active');
+  if (v === 'shortlisted') renderShortlisted();
+}
+
+// ===== LOAD APPS =====
+async function refreshApps() {
+  try {
+    const res = await window.storage.get('hr:app_index', true);
+    if (!res) { allApps = []; }
+    else { allApps = JSON.parse(res.value); }
+  } catch(e) { allApps = []; }
+  filteredApps = [...allApps];
+  renderStats();
+  renderRecentTable();
+  renderAppTable(filteredApps);
+  renderShortlisted();
+  document.getElementById('lastUpdate').textContent = new Date().toLocaleString('th-TH');
+  const newCount = allApps.filter(a => a.status === 'new').length;
+  document.getElementById('topNewCount').textContent = newCount > 0 ? `🆕 ${newCount} ใหม่` : '';
+}
+
+// ===== STATS =====
+function renderStats() {
+  document.getElementById('statTotal').textContent = allApps.length;
+  document.getElementById('statNew').textContent = allApps.filter(a=>a.status==='new').length;
+  document.getElementById('statShort').textContent = allApps.filter(a=>a.status==='shortlisted').length;
+  document.getElementById('statReject').textContent = allApps.filter(a=>a.status==='rejected').length;
+}
+
+// ===== STATUS BADGE =====
+function statusBadge(s) {
+  const map = { new:'🆕 ใหม่', shortlisted:'⭐ ผ่านคุณสมบัติ', rejected:'❌ ไม่ผ่าน', hired:'✅ รับเข้าทำงาน' };
+  const cls = { new:'status-new', shortlisted:'status-shortlisted', rejected:'status-rejected', hired:'status-hired' };
+  return `<span class="status-badge ${cls[s]||'status-new'}">${map[s]||s}</span>`;
+}
+
+function fmtDate(iso) {
+  if (!iso) return '-';
+  return new Date(iso).toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'});
+}
+
+// ===== RECENT TABLE =====
+function renderRecentTable() {
+  const tbody = document.getElementById('recentBody');
+  const recent = [...allApps].sort((a,b) => new Date(b.submittedAt)-new Date(a.submittedAt)).slice(0,8);
+  if (!recent.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:1.5rem;">ยังไม่มีใบสมัคร</td></tr>'; return; }
+  tbody.innerHTML = recent.map(a => `<tr>
+    <td><strong>${esc(a.name)}</strong></td>
+    <td>${esc(a.position||'-')}</td>
+    <td>${fmtDate(a.submittedAt)}</td>
+    <td>${statusBadge(a.status)}</td>
+    <td><button class="btn-sm btn-view" onclick="openModal('${a.id}')">ดู</button></td>
+  </tr>`).join('');
+}
+
+// ===== MAIN TABLE =====
+function renderAppTable(apps) {
+  const tbody = document.getElementById('appTableBody');
+  document.getElementById('tableEmpty').style.display = apps.length ? 'none' : 'block';
+  if (!apps.length) { tbody.innerHTML = ''; return; }
+
+  tbody.innerHTML = apps.map((a, idx) => {
+    const checked = selectedIds.has(a.id) ? 'checked' : '';
+    const selCls = selectedIds.has(a.id) ? 'selected' : '';
+    return `<tr class="${selCls}" id="row-${a.id}">
+      <td class="no-print"><input type="checkbox" ${checked} onchange="toggleSelect('${a.id}',this.checked)"></td>
+      <td style="color:var(--muted);font-size:.78rem;">${idx+1}</td>
+      <td><div style="width:32px;height:32px;border-radius:50%;overflow:hidden;background:#e8e2d8;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--muted);" id="thumb-${a.id}">👤</div></td>
+      <td><strong style="font-size:.86rem;">${esc(a.name)}</strong></td>
+      <td>${esc(a.position||'-')}</td>
+      <td>${a.age||'-'}</td>
+      <td id="edu-${a.id}" style="font-size:.78rem;">-</td>
+      <td>${esc(a.gender||'-')}</td>
+      <td style="font-size:.8rem;">${esc(a.mobile||'-')}</td>
+      <td style="font-size:.76rem;color:var(--muted);">${fmtDate(a.submittedAt)}</td>
+      <td>${statusBadge(a.status)}</td>
+      <td class="no-print" style="white-space:nowrap;">
+        <button class="btn-sm btn-view" onclick="openModal('${a.id}')">ดู</button>
+        <button class="btn-sm btn-print-sm" onclick="printById('${a.id}')">🖨️</button>
+        <button class="btn-sm btn-shortlist" onclick="quickStatus('${a.id}','shortlisted')">⭐</button>
+        <button class="btn-sm btn-reject" onclick="quickStatus('${a.id}','rejected')">❌</button>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Load thumbnails & edu async
+  apps.forEach(a => loadAppDetail(a.id));
+}
+
+async function loadAppDetail(id) {
+  try {
+    const res = await window.storage.get('app:'+id, true);
+    if (!res) return;
+    const d = JSON.parse(res.value);
+    // Thumb
+    const th = document.getElementById('thumb-'+id);
+    if (th && d.photo) th.innerHTML = `<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`;
+    // Edu
+    const edu = document.getElementById('edu-'+id);
+    if (edu && d.education && d.education.length) {
+      const lvls = ['สูงกว่าปริญญาตรี','ปริญญาตรี','ปวส.','ปวช.','ม.6','ม.3'];
+      const eduLvlMap = {
+        'สูงกว่าปริญญาตรี':6,'ปริญญาตรี':5,'ปวท./ปวส.':4,'ปวช.':3,
+        'มัธยมศึกษาตอนปลาย (ม.6)':2,'มัธยมศึกษาตอนต้น (ม.3)':1
+      };
+      const topEdu = d.education.reduce((best, e) => (eduLvlMap[e.level]||0) > (eduLvlMap[best.level]||0) ? e : best, d.education[0]);
+      edu.textContent = topEdu ? topEdu.level.replace(/\(.*\)/,'').trim() : '-';
+    }
+  } catch(e) {}
+}
+
+// ===== FILTERS =====
+function applyFilters() {
+  const name = document.getElementById('fName').value.toLowerCase();
+  const pos = document.getElementById('fPosition').value.toLowerCase();
+  const ageMin = parseInt(document.getElementById('fAgeMin').value)||0;
+  const ageMax = parseInt(document.getElementById('fAgeMax').value)||999;
+  const gender = document.getElementById('fGender').value;
+  const status = document.getElementById('fStatus').value;
+  const driving = document.getElementById('fDriving').value;
+  const eduFilter = document.getElementById('fEdu').value;
+  const eduOrder = ['มัธยมศึกษาตอนต้น (ม.3)','มัธยมศึกษาตอนปลาย (ม.6)','ปวช.','ปวท./ปวส.','ปริญญาตรี','สูงกว่าปริญญาตรี'];
+  const eduMin = eduFilter ? eduOrder.findIndex(e => e.includes(eduFilter.replace('.','').replace('ปวส','ปวส'))) : -1;
+
+  filteredApps = allApps.filter(a => {
+    if (name && !a.name.toLowerCase().includes(name)) return false;
+    if (pos && !(a.position||'').toLowerCase().includes(pos)) return false;
+    if (a.age && (parseInt(a.age) < ageMin || parseInt(a.age) > ageMax)) return false;
+    if (gender && a.gender !== gender) return false;
+    if (status && a.status !== status) return false;
+    return true;
+  });
+  renderAppTable(filteredApps);
+  updateSelectedCount();
+}
+
+function resetFilters() {
+  ['fName','fPosition','fAgeMin','fAgeMax'].forEach(id => document.getElementById(id).value = '');
+  ['fGender','fStatus','fDriving','fEdu'].forEach(id => document.getElementById(id).value = '');
+  filteredApps = [...allApps];
+  renderAppTable(filteredApps);
+}
+
+// ===== SELECT =====
+function toggleSelect(id, checked) {
+  if (checked) selectedIds.add(id); else selectedIds.delete(id);
+  const row = document.getElementById('row-'+id);
+  if (row) row.classList.toggle('selected', checked);
+  updateSelectedCount();
+}
+function toggleSelectAll(checked) {
+  filteredApps.forEach(a => { if (checked) selectedIds.add(a.id); else selectedIds.delete(a.id); });
+  document.querySelectorAll('#appTableBody input[type=checkbox]').forEach(cb => cb.checked = checked);
+  document.querySelectorAll('#appTableBody tr').forEach((tr, i) => tr.classList.toggle('selected', checked));
+  updateSelectedCount();
+}
+function toggleSelectShortlist(checked) {
+  const short = allApps.filter(a=>a.status==='shortlisted');
+  short.forEach(a => { if (checked) selectedIds.add(a.id); else selectedIds.delete(a.id); });
+  document.querySelectorAll('#shortlistedBody input[type=checkbox]').forEach(cb => cb.checked = checked);
+  updateSelectedCount();
+}
+function updateSelectedCount() {
+  document.getElementById('selectedCount').textContent = `เลือก ${selectedIds.size} คน`;
+}
+
+// ===== STATUS =====
+async function quickStatus(id, status) {
+  await updateStatus(id, status);
+  await refreshApps();
+  applyFilters();
+  showToast(status==='shortlisted'?'⭐ ผ่านคุณสมบัติแล้ว':'❌ ไม่ผ่านคุณสมบัติ');
+}
+async function updateStatus(id, status) {
+  // Update index
+  const idx = allApps.findIndex(a => a.id === id);
+  if (idx >= 0) allApps[idx].status = status;
+  await window.storage.set('hr:app_index', JSON.stringify(allApps), true);
+  // Update full record
+  try {
+    const res = await window.storage.get('app:'+id, true);
+    if (res) {
+      const d = JSON.parse(res.value); d.status = status;
+      await window.storage.set('app:'+id, JSON.stringify(d), true);
+    }
+  } catch(e) {}
+}
+async function bulkStatus(status) {
+  if (!selectedIds.size) { showToast('⚠️ เลือกผู้สมัครก่อน'); return; }
+  for (const id of selectedIds) await updateStatus(id, status);
+  selectedIds.clear();
+  await refreshApps(); applyFilters();
+  showToast(`✅ อัปเดตสถานะ ${selectedIds.size} คนแล้ว`);
+}
+
+// ===== SHORTLISTED VIEW =====
+function renderShortlisted() {
+  const short = allApps.filter(a => a.status === 'shortlisted');
+  const tbody = document.getElementById('shortlistedBody');
+  document.getElementById('shortEmpty').style.display = short.length ? 'none' : 'block';
+  if (!short.length) { tbody.innerHTML = ''; return; }
+  tbody.innerHTML = short.map((a,idx) => `<tr id="srow-${a.id}">
+    <td class="no-print"><input type="checkbox" onchange="toggleSelect('${a.id}',this.checked)" ${selectedIds.has(a.id)?'checked':''}></td>
+    <td style="color:var(--muted);font-size:.78rem;">${idx+1}</td>
+    <td><div style="width:32px;height:32px;border-radius:50%;overflow:hidden;background:#e8e2d8;display:flex;align-items:center;justify-content:center;" id="sthumb-${a.id}">👤</div></td>
+    <td><strong>${esc(a.name)}</strong></td>
+    <td>${esc(a.position||'-')}</td>
+    <td>${a.age||'-'}</td>
+    <td id="sedu-${a.id}">-</td>
+    <td>${a.mobile||'-'}</td>
+    <td style="font-size:.76rem;color:var(--muted);">${fmtDate(a.submittedAt)}</td>
+    <td class="no-print" style="white-space:nowrap;">
+      <button class="btn-sm btn-view" onclick="openModal('${a.id}')">ดูรายละเอียด</button>
+      <button class="btn-sm btn-print-sm" onclick="printById('${a.id}')">🖨️ ปริ้น</button>
+      <button class="btn-sm btn-reject" onclick="quickStatus('${a.id}','rejected')">ยกเลิก</button>
+    </td>
+  </tr>`).join('');
+  short.forEach(a => loadAppDetail(a.id));
+}
+
+// ===== MODAL =====
+async function openModal(id) {
+  try {
+    const res = await window.storage.get('app:'+id, true);
+    if (!res) { showToast('❌ ไม่พบข้อมูล'); return; }
+    currentModalApp = JSON.parse(res.value);
+    document.getElementById('modalTitle').textContent = `ใบสมัคร — ${currentModalApp.prefix||''}${currentModalApp.nameTH}`;
+    document.getElementById('modalStatus').value = currentModalApp.status || 'new';
+    document.getElementById('modalBody').innerHTML = renderAppDetail(currentModalApp, false);
+    document.getElementById('detailModal').classList.add('open');
+  } catch(e) { showToast('❌ เกิดข้อผิดพลาด'); }
+}
+function closeModal() {
+  document.getElementById('detailModal').classList.remove('open');
+  currentModalApp = null;
+}
+async function updateStatusFromModal() {
+  if (!currentModalApp) return;
+  const s = document.getElementById('modalStatus').value;
+  await quickStatus(currentModalApp.id, s);
+  currentModalApp.status = s;
+}
+function setModalStatus(s) {
+  document.getElementById('modalStatus').value = s;
+  updateStatusFromModal();
+}
+async function deleteApp() {
+  if (!currentModalApp) return;
+  if (!confirm(`ลบใบสมัครของ "${currentModalApp.nameTH}" ใช่ไหม?`)) return;
+  allApps = allApps.filter(a => a.id !== currentModalApp.id);
+  await window.storage.set('hr:app_index', JSON.stringify(allApps), true);
+  await window.storage.delete('app:'+currentModalApp.id, true);
+  closeModal();
+  await refreshApps(); applyFilters();
+  showToast('🗑 ลบแล้ว');
+}
+
+// ===== RENDER APP DETAIL (for modal + print) =====
+function renderAppDetail(d, forPrint=false) {
+  const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const fl = (lbl,val) => `<div class="d-field"><span class="d-lbl">${lbl}</span><span class="d-val">${esc(val)}</span></div>`;
+  const fmtD = iso => { if(!iso)return''; const dt=new Date(iso); if(isNaN(dt))return iso; return dt.toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}); };
+  const chk = (val,ref) => `<span style="display:inline-block;width:9pt;height:9pt;border:1pt solid #333;border-radius:1pt;text-align:center;line-height:9pt;font-size:7.5pt;font-weight:700;margin-right:2pt;${val===ref?'background:#1a3a5c;color:white':''}">${val===ref?'/':' '}</span>`;
+  const LANG_ROWS=['ภาษาไทย (Thai)','ภาษาอังกฤษ (English)','ภาษาญี่ปุ่น (Japan)','ภาษาอื่น ๆ (Other)'];
+
+  const name = (d.prefix||'')+d.nameTH;
+
+  // Company header (print only)
+  let coHeader = '';
+  if (forPrint) {
+    coHeader = `<div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:4mm;border-bottom:2.5pt double #1a3a5c;margin-bottom:4mm;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        ${coSettings.logo?`<img src="${coSettings.logo}" style="height:44px;width:auto;object-fit:contain;max-width:75px;">`:''}
+        <div>
+          <div style="font-family:'Noto Serif Thai',serif;font-size:12.5pt;font-weight:700;color:#1a3a5c;">${esc(coSettings.nameTH||'')}</div>
+          ${coSettings.nameEN?`<div style="font-size:6.5pt;color:#7a7060;">${esc(coSettings.nameEN)}</div>`:''}
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-family:'Noto Serif Thai',serif;font-size:11pt;font-weight:700;color:#1a3a5c;">ใบสมัครงาน</div>
+        <div style="font-size:6.5pt;color:#7a7060;">APPLICATION FOR EMPLOYMENT</div>
+      </div>
+    </div>`;
+  }
+
+  let html = coHeader + `
+  <div style="display:flex;justify-content:space-between;align-items:center;background:#f0ece4;padding:2mm 3mm;border-radius:2pt;margin-bottom:3.5mm;font-size:7.8pt;">
+    <div><strong>ตำแหน่ง:</strong> ${esc(d.position||'-')}</div>
+    <div><strong>เงินเดือน:</strong> ${esc(d.salary||'-')} บาท/เดือน</div>
+    <div><strong>วันที่สมัคร:</strong> ${fmtD(d.applyDate||d.submittedAt)}</div>
+    <div>${statusBadge(d.status||'new')}</div>
+  </div>
+
+  <div style="display:flex;gap:4.5mm;margin-bottom:3.5mm;">
+    <div style="width:27mm;height:34mm;border:1pt solid #c5b99a;border-radius:2pt;overflow:hidden;flex-shrink:0;background:#f0ece4;display:flex;align-items:center;justify-content:center;">
+      ${d.photo?`<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`:'<div style="font-size:6pt;color:#7a7060;text-align:center;">รูปถ่าย</div>'}
+    </div>
+    <div style="flex:1;">
+      <div class="d-sec-title">▪ ข้อมูลส่วนตัว</div>
+      <div class="d-2col">
+        ${fl('ชื่อ-นามสกุล','<strong>'+esc(name)+'</strong>')}
+        ${fl('Name (EN)',d.nameEN)}
+        ${fl('วัน/เดือน/ปีเกิด',fmtD(d.birthDate))}
+        ${fl('อายุ',d.age?d.age+' ปี':'')}
+        ${fl('เพศ',d.gender)}
+        ${fl('สัญชาติ/เชื้อชาติ',[d.nationality,d.race].filter(Boolean).join('/'))}
+        ${fl('ศาสนา',d.religion)}
+        ${fl('ส่วนสูง/น้ำหนัก',(d.height?d.height+' ซม.':'')+(d.height&&d.weight?' / ':'')+(d.weight?d.weight+' กก.':''))}
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:3mm;">
+    <div class="d-sec-title">▪ ข้อมูลติดต่อ</div>
+    <div class="d-field"><span class="d-lbl">ที่อยู่</span><span class="d-val">${esc(d.address)}</span></div>
+    <div class="d-2col" style="margin-top:1mm;">
+      ${fl('เบอร์โทร',d.mobile)} ${fl('อีเมล',d.email)} ${fl('ไลน์',d.lineId)} ${fl('บัตรประชาชน',d.idCard)}
+    </div>
+    <div style="font-size:7.2pt;margin-top:1.5mm;">
+      <strong>ที่อยู่อาศัย:</strong> ${esc(d.livingArr||'-')} &nbsp;|&nbsp;
+      <strong>ทหาร:</strong> ${esc(d.military||'-')} &nbsp;|&nbsp;
+      <strong>สถานภาพ:</strong> ${esc(d.marital||'-')}
+    </div>
+  </div>
+
+  <div style="margin-bottom:3mm;">
+    <div class="d-sec-title">▪ ครอบครัว</div>
+    <div class="d-2col">
+      ${fl('บิดา',[d.fatherName,d.fatherAge?d.fatherAge+' ปี':'',d.fatherOcc].filter(Boolean).join(' / '))}
+      ${fl('มารดา',[d.motherName,d.motherAge?d.motherAge+' ปี':'',d.motherOcc].filter(Boolean).join(' / '))}
+      ${fl('คู่สมรส',d.spouseName||'-')}
+      ${fl('อาชีพคู่สมรส',d.spouseOcc||'-')}
+      ${fl('บุตร',(d.children||'0')+' คน')}
+      ${fl('พี่น้อง',[d.siblings?d.siblings+' คน':'',d.sibMale?'ชาย '+d.sibMale+'คน':'',d.sibFemale?'หญิง '+d.sibFemale+'คน':'',d.childOrder?'บุตรคนที่ '+d.childOrder:''].filter(Boolean).join(' / '))}
+    </div>
+  </div>`;
+
+  if (d.education && d.education.length) {
+    html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ การศึกษา</div>
+    <table class="d-table"><thead><tr><th>ระดับ</th><th>สถาบัน</th><th>สาขา</th><th>ระยะเวลา</th></tr></thead>
+    <tbody>${d.education.map(e=>`<tr><td>${esc(e.level)}</td><td>${esc(e.inst)}</td><td>${esc(e.major)}</td><td>${esc(e.period)}</td></tr>`).join('')}</tbody>
+    </table></div>`;
+  }
+
+  if (d.workHistory && d.workHistory.length) {
+    html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ ประวัติการทำงาน</div>
+    <table class="d-table"><thead><tr><th>บริษัท</th><th>ระยะเวลา</th><th>ตำแหน่ง</th><th>ลักษณะงาน</th><th>ค่าจ้าง</th><th>เหตุผลที่ลาออก</th></tr></thead>
+    <tbody>${d.workHistory.map(w=>`<tr><td>${esc(w.company)}</td><td>${esc(w.period)}</td><td>${esc(w.pos)}</td><td>${esc(w.desc)}</td><td>${esc(w.salary)}</td><td>${esc(w.resign)}</td></tr>`).join('')}</tbody>
+    </table></div>`;
+  }
+
+  if (d.languages) {
+    html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ ความสามารถทางภาษา</div>
+    <table style="width:100%;border-collapse:collapse;font-size:7pt;"><thead>
+      <tr><th style="background:#e8e2d8;border:.4pt solid #c5b99a;padding:2px 4px;" rowspan="2">ภาษา</th><th colspan="3" style="background:#e8e2d8;border:.4pt solid #c5b99a;padding:2px 4px;">พูด</th><th colspan="3" style="background:#e8e2d8;border:.4pt solid #c5b99a;padding:2px 4px;">เขียน</th><th colspan="3" style="background:#e8e2d8;border:.4pt solid #c5b99a;padding:2px 4px;">อ่าน</th></tr>
+      <tr>${['ดี','ปานกลาง','พอใช้','ดี','ปานกลาง','พอใช้','ดี','ปานกลาง','พอใช้'].map(l=>`<th style="background:#e8e2d8;border:.4pt solid #c5b99a;padding:2px 3px;">${l}</th>`).join('')}</tr>
+    </thead><tbody>
+    ${d.languages.map((l,i)=>{const lbl=i===3&&d.langOther?l.lang+' ('+esc(d.langOther)+')':l.lang;
+      return`<tr><td style="border:.4pt solid #c5b99a;padding:2px 4px;">${lbl}</td>`+
+      ['ดี','ปานกลาง','พอใช้'].map(lv=>`<td style="border:.4pt solid #c5b99a;padding:2px 3px;text-align:center;">${l.speak===lv?'/':''}</td>`).join('')+
+      ['ดี','ปานกลาง','พอใช้'].map(lv=>`<td style="border:.4pt solid #c5b99a;padding:2px 3px;text-align:center;">${l.write===lv?'/':''}</td>`).join('')+
+      ['ดี','ปานกลาง','พอใช้'].map(lv=>`<td style="border:.4pt solid #c5b99a;padding:2px 3px;text-align:center;">${l.read===lv?'/':''}</td>`).join('')+
+      '</tr>';}).join('')}
+    </tbody></table></div>`;
+  }
+
+  html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ ความสามารถพิเศษ</div>
+  <div style="font-size:7.2pt;display:grid;grid-template-columns:1fr 1fr;gap:1mm 4mm;">
+    <div><strong>พิมพ์ดีด:</strong> ${esc(d.typing||'-')} ${d.typingSpeed?'('+esc(d.typingSpeed)+')':''}</div>
+    <div><strong>คอมพิวเตอร์:</strong> ${esc(d.computer||'-')} ${d.computerPrograms?' — '+esc(d.computerPrograms):''}</div>
+    <div><strong>ขับรถ:</strong> ${esc(d.driving||'-')} ${d.driveNo?'('+esc(d.driveNo)+')':''}</div>
+    <div><strong>เครื่องสำนักงาน:</strong> ${esc(d.officeMachine||'-')}</div>
+    <div><strong>งานอดิเรก:</strong> ${esc(d.hobby||'-')}</div>
+    <div><strong>กีฬา:</strong> ${esc(d.sport||'-')}</div>
+    <div><strong>ความรู้พิเศษ:</strong> ${esc(d.specialKnowledge||'-')}</div>
+    <div><strong>ต่างจังหวัด:</strong> ${esc(d.upcountry||'-')} ${d.upcountryNote?esc(d.upcountryNote):''}</div>
+  </div></div>`;
+
+  if (d.selfIntro) {
+    html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ แนะนำตัว</div>
+    <div style="font-size:7.8pt;line-height:1.7;padding:2mm;border:1pt solid #c5b99a;background:#fdfaf5;">${esc(d.selfIntro)}</div></div>`;
+  }
+
+  if (d.references && d.references.length) {
+    html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ บุคคลอ้างอิง</div>
+    <table class="d-table"><thead><tr><th>ชื่อ-นามสกุล</th><th>ที่อยู่</th><th>โทรศัพท์</th><th>อาชีพ</th></tr></thead>
+    <tbody>${d.references.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.addr)}</td><td>${esc(r.tel)}</td><td>${esc(r.occ)}</td></tr>`).join('')}</tbody>
+    </table></div>`;
+  }
+
+  if (forPrint) {
+    html += `<div style="font-size:6.8pt;color:#444;line-height:1.65;margin:3.5mm 0;padding:2.5mm;border:1pt solid #c5b99a;background:#fdfaf5;">
+      ข้าพเจ้าขอรับรองว่าข้อความทั้งหมดในใบสมัครนี้เป็นความจริงทุกประการ หากพบว่าข้อมูลไม่เป็นความจริง บริษัทฯ มีสิทธิ์เลิกจ้างโดยไม่ต้องจ่ายเงินชดเชย
+      <em>I certify that all statements given in this application form are true.</em>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:5mm;">
+      <div style="text-align:center;"><div style="border-bottom:1pt solid #333;margin:9mm auto 1.5mm;width:36mm;"></div><div style="font-size:6.8pt;color:#7a7060;">ลายมือชื่อผู้สมัคร (${esc(name)})</div></div>
+      <div style="text-align:center;"><div style="border-bottom:1pt solid #333;margin:9mm auto 1.5mm;width:36mm;"></div><div style="font-size:6.8pt;color:#7a7060;">วันที่</div></div>
+    </div>
+    <div style="margin-top:5mm;padding-top:4mm;border-top:2pt solid #1a3a5c;">
+      <div style="font-family:'Noto Serif Thai',serif;font-weight:700;color:#1a3a5c;font-size:9pt;margin-bottom:2.5mm;">การพิจารณาว่าจ้าง (For HR Use Only)</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5mm 4mm;font-size:7.2pt;">
+        <div>ตำแหน่ง: <span style="border-bottom:1pt solid #999;display:inline-block;min-width:28mm;">&nbsp;</span></div>
+        <div>แผนก: <span style="border-bottom:1pt solid #999;display:inline-block;min-width:28mm;">&nbsp;</span></div>
+        <div>เงินเดือน: <span style="border-bottom:1pt solid #999;display:inline-block;min-width:22mm;">&nbsp;</span> บาท/เดือน</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:7mm;">
+        <div style="text-align:center;"><div style="border-bottom:1pt solid #333;margin:8mm auto 1.5mm;width:36mm;"></div><div style="font-size:6.8pt;color:#7a7060;">ฝ่ายทรัพยากรบุคคล …......../…......../…..........</div></div>
+        <div style="text-align:center;"><div style="border-bottom:1pt solid #333;margin:8mm auto 1.5mm;width:36mm;"></div><div style="font-size:6.8pt;color:#7a7060;">ผู้อนุมัติ …......../…......../…..........</div></div>
+      </div>
+    </div>`;
+  }
+
+  return html;
+}
+
+// ===== PRINT =====
+async function printById(id) {
+  try {
+    const res = await window.storage.get('app:'+id, true);
+    if (!res) { showToast('❌ ไม่พบข้อมูล'); return; }
+    doPrint([JSON.parse(res.value)]);
+  } catch(e) { showToast('❌ เกิดข้อผิดพลาด'); }
+}
+
+async function printSelected() {
+  if (!selectedIds.size) { showToast('⚠️ เลือกผู้สมัครก่อน'); return; }
+  const apps = [];
+  for (const id of selectedIds) {
+    try {
+      const res = await window.storage.get('app:'+id, true);
+      if (res) apps.push(JSON.parse(res.value));
+    } catch(e) {}
+  }
+  if (apps.length) doPrint(apps);
+}
+
+function printSingle() {
+  if (currentModalApp) doPrint([currentModalApp]);
+}
+
+async function printAllShortlisted() {
+  const short = allApps.filter(a => a.status === 'shortlisted');
+  if (!short.length) { showToast('⚠️ ไม่มีผู้สมัครที่ผ่านคุณสมบัติ'); return; }
+  const apps = [];
+  for (const a of short) {
+    try {
+      const res = await window.storage.get('app:'+a.id, true);
+      if (res) apps.push(JSON.parse(res.value));
+    } catch(e) {}
+  }
+  if (apps.length) doPrint(apps);
+}
+
+function doPrint(apps) {
+  const zone = document.getElementById('printZone');
+  zone.innerHTML = apps.map((d, i) => `
+    <div style="width:210mm;min-height:297mm;padding:9mm 11mm;font-family:'Sarabun',sans-serif;font-size:7.8pt;color:#1a1a1a;${i>0?'page-break-before:always':''}">
+      ${renderAppDetail(d, true)}
+    </div>`).join('');
+  document.body.classList.add('print-apps');
+  window.print();
+  setTimeout(() => { document.body.classList.remove('print-apps'); zone.innerHTML = ''; }, 1000);
+  showToast(`🖨️ ปริ้น ${apps.length} ใบสมัคร`);
+}
+
+// ===== SETTINGS =====
+async function loadSettings() {
+  try {
+    const res = await window.storage.get('hr:company_settings', true);
+    if (res && res.value) {
+      coSettings = JSON.parse(res.value);
+      applyBranding();
+      // Fill settings form
+      document.getElementById('setNameTH').value = coSettings.nameTH||'';
+      document.getElementById('setNameEN').value = coSettings.nameEN||'';
+      document.getElementById('setAddr').value = coSettings.addr||'';
+      document.getElementById('setPhone').value = coSettings.phone||'';
+      document.getElementById('setWeb').value = coSettings.web||'';
+      if (coSettings.logo) {
+        logoDataSet = coSettings.logo;
+        document.getElementById('logoPreviewSet').src = logoDataSet;
+        document.getElementById('logoPreviewSet').style.display = 'block';
+        document.getElementById('logoHintSet').style.display = 'none';
+      }
+    }
+  } catch(e) {}
+}
+
+function applyBranding() {
+  if (coSettings.logo) {
+    document.getElementById('topLogoBox').innerHTML = `<img src="${coSettings.logo}" style="height:36px;width:36px;object-fit:contain;border-radius:6px;background:white;padding:2px;">`;
+  }
+  if (coSettings.nameTH) document.getElementById('topCoName').textContent = coSettings.nameTH;
+  document.title = 'HR Dashboard — ' + (coSettings.nameTH || 'ระบบรับสมัครงาน');
+}
+
+function handleLogoSet(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    logoDataSet = ev.target.result;
+    document.getElementById('logoPreviewSet').src = logoDataSet;
+    document.getElementById('logoPreviewSet').style.display = 'block';
+    document.getElementById('logoHintSet').style.display = 'none';
+  };
+  r.readAsDataURL(file);
+}
+function clearLogoSet() {
+  logoDataSet = null;
+  document.getElementById('logoPreviewSet').style.display = 'none';
+  document.getElementById('logoHintSet').style.display = '';
+  document.getElementById('logoFile').value = '';
+}
+
+async function saveSettings() {
+  const nameTH = document.getElementById('setNameTH').value.trim();
+  if (!nameTH) { showToast('⚠️ กรุณากรอกชื่อบริษัท'); return; }
+  coSettings = {
+    nameTH, nameEN: document.getElementById('setNameEN').value,
+    addr: document.getElementById('setAddr').value,
+    phone: document.getElementById('setPhone').value,
+    web: document.getElementById('setWeb').value,
+    logo: logoDataSet||''
+  };
+  await window.storage.set('hr:company_settings', JSON.stringify(coSettings), true);
+  applyBranding();
+  document.getElementById('settingsSaved').style.display = 'block';
+  setTimeout(() => document.getElementById('settingsSaved').style.display = 'none', 4000);
+  showToast('✅ บันทึกและเผยแพร่ให้ผู้สมัครเห็นแล้ว');
+}
+
+// ===== HELPERS =====
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Close modal on overlay click
+document.getElementById('detailModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>

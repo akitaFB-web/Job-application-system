@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ใบสมัครงาน</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #1a3a5c;
+  --accent: #c8963e;
+  --light: #f5f0e8;
+  --bg: #eee9df;
+  --white: #fff;
+  --border: #c5b99a;
+  --text: #2c2c2c;
+  --muted: #7a7060;
+  --danger: #c0392b;
+  --success: #1a7a4a;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Sarabun',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+header {
+  background:var(--primary);
+  padding:1rem 2rem;
+  display:flex; align-items:center; gap:1rem;
+  box-shadow:0 2px 12px rgba(0,0,0,.25);
+}
+.header-logo { width:48px; height:48px; border-radius:8px; object-fit:contain; background:white; padding:4px; }
+.header-logo-placeholder { width:48px; height:48px; background:rgba(255,255,255,.15); border-radius:8px; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.5); font-size:.65rem; text-align:center; }
+.header-text h1 { font-family:'Noto Serif Thai',serif; color:white; font-size:1.1rem; font-weight:700; }
+.header-text p { color:rgba(255,255,255,.65); font-size:.78rem; }
+
+.container { max-width:860px; margin:0 auto; padding:1.5rem; }
+
+.progress-bar { background:white; border-radius:50px; height:6px; margin-bottom:1.5rem; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,.1); }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--primary),var(--accent)); border-radius:50px; transition:width .4s ease; }
+.progress-label { text-align:right; font-size:.72rem; color:var(--muted); margin-top:.3rem; }
+
+.step { display:none; }
+.step.active { display:block; }
+
+.card { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:1.4rem; margin-bottom:1rem; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+.card-title { font-family:'Noto Serif Thai',serif; font-size:.95rem; font-weight:700; color:var(--primary); margin-bottom:1rem; padding-bottom:.5rem; border-bottom:2px solid var(--accent); display:flex; align-items:center; gap:.4rem; }
+.card-title::before { content:''; width:5px; height:15px; background:var(--accent); border-radius:3px; flex-shrink:0; }
+
+.fg2 { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
+.fg3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:.75rem; }
+.s2 { grid-column:span 2; }
+.s3 { grid-column:span 3; }
+
+.field label { display:block; font-size:.76rem; font-weight:600; color:var(--primary); margin-bottom:.22rem; }
+.req { color:var(--danger); }
+.field input,.field select,.field textarea {
+  width:100%; padding:.46rem .7rem; border:1.5px solid var(--border); border-radius:7px;
+  font-family:'Sarabun',sans-serif; font-size:.88rem; color:var(--text); background:#fdfaf5; outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.field input:focus,.field select:focus,.field textarea:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(26,58,92,.1); background:white; }
+.field textarea { resize:vertical; min-height:64px; }
+.field-error { border-color:var(--danger) !important; }
+.err-msg { font-size:.7rem; color:var(--danger); margin-top:.2rem; display:none; }
+.err-msg.show { display:block; }
+
+.radio-group { display:flex; gap:.9rem; flex-wrap:wrap; padding:.3rem 0; }
+.radio-item { display:flex; align-items:center; gap:.28rem; font-size:.84rem; cursor:pointer; }
+.radio-item input { accent-color:var(--primary); }
+
+/* Photo */
+.photo-box { width:110px; height:138px; border:2px dashed var(--border); border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; background:#fdfaf5; overflow:hidden; transition:all .2s; flex-shrink:0; }
+.photo-box:hover { border-color:var(--accent); }
+.photo-box img { width:100%; height:100%; object-fit:cover; }
+.ph-hint { font-size:.7rem; color:var(--muted); text-align:center; padding:.35rem; line-height:1.5; }
+
+/* Edu table */
+.edu-table { width:100%; border-collapse:collapse; font-size:.82rem; }
+.edu-table th { background:#e8e2d8; color:var(--primary); padding:.38rem .5rem; border:1px solid var(--border); text-align:left; font-weight:700; font-size:.76rem; }
+.edu-table td { padding:.18rem .35rem; border:1px solid var(--border); }
+.edu-table tr:nth-child(even) td { background:#faf8f4; }
+.edu-inp { width:100%; border:1px solid var(--border); border-radius:4px; padding:.26rem .38rem; font-size:.8rem; font-family:'Sarabun',sans-serif; background:#fdfaf5; outline:none; }
+.edu-inp:focus { border-color:var(--primary); background:white; }
+.edu-sel { width:100%; border:1px solid var(--border); border-radius:4px; padding:.26rem .3rem; font-size:.78rem; font-family:'Sarabun',sans-serif; background:#fdfaf5; outline:none; }
+
+/* Dynamic rows */
+.dyn-row { display:grid; gap:.4rem; align-items:flex-end; margin-bottom:.4rem; }
+.btn-rm { background:#fde8e8; border:1px solid #f5b7b1; color:var(--danger); border-radius:6px; width:32px; height:32px; cursor:pointer; font-size:.95rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.btn-rm:hover { background:#f5b7b1; }
+.btn-add { background:var(--light); border:1.5px dashed var(--border); color:var(--primary); border-radius:6px; padding:.34rem .85rem; cursor:pointer; font-size:.78rem; font-family:'Sarabun',sans-serif; font-weight:600; display:flex; align-items:center; gap:.3rem; margin-top:.3rem; }
+.btn-add:hover { border-color:var(--accent); color:var(--accent); }
+
+/* Lang */
+.lang-table { width:100%; border-collapse:collapse; font-size:.8rem; }
+.lang-table th,.lang-table td { border:1px solid var(--border); padding:.32rem .42rem; text-align:center; }
+.lang-table th { background:#e8e2d8; color:var(--primary); font-weight:700; }
+.lang-table td:first-child { text-align:left; font-weight:600; }
+
+/* Nav buttons */
+.step-nav { display:flex; gap:.8rem; justify-content:space-between; margin-top:1.2rem; flex-wrap:wrap; }
+.btn-next { background:var(--primary); color:white; border:none; padding:.7rem 2rem; border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.95rem; font-weight:600; cursor:pointer; box-shadow:0 4px 12px rgba(26,58,92,.3); transition:all .2s; display:flex; align-items:center; gap:.4rem; }
+.btn-next:hover { background:#234d7a; transform:translateY(-1px); }
+.btn-back { background:white; color:var(--primary); border:1.5px solid var(--primary); padding:.7rem 1.6rem; border-radius:8px; font-family:'Sarabun',sans-serif; font-size:.95rem; font-weight:600; cursor:pointer; }
+.btn-submit { background:var(--success); color:white; border:none; padding:.75rem 2.5rem; border-radius:8px; font-family:'Sarabun',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; box-shadow:0 4px 14px rgba(26,122,74,.35); transition:all .2s; display:flex; align-items:center; gap:.5rem; }
+.btn-submit:hover { background:#155c38; transform:translateY(-1px); }
+.btn-submit:disabled { background:#aaa; box-shadow:none; cursor:not-allowed; transform:none; }
+
+/* Step indicators */
+.step-dots { display:flex; gap:.5rem; justify-content:center; margin-bottom:1.2rem; flex-wrap:wrap; }
+.step-dot { display:flex; align-items:center; gap:.3rem; font-size:.72rem; color:var(--muted); font-weight:500; }
+.step-dot .dot { width:28px; height:28px; border-radius:50%; background:#ddd; display:flex; align-items:center; justify-content:center; font-size:.7rem; font-weight:700; color:#999; transition:all .3s; }
+.step-dot.done .dot { background:var(--success); color:white; }
+.step-dot.active .dot { background:var(--primary); color:white; box-shadow:0 0 0 3px rgba(26,58,92,.2); }
+.step-dot .dot-label { display:none; }
+@media(min-width:600px) { .step-dot .dot-label { display:block; } }
+
+/* Success screen */
+#successScreen { display:none; text-align:center; padding:3rem 1.5rem; }
+.success-icon { width:80px; height:80px; background:linear-gradient(135deg,#1a7a4a,#2ecc71); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:2.2rem; box-shadow:0 8px 24px rgba(26,122,74,.35); animation:pop .5s cubic-bezier(.34,1.56,.64,1); }
+@keyframes pop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.success-title { font-family:'Noto Serif Thai',serif; font-size:1.5rem; font-weight:700; color:var(--primary); margin-bottom:.5rem; }
+.success-sub { color:var(--muted); font-size:.9rem; line-height:1.7; }
+.ref-code { background:var(--light); border:1px solid var(--border); border-radius:8px; padding:.8rem 1.4rem; display:inline-block; margin:1.2rem 0; font-family:monospace; font-size:1.1rem; font-weight:700; color:var(--primary); letter-spacing:.1em; }
+
+.toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(80px); background:var(--primary); color:white; padding:.65rem 1.4rem; border-radius:8px; font-size:.86rem; font-weight:600; box-shadow:0 6px 20px rgba(0,0,0,.25); opacity:0; transition:all .3s cubic-bezier(.34,1.56,.64,1); z-index:999; white-space:nowrap; }
+.toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+
+@media(max-width:600px) {
+  .fg2,.fg3 { grid-template-columns:1fr; }
+  .s2,.s3 { grid-column:span 1; }
+}
+</style>
+</head>
+<body>
+
+<header id="appHeader">
+  <div class="header-logo-placeholder" id="headerLogoBox">🏢</div>
+  <div class="header-text">
+    <h1 id="headerCoName">ใบสมัครงาน</h1>
+    <p id="headerCoSub">Application for Employment — กรอกข้อมูลด้วยตนเอง</p>
+  </div>
+</header>
+
+<div class="container" id="mainContent">
+  <!-- Step dots -->
+  <div class="step-dots" id="stepDots"></div>
+  <!-- Progress -->
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
+  <div class="progress-label" id="progressLabel">ขั้นตอน 1 / 5</div>
+
+  <!-- STEP 1: ตำแหน่ง + ส่วนตัว -->
+  <div class="step active" id="step1">
+    <div class="card">
+      <div class="card-title">ตำแหน่งที่สมัคร</div>
+      <div class="fg2">
+        <div class="field s2"><label>ตำแหน่งที่ต้องการ <span class="req">*</span></label><input type="text" id="position" placeholder="ชื่อตำแหน่งงาน"><div class="err-msg" id="err-position">กรุณากรอกตำแหน่งที่ต้องการ</div></div>
+        <div class="field"><label>เงินเดือนที่ต้องการ (บาท/เดือน)</label><input type="text" id="salary" placeholder="25,000"></div>
+        <div class="field"><label>วันที่สมัคร</label><input type="date" id="applyDate"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">ข้อมูลส่วนตัว</div>
+      <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap;">
+        <div>
+          <label style="font-size:.76rem;font-weight:600;color:var(--primary);display:block;margin-bottom:.28rem;">รูปถ่าย 1 นิ้ว</label>
+          <div class="photo-box" onclick="document.getElementById('photoIn').click()">
+            <img id="photoPreview" src="" style="display:none;">
+            <div class="ph-hint" id="photoHint">📷<br>คลิกอัปโหลด</div>
+          </div>
+          <input type="file" id="photoIn" accept="image/*" style="display:none;" onchange="handlePhoto(event)">
+        </div>
+        <div style="flex:1;min-width:200px;" class="fg2">
+          <div class="field"><label>คำนำหน้า</label><select id="prefix"><option value="">--</option><option>นาย</option><option>นาง</option><option>นางสาว</option></select></div>
+          <div class="field"><label>ชื่อ-นามสกุล (ไทย) <span class="req">*</span></label><input type="text" id="nameTH" placeholder="ชื่อ นามสกุล"><div class="err-msg" id="err-nameTH">กรุณากรอกชื่อ-นามสกุล</div></div>
+          <div class="field s2"><label>Name - Surname (EN)</label><input type="text" id="nameEN" placeholder="First Last"></div>
+          <div class="field"><label>วัน/เดือน/ปีเกิด</label><input type="date" id="birthDate" onchange="calcAge()"></div>
+          <div class="field"><label>อายุ (ปี)</label><input type="number" id="age" placeholder="25" min="15" max="80"></div>
+          <div class="field"><label>เพศ</label><div class="radio-group"><label class="radio-item"><input type="radio" name="gender" value="ชาย"> ชาย</label><label class="radio-item"><input type="radio" name="gender" value="หญิง"> หญิง</label></div></div>
+          <div class="field"><label>เชื้อชาติ</label><input type="text" id="race" value="ไทย"></div>
+          <div class="field"><label>สัญชาติ</label><input type="text" id="nationality" value="ไทย"></div>
+          <div class="field"><label>ศาสนา</label><input type="text" id="religion" placeholder="พุทธ"></div>
+          <div class="field"><label>ส่วนสูง (ซม.)</label><input type="number" id="height" placeholder="170"></div>
+          <div class="field"><label>น้ำหนัก (กก.)</label><input type="number" id="weight" placeholder="65"></div>
+        </div>
+      </div>
+      <div class="fg2" style="margin-top:.75rem;">
+        <div class="field s2"><label>ที่อยู่ปัจจุบัน <span class="req">*</span></label><textarea id="address" rows="2" placeholder="บ้านเลขที่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"></textarea><div class="err-msg" id="err-address">กรุณากรอกที่อยู่</div></div>
+        <div class="field"><label>เบอร์โทรศัพท์มือถือ <span class="req">*</span></label><input type="tel" id="mobile" placeholder="08x-xxx-xxxx"><div class="err-msg" id="err-mobile">กรุณากรอกเบอร์โทร</div></div>
+        <div class="field"><label>อีเมล</label><input type="email" id="email" placeholder="email@example.com"></div>
+        <div class="field"><label>ไอดีไลน์</label><input type="text" id="lineId"></div>
+        <div class="field"><label>ลักษณะที่อยู่อาศัย</label><select id="livingArr"><option value="">--</option><option>อาศัยอยู่กับครอบครัว</option><option>บ้านตัวเอง</option><option>บ้านเช่า</option><option>หอพัก/อพาร์ตเมนต์</option></select></div>
+        <div class="field"><label>เลขบัตรประชาชน</label><input type="text" id="idCard" placeholder="1-2345-67890-12-3" maxlength="17"></div>
+        <div class="field"><label>วันหมดอายุบัตร</label><input type="date" id="idExpiry"></div>
+        <div class="field"><label>ภาวะทางทหาร</label><select id="military"><option value="">--</option><option>ยังไม่ได้รับการเกณฑ์</option><option>ผ่านการเรียนวิชาทหาร (รด.)</option><option>ได้รับการยกเว้น</option><option>ปลดเป็นทหารกองหนุน</option></select></div>
+        <div class="field"><label>สถานภาพ</label><select id="marital"><option value="">--</option><option>โสด</option><option>แต่งงาน</option><option>หม้าย</option><option>แยกทางกัน</option></select></div>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <div></div>
+      <button class="btn-next" onclick="goStep(2)">ถัดไป → ครอบครัว &amp; การศึกษา</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: ครอบครัว + การศึกษา -->
+  <div class="step" id="step2">
+    <div class="card">
+      <div class="card-title">ประวัติครอบครัว</div>
+      <div class="fg3">
+        <div class="field s2"><label>ชื่อ-นามสกุล บิดา</label><input type="text" id="fatherName"></div>
+        <div class="field"><label>อายุ / อาชีพ บิดา</label><div style="display:grid;grid-template-columns:65px 1fr;gap:.4rem;"><input type="number" id="fatherAge" placeholder="อายุ"><input type="text" id="fatherOcc" placeholder="อาชีพ" class="dyn-inp"></div></div>
+        <div class="field s2"><label>ชื่อ-นามสกุล มารดา</label><input type="text" id="motherName"></div>
+        <div class="field"><label>อายุ / อาชีพ มารดา</label><div style="display:grid;grid-template-columns:65px 1fr;gap:.4rem;"><input type="number" id="motherAge" placeholder="อายุ"><input type="text" id="motherOcc" placeholder="อาชีพ" class="dyn-inp"></div></div>
+        <div class="field s2"><label>ชื่อคู่สมรส</label><input type="text" id="spouseName" placeholder="-"></div>
+        <div class="field"><label>อาชีพ / ที่ทำงานคู่สมรส</label><input type="text" id="spouseOcc" placeholder="-"></div>
+        <div class="field"><label>มีบุตร (คน)</label><input type="number" id="children" value="0" min="0"></div>
+        <div class="field"><label>พี่น้องทั้งหมด (รวมผู้สมัคร)</label><input type="number" id="siblings" value="1"></div>
+        <div class="field"><label>ผู้ชาย / ผู้หญิง / เป็นบุตรคนที่</label><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem;"><input type="number" id="sibMale" placeholder="ชาย" min="0"><input type="number" id="sibFemale" placeholder="หญิง" min="0"><input type="number" id="childOrder" placeholder="คนที่" min="1"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">การศึกษา</div>
+      <div style="overflow-x:auto;">
+        <table class="edu-table">
+          <thead><tr><th style="min-width:130px;">ระดับการศึกษา</th><th style="min-width:155px;">สถาบัน</th><th style="min-width:120px;">สาขาวิชา</th><th style="min-width:95px;">ระยะเวลา</th></tr></thead>
+          <tbody id="eduBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn-back" onclick="goStep(1)">← กลับ</button>
+      <button class="btn-next" onclick="goStep(3)">ถัดไป → ประวัติการทำงาน</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: การทำงาน -->
+  <div class="step" id="step3">
+    <div class="card">
+      <div class="card-title">ประวัติการทำงาน (เรียงลำดับก่อน-หลัง)</div>
+      <div style="display:grid;grid-template-columns:1.4fr .85fr .95fr .95fr .8fr .8fr 32px;gap:.35rem;margin-bottom:.35rem;font-size:.7rem;font-weight:600;color:var(--muted);">
+        <div>บริษัท/องค์กร</div><div>ระยะเวลา</div><div>ตำแหน่ง</div><div>ลักษณะงาน</div><div>ค่าจ้าง</div><div>เหตุผลที่ลาออก</div><div></div>
+      </div>
+      <div id="workRows"></div>
+      <button class="btn-add" onclick="addWorkRow()">＋ เพิ่มประวัติการทำงาน</button>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn-back" onclick="goStep(2)">← กลับ</button>
+      <button class="btn-next" onclick="goStep(4)">ถัดไป → ทักษะ &amp; ความสามารถ</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: ทักษะ -->
+  <div class="step" id="step4">
+    <div class="card">
+      <div class="card-title">ความสามารถทางภาษา</div>
+      <table class="lang-table">
+        <thead>
+          <tr><th rowspan="2">ภาษา</th><th colspan="3">การพูด</th><th colspan="3">การเขียน</th><th colspan="3">การอ่าน</th></tr>
+          <tr><th>ดี</th><th>ปานกลาง</th><th>พอใช้</th><th>ดี</th><th>ปานกลาง</th><th>พอใช้</th><th>ดี</th><th>ปานกลาง</th><th>พอใช้</th></tr>
+        </thead>
+        <tbody id="langBody"></tbody>
+      </table>
+      <div class="field" style="margin-top:.7rem;max-width:260px;"><label>ภาษาอื่นๆ</label><input type="text" id="langOther" placeholder="ระบุภาษา"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">ความสามารถพิเศษ</div>
+      <div class="fg2">
+        <div class="field"><label>การพิมพ์ดีด</label><div class="radio-group"><label class="radio-item"><input type="radio" name="typing" value="ไม่ได้"> ไม่ได้</label><label class="radio-item"><input type="radio" name="typing" value="ได้"> ได้</label></div></div>
+        <div class="field"><label>ความเร็วพิมพ์</label><input type="text" id="typingSpeed" placeholder="คำ/นาที"></div>
+        <div class="field"><label>การใช้คอมพิวเตอร์</label><div class="radio-group"><label class="radio-item"><input type="radio" name="computer" value="ไม่ได้"> ไม่ได้</label><label class="radio-item"><input type="radio" name="computer" value="ได้"> ได้</label></div></div>
+        <div class="field"><label>โปรแกรมที่ใช้ได้</label><input type="text" id="computerPrograms" placeholder="MS Office, Excel..."></div>
+        <div class="field s2"><label>การขับรถยนต์</label><div class="radio-group"><label class="radio-item"><input type="radio" name="driving" value="ไม่สามารถขับได้"> ไม่ได้</label><label class="radio-item"><input type="radio" name="driving" value="ขับได้ ไม่มีใบขับขี่"> ขับได้ ไม่มีใบขับขี่</label><label class="radio-item"><input type="radio" name="driving" value="ขับได้มีใบขับขี่"> ขับได้มีใบขับขี่</label></div></div>
+        <div class="field"><label>เลขที่ใบขับขี่</label><input type="text" id="driveNo"></div>
+        <div class="field"><label>เครื่องใช้สำนักงาน</label><input type="text" id="officeMachine" placeholder="เครื่องถ่ายเอกสาร, แฟกซ์"></div>
+        <div class="field"><label>งานอดิเรก</label><input type="text" id="hobby" placeholder="ระบุ"></div>
+        <div class="field"><label>กีฬาที่ชอบ</label><input type="text" id="sport" placeholder="ระบุ"></div>
+        <div class="field"><label>ความรู้พิเศษ</label><input type="text" id="specialKnowledge" placeholder="ระบุ"></div>
+        <div class="field"><label>อื่นๆ</label><input type="text" id="abilityOther" placeholder="ระบุ"></div>
+        <div class="field s2"><label>ปฏิบัติงานต่างจังหวัดได้ไหม?</label><div class="radio-group"><label class="radio-item"><input type="radio" name="upcountry" value="ไม่ได้"> ไม่ได้</label><label class="radio-item"><input type="radio" name="upcountry" value="ได้"> ได้</label><label class="radio-item"><input type="radio" name="upcountry" value="other"> อื่นๆ</label></div></div>
+        <div class="field"><label>ระบุ (ถ้าอื่นๆ)</label><input type="text" id="upcountryNote"></div>
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn-back" onclick="goStep(3)">← กลับ</button>
+      <button class="btn-next" onclick="goStep(5)">ถัดไป → ข้อมูลเพิ่มเติม</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: ข้อมูลอื่น + ส่ง -->
+  <div class="step" id="step5">
+    <div class="card">
+      <div class="card-title">ผู้ติดต่อฉุกเฉิน</div>
+      <div class="fg2">
+        <div class="field"><label>ชื่อ-นามสกุล</label><input type="text" id="emergName"></div>
+        <div class="field"><label>ความสัมพันธ์</label><input type="text" id="emergRelation" placeholder="เช่น พ่อ แม่ คู่สมรส"></div>
+        <div class="field s2"><label>ที่อยู่</label><textarea id="emergAddr" rows="2"></textarea></div>
+        <div class="field"><label>เบอร์โทร</label><input type="tel" id="emergTel"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">บุคคลอ้างอิง (2 คน — ไม่ใช่ญาติหรือนายจ้างเดิม)</div>
+      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 32px;gap:.35rem;margin-bottom:.35rem;font-size:.7rem;font-weight:600;color:var(--muted);">
+        <div>ชื่อ-นามสกุล</div><div>ที่อยู่</div><div>เบอร์โทร</div><div>อาชีพ</div><div></div>
+      </div>
+      <div id="refRows"></div>
+      <button class="btn-add" onclick="addRefRow()">＋ เพิ่มบุคคลอ้างอิง</button>
+    </div>
+
+    <div class="card">
+      <div class="card-title">ข้อมูลเพิ่มเติม</div>
+      <div class="fg2">
+        <div class="field"><label>ทราบข่าวการรับสมัครจาก</label><input type="text" id="jobSource" placeholder="Jobsdb, เพื่อน, บอร์ดประกาศ"></div>
+        <div class="field"><label>ญาติ/เพื่อนที่ทำงานในบริษัทนี้</label><input type="text" id="friendInCo" placeholder="-"></div>
+        <div class="field s2"><label>เคยป่วยหนักหรือโรคติดต่อ?</label><div class="radio-group"><label class="radio-item"><input type="radio" name="illness" value="ไม่เคย"> ไม่เคย</label><label class="radio-item"><input type="radio" name="illness" value="เคย"> เคย</label></div></div>
+        <div class="field"><label>ถ้าเคย โปรดระบุ</label><input type="text" id="illnessDetail" placeholder="-"></div>
+        <div class="field s2"><label>เคยสมัครงานกับบริษัทนี้มาก่อน?</label><div class="radio-group"><label class="radio-item"><input type="radio" name="prevApply" value="ไม่เคย"> ไม่เคย</label><label class="radio-item"><input type="radio" name="prevApply" value="เคย"> เคย</label></div></div>
+        <div class="field s2"><label>แนะนำตัว / เหตุผลที่สมัครตำแหน่งนี้</label><textarea id="selfIntro" rows="3" placeholder="แนะนำตัวสั้นๆ..."></textarea></div>
+      </div>
+    </div>
+
+    <div class="card" style="background:#fffbe6;border-color:#ffe066;">
+      <div style="font-size:.82rem;color:#7a5f00;line-height:1.7;">
+        <strong>📋 คำรับรอง:</strong> ข้าพเจ้าขอรับรองว่าข้อมูลที่กรอกในใบสมัครนี้เป็นความจริงทุกประการ หากพบว่าข้อมูลไม่เป็นความจริง บริษัทฯ มีสิทธิ์เลิกจ้างโดยไม่ต้องจ่ายเงินชดเชยใดๆ
+      </div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn-back" onclick="goStep(4)">← กลับ</button>
+      <button class="btn-submit" id="submitBtn" onclick="submitApplication()">✅ ส่งใบสมัคร</button>
+    </div>
+  </div>
+</div>
+
+<!-- Success -->
+<div id="successScreen" class="container">
+  <div class="card" style="padding:2.5rem;text-align:center;">
+    <div class="success-icon">✅</div>
+    <div class="success-title">ส่งใบสมัครเรียบร้อยแล้ว!</div>
+    <div class="success-sub">ขอบคุณที่สนใจสมัครงานกับเรา<br>ทีม HR จะติดต่อกลับภายใน 7 วันทำการ</div>
+    <div class="ref-code" id="refCodeDisplay"></div>
+    <div style="font-size:.8rem;color:var(--muted);">กรุณาจดรหัสอ้างอิงไว้เพื่อติดตามสถานะ</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== CONSTANTS =====
+const EDU_LEVELS = ['มัธยมศึกษาตอนต้น (ม.3)','มัธยมศึกษาตอนปลาย (ม.6)','ปวช.','ปวท./ปวส.','ปริญญาตรี','สูงกว่าปริญญาตรี','อื่น ๆ'];
+const LANG_ROWS = ['ภาษาไทย (Thai)','ภาษาอังกฤษ (English)','ภาษาญี่ปุ่น (Japan)','ภาษาอื่น ๆ (Other)'];
+const STEP_LABELS = ['ข้อมูลส่วนตัว','ครอบครัว & การศึกษา','ประวัติการทำงาน','ทักษะ','ข้อมูลเพิ่มเติม'];
+let currentStep = 1;
+let photoData = null;
+let coSettings = null;
+
+// ===== LOAD COMPANY SETTINGS =====
+async function loadCompanySettings() {
+  try {
+    const res = await window.storage.get('hr:company_settings', true);
+    if (res && res.value) {
+      coSettings = JSON.parse(res.value);
+      applyCompanyBranding();
+    }
+  } catch(e) {}
+}
+function applyCompanyBranding() {
+  if (!coSettings) return;
+  if (coSettings.logo) {
+    const box = document.getElementById('headerLogoBox');
+    box.innerHTML = `<img src="${coSettings.logo}" style="width:48px;height:48px;object-fit:contain;border-radius:8px;background:white;padding:3px;">`;
+  }
+  if (coSettings.nameTH) document.getElementById('headerCoName').textContent = coSettings.nameTH;
+  if (coSettings.nameTH) document.getElementById('headerCoSub').textContent = (coSettings.nameEN || '') + ' — ใบสมัครงาน';
+  if (coSettings.nameTH) document.title = 'ใบสมัครงาน — ' + coSettings.nameTH;
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadCompanySettings();
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('applyDate').value = today;
+  buildEduTable();
+  buildLangTable();
+  addWorkRow(); addWorkRow(); addWorkRow();
+  addRefRow(); addRefRow();
+  buildStepDots();
+});
+
+// ===== STEP NAVIGATION =====
+function buildStepDots() {
+  const c = document.getElementById('stepDots');
+  c.innerHTML = STEP_LABELS.map((lbl, i) => `
+    <div class="step-dot ${i+1===currentStep?'active':''}" id="dot${i+1}">
+      <div class="dot">${i+1}</div>
+      <div class="dot-label">${lbl}</div>
+    </div>`).join('');
+}
+
+function updateProgress(step) {
+  const pct = (step / 5) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `ขั้นตอน ${step} / 5 — ${STEP_LABELS[step-1]}`;
+  document.querySelectorAll('.step-dot').forEach((el, i) => {
+    el.classList.remove('active','done');
+    if (i+1 < step) el.classList.add('done');
+    if (i+1 === step) el.classList.add('active');
+  });
+}
+
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  document.getElementById('step'+currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step'+n).classList.add('active');
+  updateProgress(n);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function validateStep(step) {
+  let ok = true;
+  if (step === 1) {
+    [['position','err-position'],['nameTH','err-nameTH'],['address','err-address'],['mobile','err-mobile']].forEach(([id, eid]) => {
+      const el = document.getElementById(id);
+      const err = document.getElementById(eid);
+      if (!el.value.trim()) { el.classList.add('field-error'); err.classList.add('show'); ok = false; }
+      else { el.classList.remove('field-error'); err.classList.remove('show'); }
+    });
+  }
+  if (!ok) showToast('⚠️ กรุณากรอกข้อมูลที่จำเป็น');
+  return ok;
+}
+
+// ===== PHOTO =====
+function handlePhoto(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = ev => {
+    photoData = ev.target.result;
+    document.getElementById('photoPreview').src = photoData;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('photoHint').style.display = 'none';
+  };
+  r.readAsDataURL(file);
+}
+
+function calcAge() {
+  const d = new Date(document.getElementById('birthDate').value);
+  if (!isNaN(d)) document.getElementById('age').value = Math.floor((new Date()-d)/(365.25*24*60*60*1000));
+}
+
+// ===== EDU TABLE =====
+function buildEduTable() {
+  const tb = document.getElementById('eduBody'); tb.innerHTML = '';
+  EDU_LEVELS.forEach((lv,i) => {
+    const tr = document.createElement('tr');
+    tr.style.background = i%2===0?'':'#faf8f4';
+    tr.innerHTML = `<td style="padding:.3rem .45rem;font-weight:600;font-size:.78rem;color:var(--primary);">${lv}</td>
+      <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-inst" data-i="${i}" placeholder="สถาบัน"></td>
+      <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-major" data-i="${i}" placeholder="สาขา"></td>
+      <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-period" data-i="${i}" placeholder="ปี พ.ศ."></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+// ===== LANG TABLE =====
+function buildLangTable() {
+  const tb = document.getElementById('langBody'); tb.innerHTML = '';
+  LANG_ROWS.forEach((lang,i) => {
+    const tr = document.createElement('tr');
+    const grps = ['lang_speak','lang_write','lang_read'];
+    const lvls = ['ดี','ปานกลาง','พอใช้'];
+    tr.innerHTML = `<td style="padding:.28rem .42rem;font-weight:600;">${lang}</td>`+
+      grps.map(g => lvls.map(lv => `<td style="padding:.12rem;"><label style="cursor:pointer;display:flex;align-items:center;justify-content:center;"><input type="radio" name="${g}_${i}" value="${lv}" style="accent-color:var(--primary);"></label></td>`).join('')).join('');
+    tb.appendChild(tr);
+  });
+}
+
+// ===== DYNAMIC ROWS =====
+function addWorkRow() {
+  const c = document.getElementById('workRows'), d = document.createElement('div');
+  d.className = 'dyn-row';
+  d.style.gridTemplateColumns = '1.4fr .85fr .95fr .95fr .8fr .8fr 32px';
+  ['ชื่อบริษัท','ระยะเวลา','ตำแหน่ง','ลักษณะงาน','ค่าจ้าง','เหตุผลที่ลาออก'].forEach(ph => {
+    const div = document.createElement('div'); div.className = 'field';
+    div.innerHTML = `<input type="text" placeholder="${ph}">`;
+    d.appendChild(div);
+  });
+  const rm = document.createElement('button'); rm.className = 'btn-rm'; rm.textContent = '×';
+  rm.onclick = () => d.remove(); d.appendChild(rm); c.appendChild(d);
+}
+function addRefRow() {
+  const c = document.getElementById('refRows'), d = document.createElement('div');
+  d.className = 'dyn-row';
+  d.style.gridTemplateColumns = '1.4fr 1fr 1fr 1fr 32px';
+  ['ชื่อ-นามสกุล','ที่อยู่','เบอร์โทร','อาชีพ'].forEach(ph => {
+    const div = document.createElement('div'); div.className = 'field';
+    div.innerHTML = `<input type="text" placeholder="${ph}">`;
+    d.appendChild(div);
+  });
+  const rm = document.createElement('button'); rm.className = 'btn-rm'; rm.textContent = '×';
+  rm.onclick = () => d.remove(); d.appendChild(rm); c.appendChild(d);
+}
+
+// ===== HELPERS =====
+function v(id) { return (document.getElementById(id)||{}).value||''; }
+function getRadio(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el?el.value:''; }
+
+// ===== COLLECT DATA =====
+function collectData() {
+  const eduData = EDU_LEVELS.map((lv,i) => ({
+    level: lv,
+    inst: document.querySelector(`.edu-inst[data-i="${i}"]`)?.value||'',
+    major: document.querySelector(`.edu-major[data-i="${i}"]`)?.value||'',
+    period: document.querySelector(`.edu-period[data-i="${i}"]`)?.value||''
+  })).filter(r => r.inst||r.major||r.period);
+
+  const workData = Array.from(document.getElementById('workRows').querySelectorAll('.dyn-row')).map(row => {
+    const inp = row.querySelectorAll('input');
+    return {company:inp[0].value,period:inp[1].value,pos:inp[2].value,desc:inp[3].value,salary:inp[4].value,resign:inp[5].value};
+  }).filter(r => r.company);
+
+  const refData = Array.from(document.getElementById('refRows').querySelectorAll('.dyn-row')).map(row => {
+    const inp = row.querySelectorAll('input');
+    return {name:inp[0].value,addr:inp[1].value,tel:inp[2].value,occ:inp[3].value};
+  }).filter(r => r.name);
+
+  const langData = LANG_ROWS.map((lang,i) => ({
+    lang, speak:getRadio(`lang_speak_${i}`), write:getRadio(`lang_write_${i}`), read:getRadio(`lang_read_${i}`)
+  }));
+
+  return {
+    // meta
+    id: 'APP-' + Date.now(),
+    submittedAt: new Date().toISOString(),
+    status: 'new', // new | shortlisted | rejected | hired
+    // position
+    position: v('position'), salary: v('salary'), applyDate: v('applyDate'),
+    // personal
+    photo: photoData,
+    prefix: v('prefix'), nameTH: v('nameTH'), nameEN: v('nameEN'),
+    birthDate: v('birthDate'), age: v('age'), gender: getRadio('gender'),
+    race: v('race'), nationality: v('nationality'), religion: v('religion'),
+    height: v('height'), weight: v('weight'),
+    address: v('address'), mobile: v('mobile'), email: v('email'), lineId: v('lineId'),
+    livingArr: v('livingArr'), idCard: v('idCard'), idExpiry: v('idExpiry'),
+    military: v('military'), marital: v('marital'),
+    // family
+    fatherName: v('fatherName'), fatherAge: v('fatherAge'), fatherOcc: v('fatherOcc'),
+    motherName: v('motherName'), motherAge: v('motherAge'), motherOcc: v('motherOcc'),
+    spouseName: v('spouseName'), spouseOcc: v('spouseOcc'),
+    children: v('children'), siblings: v('siblings'),
+    sibMale: v('sibMale'), sibFemale: v('sibFemale'), childOrder: v('childOrder'),
+    // edu & work
+    education: eduData, workHistory: workData,
+    // lang & skills
+    languages: langData, langOther: v('langOther'),
+    typing: getRadio('typing'), typingSpeed: v('typingSpeed'),
+    computer: getRadio('computer'), computerPrograms: v('computerPrograms'),
+    driving: getRadio('driving'), driveNo: v('driveNo'),
+    officeMachine: v('officeMachine'), hobby: v('hobby'), sport: v('sport'),
+    specialKnowledge: v('specialKnowledge'), abilityOther: v('abilityOther'),
+    upcountry: getRadio('upcountry'), upcountryNote: v('upcountryNote'),
+    // misc
+    emergName: v('emergName'), emergRelation: v('emergRelation'), emergAddr: v('emergAddr'), emergTel: v('emergTel'),
+    references: refData,
+    jobSource: v('jobSource'), friendInCo: v('friendInCo'),
+    illness: getRadio('illness'), illnessDetail: v('illnessDetail'),
+    prevApply: getRadio('prevApply'),
+    selfIntro: v('selfIntro'),
+  };
+}
+
+// ===== SUBMIT =====
+async function submitApplication() {
+  if (!validateStep(5)) return;
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...';
+  try {
+    const data = collectData();
+    // Save to shared storage (HR can see)
+    await window.storage.set('app:' + data.id, JSON.stringify(data), true);
+    // Update index
+    let index = [];
+    try {
+      const idxRes = await window.storage.get('hr:app_index', true);
+      if (idxRes) index = JSON.parse(idxRes.value);
+    } catch(e) {}
+    index.push({ id: data.id, name: (data.prefix||'')+data.nameTH, position: data.position, submittedAt: data.submittedAt, status: data.status });
+    await window.storage.set('hr:app_index', JSON.stringify(index), true);
+    // Show success
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+    document.getElementById('refCodeDisplay').textContent = data.id;
+  } catch(e) {
+    showToast('❌ เกิดข้อผิดพลาด กรุณาลองใหม่');
+    btn.disabled = false; btn.innerHTML = '✅ ส่งใบสมัคร';
+  }
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
