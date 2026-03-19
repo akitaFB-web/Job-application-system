@@ -222,8 +222,7 @@ header {
         <div style="flex:1;min-width:200px;" class="fg2">
           <div class="field"><label>คำนำหน้า <span class="req">*</span></label><select id="prefix"><option value="">--</option><option>นาย</option><option>นาง</option><option>นางสาว</option></select></div>
           <div class="field"><label>ชื่อ-นามสกุล (ไทย) <span class="req">*</span></label><input type="text" id="nameTH" placeholder="ชื่อ นามสกุล"><div class="err-msg" id="err-nameTH">กรุณากรอกชื่อ-นามสกุล</div></div>
-          <div class="field s2"><label>Name - Surname (EN) <span class="req">*</span></label><input type="text" id="nameEN" placeholder="First Last"></div>
-          <div class="field"><label>วัน/เดือน/ปีเกิด <span class="req">*</span></label><input type="date" id="birthDate" onchange="calcAge()"></div>
+          <div class="field"><label>วัน/เดือน/ปีเกิด <span class="req">*</span></label><input type="date" id="birthDate" onchange="calcAge()"><div style="font-size:.68rem;color:var(--muted);margin-top:.2rem;">⚠️ กรอกปีเป็น ค.ศ. เช่น 1995</div></div>
           <div class="field"><label>อายุ (ปี) <span class="req">*</span></label><input type="number" id="age" placeholder="25" min="15" max="80"></div>
           <div class="field"><label>เพศ <span class="req">*</span></label><div class="radio-group"><label class="radio-item"><input type="radio" name="gender" value="ชาย" onchange="toggleMilitary(this.value)"> ชาย</label><label class="radio-item"><input type="radio" name="gender" value="หญิง" onchange="toggleMilitary(this.value)"> หญิง</label></div><div class="err-msg" id="err-gender">กรุณาเลือกเพศ</div></div>
           <div class="field"><label>เชื้อชาติ <span class="req">*</span></label><input type="text" id="race" value="ไทย"></div>
@@ -241,7 +240,7 @@ header {
         <div class="field"><label>ลักษณะที่อยู่อาศัย <span class="req">*</span></label><select id="livingArr"><option value="">--</option><option>อาศัยอยู่กับครอบครัว</option><option>บ้านตัวเอง</option><option>บ้านเช่า</option><option>หอพัก/อพาร์ตเมนต์</option></select></div>
         
         <div class="field" id="militaryField" style="display:none;"><label>ภาวะทางทหาร <span class="req">*</span></label><select id="military"><option value="">--</option><option>ยังไม่ได้รับการเกณฑ์</option><option>ผ่านการเรียนวิชาทหาร (รด.)</option><option>ได้รับการยกเว้น</option><option>ปลดเป็นทหารกองหนุน</option></select><div class="err-msg" id="err-military">กรุณาเลือกภาวะทางทหาร</div></div>
-        <div class="field"><label>สถานภาพ <span class="req">*</span></label><select id="marital"><option value="">--</option><option>โสด</option><option>แต่งงาน</option><option>หม้าย</option><option>แยกทางกัน</option></select></div>
+        <div class="field"><label>สถานภาพ <span class="req">*</span></label><select id="marital" onchange="onMaritalChange()"><option value="">--</option><option>โสด</option><option>แต่งงาน</option><option>หม้าย</option><option>แยกทางกัน</option></select></div>
       </div>
     </div>
 
@@ -255,16 +254,42 @@ header {
   <div class="step" id="step2">
     <div class="card">
       <div class="card-title">ประวัติครอบครัว</div>
-      <div class="fg3">
-        <div class="field s2"><label>ชื่อ-นามสกุล บิดา <span class="req">*</span></label><input type="text" id="fatherName"></div>
-        <div class="field"><label>อายุ / อาชีพ บิดา</label><div style="display:grid;grid-template-columns:65px 1fr;gap:.4rem;"><input type="number" id="fatherAge" placeholder="อายุ"><input type="text" id="fatherOcc" placeholder="อาชีพ" class="dyn-inp"></div></div>
-        <div class="field s2"><label>ชื่อ-นามสกุล มารดา <span class="req">*</span></label><input type="text" id="motherName"></div>
-        <div class="field"><label>อายุ / อาชีพ มารดา</label><div style="display:grid;grid-template-columns:65px 1fr;gap:.4rem;"><input type="number" id="motherAge" placeholder="อายุ"><input type="text" id="motherOcc" placeholder="อาชีพ" class="dyn-inp"></div></div>
-        <div class="field s2"><label>ชื่อคู่สมรส</label><input type="text" id="spouseName" placeholder="-"></div>
-        <div class="field"><label>อาชีพ / ที่ทำงานคู่สมรส</label><input type="text" id="spouseOcc" placeholder="-"></div>
-        <div class="field"><label>มีบุตร (คน)</label><input type="number" id="children" value="0" min="0"></div>
-        <div class="field"><label>พี่น้องทั้งหมด (รวมผู้สมัคร)</label><input type="number" id="siblings" value="1"></div>
-        <div class="field"><label>ผู้ชาย / ผู้หญิง / เป็นบุตรคนที่</label><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.3rem;"><input type="number" id="sibMale" placeholder="ชาย" min="0"><input type="number" id="sibFemale" placeholder="หญิง" min="0"><input type="number" id="childOrder" placeholder="คนที่" min="1"></div></div>
+      <div class="fg2">
+        <!-- บิดา -->
+        <div class="field"><label>ชื่อ-นามสกุล บิดา <span class="req">*</span></label><input type="text" id="fatherName"></div>
+        <div class="field"><label>อายุบิดา (ปี)</label><input type="number" id="fatherAge" placeholder="อายุ" min="0"></div>
+        <div class="field s2"><label>อาชีพบิดา</label><input type="text" id="fatherOcc" placeholder="อาชีพ"></div>
+        <!-- มารดา -->
+        <div class="field"><label>ชื่อ-นามสกุล มารดา <span class="req">*</span></label><input type="text" id="motherName"></div>
+        <div class="field"><label>อายุมารดา (ปี)</label><input type="number" id="motherAge" placeholder="อายุ" min="0"></div>
+        <div class="field s2"><label>อาชีพมารดา</label><input type="text" id="motherOcc" placeholder="อาชีพ"></div>
+        <!-- พี่น้อง -->
+        <div class="field s2">
+          <label>มีพี่น้อง รวมผู้สมัคร (คน) <span class="req">*</span></label>
+          <input type="number" id="siblings" value="1" min="1" onchange="onSiblingsChange()">
+        </div>
+        <!-- แสดงเมื่อ > 1 คน -->
+        <div id="sibDetailBlock" style="display:none;grid-column:span 2;">
+          <div class="fg2">
+            <div class="field"><label>พี่น้องเพศชาย (คน) <span class="req">*</span></label><input type="number" id="sibMale" value="0" min="0"></div>
+            <div class="field"><label>พี่น้องเพศหญิง (คน) <span class="req">*</span></label><input type="number" id="sibFemale" value="0" min="0"></div>
+            <div class="field s2"><label>ผู้สมัครเป็นบุตรคนที่ <span class="req">*</span></label><input type="number" id="childOrder" value="1" min="1"></div>
+          </div>
+          <div id="sibNamesBlock" style="margin-top:.6rem;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- คู่สมรส — ขึ้นตามสถานภาพ -->
+    <div id="spouseBlock" style="display:none;" class="card">
+      <div class="card-title">ประวัติคู่สมรส</div>
+      <div class="fg2" id="spouseFullFields">
+        <div class="field"><label>ชื่อ-นามสกุลคู่สมรส</label><input type="text" id="spouseName" placeholder="-"></div>
+        <div class="field"><label>อาชีพคู่สมรส</label><input type="text" id="spouseOcc" placeholder="-"></div>
+        <div class="field s2"><label>บริษัท/ที่ทำงานคู่สมรส</label><input type="text" id="spouseWork" placeholder="-"></div>
+      </div>
+      <div class="fg2" style="margin-top:.6rem;">
+        <div class="field s2"><label>มีบุตร (คน)</label><input type="number" id="children" value="0" min="0"></div>
       </div>
     </div>
 
@@ -318,19 +343,45 @@ header {
     <div class="card">
       <div class="card-title">ความสามารถพิเศษ</div>
       <div class="fg2">
-        <div class="field"><label>การพิมพ์ดีด</label><div class="radio-group"><label class="radio-item"><input type="radio" name="typing" value="ไม่ได้"> ไม่ได้</label><label class="radio-item"><input type="radio" name="typing" value="ได้"> ได้</label></div></div>
-        <div class="field"><label>ความเร็วพิมพ์</label><input type="text" id="typingSpeed" placeholder="คำ/นาที"></div>
-        <div class="field"><label>การใช้คอมพิวเตอร์</label><div class="radio-group"><label class="radio-item"><input type="radio" name="computer" value="ไม่ได้"> ไม่ได้</label><label class="radio-item"><input type="radio" name="computer" value="ได้"> ได้</label></div></div>
-        <div class="field"><label>โปรแกรมที่ใช้ได้</label><input type="text" id="computerPrograms" placeholder="MS Office, Excel..."></div>
-        <div class="field s2"><label>การขับรถยนต์</label><div class="radio-group"><label class="radio-item"><input type="radio" name="driving" value="ไม่สามารถขับได้"> ไม่ได้</label><label class="radio-item"><input type="radio" name="driving" value="ขับได้ ไม่มีใบขับขี่"> ขับได้ ไม่มีใบขับขี่</label><label class="radio-item"><input type="radio" name="driving" value="ขับได้มีใบขับขี่"> ขับได้มีใบขับขี่</label></div></div>
-        <div class="field"><label>เลขที่ใบขับขี่</label><input type="text" id="driveNo"></div>
+        <!-- พิมพ์ดีด -->
+        <div class="field s2"><label>การพิมพ์ดีด</label><div class="radio-group">
+          <label class="radio-item"><input type="radio" name="typing" value="ไม่ได้" onchange="toggleTypingSpeed(false)"> ไม่ได้</label>
+          <label class="radio-item"><input type="radio" name="typing" value="ได้" onchange="toggleTypingSpeed(true)"> ได้</label>
+        </div></div>
+        <div class="field s2" id="typingSpeedField" style="display:none;">
+          <label>ความเร็วพิมพ์ <span class="req">*</span></label>
+          <input type="text" id="typingSpeed" placeholder="เช่น ภาษาไทย 30 คำ/นาที ภาษาอังกฤษ 20 คำ/นาที">
+        </div>
+        <!-- คอมพิวเตอร์ -->
+        <div class="field s2"><label>การใช้คอมพิวเตอร์</label><div class="radio-group">
+          <label class="radio-item"><input type="radio" name="computer" value="ไม่ได้" onchange="toggleComputer(false)"> ไม่ได้</label>
+          <label class="radio-item"><input type="radio" name="computer" value="ได้" onchange="toggleComputer(true)"> ได้</label>
+        </div></div>
+        <div class="field s2" id="computerProgramsField" style="display:none;">
+          <label>โปรแกรมที่ใช้ได้ <span class="req">*</span></label>
+          <input type="text" id="computerPrograms" placeholder="MS Office, Excel...">
+        </div>
+        <!-- ขับรถ (ไม่มีช่องใบขับขี่) -->
+        <div class="field s2"><label>การขับรถยนต์</label><div class="radio-group">
+          <label class="radio-item"><input type="radio" name="driving" value="ไม่สามารถขับได้"> ไม่ได้</label>
+          <label class="radio-item"><input type="radio" name="driving" value="ขับได้ ไม่มีใบขับขี่"> ขับได้ ไม่มีใบขับขี่</label>
+          <label class="radio-item"><input type="radio" name="driving" value="ขับได้มีใบขับขี่"> ขับได้มีใบขับขี่</label>
+        </div></div>
         <div class="field"><label>เครื่องใช้สำนักงาน</label><input type="text" id="officeMachine" placeholder="เครื่องถ่ายเอกสาร, แฟกซ์"></div>
         <div class="field"><label>งานอดิเรก</label><input type="text" id="hobby" placeholder="ระบุ"></div>
         <div class="field"><label>กีฬาที่ชอบ</label><input type="text" id="sport" placeholder="ระบุ"></div>
         <div class="field"><label>ความรู้พิเศษ</label><input type="text" id="specialKnowledge" placeholder="ระบุ"></div>
         <div class="field"><label>อื่นๆ</label><input type="text" id="abilityOther" placeholder="ระบุ"></div>
-        <div class="field s2"><label>ปฏิบัติงานต่างจังหวัดได้ไหม?</label><div class="radio-group"><label class="radio-item"><input type="radio" name="upcountry" value="ไม่ได้"> ไม่ได้</label><label class="radio-item"><input type="radio" name="upcountry" value="ได้"> ได้</label><label class="radio-item"><input type="radio" name="upcountry" value="other"> อื่นๆ</label></div></div>
-        <div class="field"><label>ระบุ (ถ้าอื่นๆ)</label><input type="text" id="upcountryNote"></div>
+        <!-- ต่างจังหวัด -->
+        <div class="field s2"><label>ปฏิบัติงานต่างจังหวัดได้ไหม?</label><div class="radio-group">
+          <label class="radio-item"><input type="radio" name="upcountry" value="ไม่ได้" onchange="toggleUpcountry(false)"> ไม่ได้</label>
+          <label class="radio-item"><input type="radio" name="upcountry" value="ได้" onchange="toggleUpcountry(false)"> ได้</label>
+          <label class="radio-item"><input type="radio" name="upcountry" value="other" onchange="toggleUpcountry(true)"> อื่นๆ</label>
+        </div></div>
+        <div class="field s2" id="upcountryNoteField" style="display:none;">
+          <label>ระบุ (อื่นๆ)</label>
+          <input type="text" id="upcountryNote">
+        </div>
       </div>
     </div>
 
@@ -364,7 +415,22 @@ header {
     <div class="card">
       <div class="card-title">ข้อมูลเพิ่มเติม</div>
       <div class="fg2">
-        <div class="field"><label>ทราบข่าวการรับสมัครจาก <span class="req">*</span></label><input type="text" id="jobSource" placeholder="Jobsdb, เพื่อน, บอร์ดประกาศ"></div>
+        <div class="field s2">
+  <label>ทราบข่าวการรับสมัครจาก <span class="req">*</span></label>
+  <select id="jobSource" onchange="toggleJobSourceOther()">
+    <option value="">-- เลือก --</option>
+    <option>เว็บไซต์หางาน เช่น JobThai, JobsDB, LinkedIn</option>
+    <option>Facebook</option>
+    <option>TikTok</option>
+    <option>แนะนำจากเพื่อน / คนรู้จัก</option>
+    <option>ป้ายประกาศที่บริษัท</option>
+    <option>อื่นๆ</option>
+  </select>
+</div>
+<div class="field s2" id="jobSourceOtherField" style="display:none;">
+  <label>ระบุ (อื่นๆ) <span class="req">*</span></label>
+  <input type="text" id="jobSourceOther" placeholder="ระบุแหล่งที่มา">
+</div>
         <div class="field"><label>ญาติ/เพื่อนที่ทำงานในบริษัทนี้</label><input type="text" id="friendInCo" placeholder="-"></div>
         <div class="field s2"><label>เคยป่วยหนักหรือโรคติดต่อ?</label><div class="radio-group"><label class="radio-item"><input type="radio" name="illness" value="ไม่เคย"> ไม่เคย</label><label class="radio-item"><input type="radio" name="illness" value="เคย"> เคย</label></div></div>
         <div class="field"><label>ถ้าเคย โปรดระบุ</label><input type="text" id="illnessDetail" placeholder="-"></div>
@@ -373,9 +439,20 @@ header {
       </div>
     </div>
 
+    <div class="card" style="background:#f0f7ff;border-color:#b8d4f0;padding:1rem;margin-bottom:.8rem;">
+      <div style="font-size:.82rem;color:#1a4a7a;line-height:1.75;">
+        <strong>🔒 การให้ความยินยอมตาม PDPA</strong><br>
+        ข้าพเจ้ารับทราบและยินยอมให้บริษัทฯ ใช้ข้อมูลส่วนบุคคลของข้าพเจ้าเพื่อการสมัครงานนี้ ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
+        <div style="margin-top:.6rem;"><label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-weight:600;">
+          <input type="checkbox" id="pdpaConsent" style="accent-color:#1a3a5c;width:16px;height:16px;">
+          ข้าพเจ้ายินยอม
+        </label></div>
+        <div class="err-msg" id="err-pdpa" style="margin-top:.25rem;">กรุณาให้ความยินยอม PDPA</div>
+      </div>
+    </div>
     <div class="card cert-box" style="padding:1rem;">
       <div style="font-size:.82rem;color:var(--muted);line-height:1.7;">
-        <strong>📋 คำรับรอง:</strong> ข้าพเจ้าขอรับรองว่าข้อมูลที่กรอกในใบสมัครนี้เป็นความจริงทุกประการ หากพบว่าข้อมูลไม่เป็นความจริง บริษัทฯ มีสิทธิ์เลิกจ้างโดยไม่ต้องจ่ายเงินชดเชยใดๆ
+        <strong>📋 คำรับรอง:</strong> ข้าพเจ้าขอรับรองว่า ข้อความดังกล่าวทั้งหมดในใบสมัครนี้เป็นความจริงทุกประการ หลังจากบริษัทฯ จ้างเข้ามาทำงานแล้วปรากฎว่า ข้อความในใบสมัครงานเอกสารหรือรายละเอียดที่ให้ไว้ไม่เป็นความจริง บริษัทฯ มีสิทธิ์ที่จะเลิกจ้างข้าพเจ้าได้โดยไม่ต้องจ่ายเงินชดเชยหรือค่าเสียหายใด ๆ ทั้งสิ้น
       </div>
     </div>
 
@@ -513,7 +590,6 @@ function validateStep(step) {
     // Personal
     ok = chkField('prefix', null) && ok;
     ok = chkField('nameTH','err-nameTH') && ok;
-    ok = chkField('nameEN', null) && ok;
     ok = chkField('birthDate', null) && ok;
     ok = chkField('age', null) && ok;
     ok = chkRadio('gender','err-gender') && ok;
@@ -540,9 +616,17 @@ function validateStep(step) {
     ok = chkField('emergAddr', null) && ok;
     ok = chkField('emergTel', null) && ok;
     ok = chkField('jobSource', null) && ok;
+    if (document.getElementById('jobSource')?.value === 'อื่นๆ') ok = chkField('jobSourceOther', null) && ok;
     ok = chkField('selfIntro', null) && ok;
     ok = chkRadio('illness', null) && ok;
     ok = chkRadio('prevApply', null) && ok;
+    // PDPA
+    if (!document.getElementById('pdpaConsent')?.checked) {
+      document.getElementById('err-pdpa').classList.add('show');
+      ok = false;
+    } else {
+      document.getElementById('err-pdpa').classList.remove('show');
+    }
   }
   // highlight missing fields
   if (!ok) {
@@ -575,13 +659,18 @@ function calcAge() {
 // ===== EDU TABLE =====
 function buildEduTable() {
   const tb = document.getElementById('eduBody'); tb.innerHTML = '';
+  // ม.3 ม.6 (index 0,1) ไม่มีช่องสาขา
+  const noMajor = [0, 1];
   EDU_LEVELS.forEach((lv,i) => {
     const tr = document.createElement('tr');
     tr.style.background = i%2===0?'':'#faf8f4';
+    const majorCell = noMajor.includes(i)
+      ? `<td style="padding:.15rem .28rem;text-align:center;color:var(--muted);font-size:.72rem;">-</td>`
+      : `<td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-major" data-i="${i}" placeholder="สาขา"></td>`;
     tr.innerHTML = `<td style="padding:.3rem .45rem;font-weight:600;font-size:.78rem;color:var(--primary);">${lv}</td>
       <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-inst" data-i="${i}" placeholder="สถาบัน"></td>
-      <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-major" data-i="${i}" placeholder="สาขา"></td>
-      <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-period" data-i="${i}" placeholder="ปี พ.ศ."></td>`;
+      ${majorCell}
+      <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-period" data-i="${i}" placeholder="เช่น 2555-2558"></td>`;
     tb.appendChild(tr);
   });
 }
@@ -604,7 +693,7 @@ function addWorkRow() {
   const c = document.getElementById('workRows'), d = document.createElement('div');
   d.className = 'dyn-row';
   d.style.gridTemplateColumns = '1.4fr .85fr .95fr .95fr .8fr .8fr 32px';
-  ['ชื่อบริษัท','ระยะเวลา','ตำแหน่ง','ลักษณะงาน','ค่าจ้าง','เหตุผลที่ลาออก'].forEach(ph => {
+  [['ชื่อบริษัท','ชื่อบริษัท'],['ระยะเวลา','เช่น 2555-2558'],['ตำแหน่ง','ตำแหน่ง'],['ลักษณะงาน','ลักษณะงาน'],['ค่าจ้าง','ค่าจ้าง'],['เหตุผลที่ลาออก','เหตุผลที่ลาออก']].forEach(([_,ph]) => {
     const div = document.createElement('div'); div.className = 'field';
     div.innerHTML = `<input type="text" placeholder="${ph}">`;
     d.appendChild(div);
@@ -674,6 +763,18 @@ function collectData() {
     spouseName: v('spouseName'), spouseOcc: v('spouseOcc'),
     children: v('children'), siblings: v('siblings'),
     sibMale: v('sibMale'), sibFemale: v('sibFemale'), childOrder: v('childOrder'),
+    sibDetails: (() => {
+      const n = parseInt(v('siblings'))||1;
+      const arr = [];
+      for (let i=0; i<n-1; i++) {
+        arr.push({name: (document.getElementById('sibName_'+i)||{}).value||'',
+                  age:  (document.getElementById('sibAge_'+i)||{}).value||'',
+                  job:  (document.getElementById('sibJob_'+i)||{}).value||''});
+      }
+      return arr;
+    })(),
+    spouseWork: v('spouseWork'),
+    jobSourceFull: document.getElementById('jobSource')?.value === 'อื่นๆ' ? v('jobSourceOther') : v('jobSource'),
     // edu & work
     education: eduData, workHistory: workData,
     // lang & skills
@@ -687,7 +788,7 @@ function collectData() {
     // misc
     emergName: v('emergName'), emergRelation: v('emergRelation'), emergAddr: v('emergAddr'), emergTel: v('emergTel'),
     references: refData,
-    jobSource: v('jobSource'), friendInCo: v('friendInCo'),
+    jobSource: document.getElementById('jobSource')?.value === 'อื่นๆ' ? v('jobSourceOther') : v('jobSource'), friendInCo: v('friendInCo'),
     illness: getRadio('illness'), illnessDetail: v('illnessDetail'),
     prevApply: getRadio('prevApply'),
     selfIntro: v('selfIntro'),
@@ -696,6 +797,82 @@ function collectData() {
 
 // ===== GOOGLE SHEETS ENDPOINT =====
 const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyBHJrTK9WuXXMLrothDsxqhXTY3JX6zaAyfb-2t0t-z2cO4Dc3AAlfEL_9HsAvr_fABQ/exec';
+
+
+// ===== SIBLING / SPOUSE / SPECIAL ABILITY TOGGLES =====
+function onSiblingsChange() {
+  const n = parseInt(document.getElementById('siblings').value) || 1;
+  const block = document.getElementById('sibDetailBlock');
+  if (n <= 1) {
+    block.style.display = 'none';
+    // set defaults
+    ['sibMale','sibFemale','childOrder'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '-';
+    });
+  } else {
+    block.style.display = 'block';
+    ['sibMale','sibFemale','childOrder'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.value === '-') el.value = '';
+    });
+    buildSibNames(n);
+  }
+}
+
+function buildSibNames(total) {
+  const block = document.getElementById('sibNamesBlock');
+  block.innerHTML = '';
+  const count = total - 1; // ตัดผู้สมัครออก
+  if (count <= 0) return;
+  const title = document.createElement('div');
+  title.style.cssText = 'font-size:.76rem;font-weight:600;color:var(--teal);margin-bottom:.4rem;';
+  title.textContent = `รายละเอียดพี่น้อง ${count} คน (ไม่รวมผู้สมัคร)`;
+  block.appendChild(title);
+  for (let i = 0; i < count; i++) {
+    const row = document.createElement('div');
+    row.className = 'fg3';
+    row.style.marginBottom = '.4rem';
+    row.innerHTML = `
+      <div class="field"><label>ชื่อ-นามสกุล คนที่ ${i+1}</label><input type="text" id="sibName_${i}" placeholder="ชื่อ นามสกุล"></div>
+      <div class="field"><label>อายุ</label><input type="number" id="sibAge_${i}" placeholder="อายุ" min="0"></div>
+      <div class="field"><label>อาชีพ</label><input type="text" id="sibJob_${i}" placeholder="อาชีพ"></div>`;
+    block.appendChild(row);
+  }
+}
+
+function onMaritalChange() {
+  const mar = document.getElementById('marital').value;
+  const spouseBlock = document.getElementById('spouseBlock');
+  const fullFields = document.getElementById('spouseFullFields');
+  const childrenField = document.getElementById('children');
+  if (mar === 'แต่งงาน') {
+    spouseBlock.style.display = 'block';
+    if (fullFields) fullFields.style.display = 'grid';
+  } else if (mar === 'หม้าย' || mar === 'แยกทางกัน') {
+    spouseBlock.style.display = 'block';
+    if (fullFields) fullFields.style.display = 'none';
+  } else {
+    spouseBlock.style.display = 'none';
+  }
+}
+
+function toggleTypingSpeed(show) {
+  document.getElementById('typingSpeedField').style.display = show ? 'block' : 'none';
+  if (!show) document.getElementById('typingSpeed').value = '';
+}
+function toggleComputer(show) {
+  document.getElementById('computerProgramsField').style.display = show ? 'block' : 'none';
+  if (!show) document.getElementById('computerPrograms').value = '';
+}
+function toggleUpcountry(show) {
+  document.getElementById('upcountryNoteField').style.display = show ? 'block' : 'none';
+  if (!show) document.getElementById('upcountryNote').value = '';
+}
+function toggleJobSourceOther() {
+  const v = document.getElementById('jobSource').value;
+  document.getElementById('jobSourceOtherField').style.display = v === 'อื่นๆ' ? 'block' : 'none';
+}
 
 // ===== SUBMIT =====
 async function submitApplication() {
