@@ -24,7 +24,6 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
 
-/* HEADER */
 header {
   background:var(--surface);
   border-bottom:1px solid var(--border);
@@ -38,10 +37,8 @@ header {
 .header-text h1 { font-size:1rem; font-weight:600; color:var(--text); letter-spacing:.01em; }
 .header-text p { color:var(--muted); font-size:.75rem; margin-top:1px; }
 
-/* CONTAINER */
 .container { max-width:860px; margin:0 auto; padding:1.8rem 1.5rem; }
 
-/* PROGRESS */
 .progress-bar { background:var(--border2); border-radius:50px; height:4px; margin-bottom:1.5rem; overflow:hidden; }
 .progress-fill { height:100%; background:linear-gradient(90deg,var(--teal),#38bdf8); border-radius:50px; transition:width .4s ease; box-shadow:0 0 8px var(--teal-glow); }
 .progress-label { text-align:right; font-size:.7rem; color:var(--muted); margin-top:.35rem; }
@@ -49,7 +46,6 @@ header {
 .step { display:none; }
 .step.active { display:block; }
 
-/* CARD */
 .card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.4rem; margin-bottom:1rem; }
 .card-title {
   font-size:.82rem; font-weight:600; color:var(--teal); margin-bottom:1rem;
@@ -59,13 +55,11 @@ header {
 }
 .card-title::before { content:''; width:3px; height:14px; background:var(--teal); border-radius:2px; flex-shrink:0; }
 
-/* GRID */
 .fg2 { display:grid; grid-template-columns:1fr 1fr; gap:.85rem; }
 .fg3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:.85rem; }
 .s2 { grid-column:span 2; }
 .s3 { grid-column:span 3; }
 
-/* FIELD */
 .field label { display:block; font-size:.72rem; font-weight:500; color:var(--muted); margin-bottom:.28rem; letter-spacing:.02em; }
 .req { color:var(--teal); }
 .field input,.field select,.field textarea {
@@ -88,41 +82,33 @@ header {
 .err-msg { font-size:.68rem; color:var(--danger); margin-top:.2rem; display:none; }
 .err-msg.show { display:block; }
 
-/* RADIO */
 .radio-group { display:flex; gap:1rem; flex-wrap:wrap; padding:.3rem 0; }
 .radio-item { display:flex; align-items:center; gap:.3rem; font-size:.84rem; cursor:pointer; color:var(--text); }
 .radio-item input { accent-color:var(--teal); }
 
-/* PHOTO */
 .photo-box { width:110px; height:138px; border:1.5px dashed var(--border); border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; background:var(--surface2); overflow:hidden; transition:all .2s; flex-shrink:0; }
 .photo-box:hover { border-color:var(--teal); box-shadow:0 0 12px var(--teal-dim); }
 .photo-box img { width:100%; height:100%; object-fit:cover; }
 .ph-hint { font-size:.68rem; color:var(--muted); text-align:center; padding:.4rem; line-height:1.6; }
 
-/* EDU TABLE */
 .edu-table { width:100%; border-collapse:collapse; font-size:.82rem; }
 .edu-table th { background:var(--surface2); color:var(--muted); padding:.4rem .5rem; border:1px solid var(--border); text-align:left; font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.04em; }
 .edu-table td { padding:.2rem .35rem; border:1px solid var(--border2); }
 .edu-table tr:hover td { background:rgba(255,255,255,.02); }
 .edu-inp { width:100%; border:1px solid var(--border2); border-radius:5px; padding:.26rem .4rem; font-size:.8rem; font-family:'IBM Plex Sans Thai',sans-serif; background:var(--surface2); color:var(--text); outline:none; }
 .edu-inp:focus { border-color:var(--teal); background:white; }
-.edu-sel { width:100%; border:1px solid var(--border2); border-radius:5px; padding:.26rem .3rem; font-size:.78rem; font-family:'IBM Plex Sans Thai',sans-serif; background:var(--surface2); color:var(--text); outline:none; }
 
-/* DYNAMIC ROWS */
 .dyn-row { display:grid; gap:.4rem; align-items:flex-end; margin-bottom:.4rem; }
 .btn-rm { background:rgba(248,81,73,.12); border:1px solid rgba(248,81,73,.3); color:var(--danger); border-radius:6px; width:32px; height:32px; cursor:pointer; font-size:.95rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .2s; }
 .btn-rm:hover { background:rgba(248,81,73,.25); }
-.btn-add { background:var(--teal-dim); border:1px dashed rgba(45,212,191,.4); color:var(--teal); border-radius:7px; padding:.36rem .9rem; cursor:pointer; font-size:.78rem; font-family:'IBM Plex Sans Thai',sans-serif; font-weight:500; display:flex; align-items:center; gap:.3rem; margin-top:.35rem; transition:all .2s; }
-.btn-add:hover { background:rgba(45,212,191,.18); border-color:var(--teal); }
+.btn-add { background:var(--teal-dim); border:1px dashed rgba(26,58,92,.3); color:var(--teal); border-radius:7px; padding:.36rem .9rem; cursor:pointer; font-size:.78rem; font-family:'IBM Plex Sans Thai',sans-serif; font-weight:500; display:flex; align-items:center; gap:.3rem; margin-top:.35rem; transition:all .2s; }
+.btn-add:hover { background:rgba(26,58,92,.12); border-color:var(--teal); }
 
-/* LANG TABLE */
 .lang-table { width:100%; border-collapse:collapse; font-size:.8rem; }
 .lang-table th,.lang-table td { border:1px solid var(--border2); padding:.34rem .42rem; text-align:center; }
 .lang-table th { background:var(--surface2); color:var(--muted); font-weight:600; font-size:.72rem; text-transform:uppercase; letter-spacing:.03em; }
 .lang-table td:first-child { text-align:left; font-weight:500; color:var(--text); }
-.lang-table tr:hover td { background:rgba(255,255,255,.02); }
 
-/* NAV BUTTONS */
 .step-nav { display:flex; gap:.8rem; justify-content:space-between; margin-top:1.3rem; flex-wrap:wrap; }
 .btn-next {
   background:var(--teal); color:#ffffff; border:none;
@@ -131,7 +117,7 @@ header {
   cursor:pointer; transition:all .2s; display:flex; align-items:center; gap:.4rem;
   box-shadow:0 4px 14px var(--teal-glow);
 }
-.btn-next:hover { background:#5eead4; transform:translateY(-1px); box-shadow:0 6px 20px var(--teal-glow); }
+.btn-next:hover { opacity:.88; transform:translateY(-1px); }
 .btn-back {
   background:transparent; color:var(--text);
   border:1px solid var(--border); padding:.68rem 1.5rem; border-radius:8px;
@@ -146,31 +132,35 @@ header {
   cursor:pointer; box-shadow:0 4px 14px var(--teal-glow); transition:all .2s;
   display:flex; align-items:center; gap:.5rem;
 }
-.btn-submit:hover { background:#5eead4; transform:translateY(-1px); }
-.btn-submit:disabled { background:#30363d; color:var(--muted); box-shadow:none; cursor:not-allowed; transform:none; }
+.btn-submit:hover { opacity:.88; transform:translateY(-1px); }
+.btn-submit:disabled { background:#aaa; color:#fff; box-shadow:none; cursor:not-allowed; transform:none; }
 
 /* STEP DOTS */
 .step-dots { display:flex; gap:.5rem; justify-content:center; margin-bottom:1.3rem; flex-wrap:wrap; }
-.step-dot { display:flex; align-items:center; gap:.3rem; font-size:.7rem; color:var(--muted); font-weight:500; }
-.step-dot .dot { width:28px; height:28px; border-radius:50%; background:var(--surface2); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:.68rem; font-weight:700; color:var(--muted); transition:all .3s; }
-.step-dot.done .dot { background:rgba(63,185,80,.15); border-color:var(--success); color:var(--success); }
+.step-dot { display:flex; align-items:center; gap:.3rem; font-size:.7rem; color:var(--muted); font-weight:500; cursor:pointer; }
+.step-dot .dot {
+  width:28px; height:28px; border-radius:50%;
+  background:var(--surface2); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  font-size:.68rem; font-weight:700; color:var(--muted);
+  transition:all .2s;
+}
+.step-dot:hover .dot { border-color:var(--teal); color:var(--teal); transform:scale(1.1); }
+.step-dot.done .dot { background:rgba(26,122,74,.12); border-color:var(--success); color:var(--success); }
+.step-dot.done:hover .dot { background:rgba(26,122,74,.2); }
 .step-dot.active .dot { background:var(--teal-dim); border-color:var(--teal); color:var(--teal); box-shadow:0 0 0 3px var(--teal-dim); }
 .step-dot .dot-label { display:none; }
 @media(min-width:600px) { .step-dot .dot-label { display:block; } }
 
-/* SUCCESS */
 #successScreen { display:none; text-align:center; padding:3rem 1.5rem; }
-.success-icon { width:80px; height:80px; background:rgba(63,185,80,.15); border:2px solid var(--success); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:2.2rem; box-shadow:0 0 30px rgba(63,185,80,.2); animation:pop .5s cubic-bezier(.34,1.56,.64,1); }
+.success-icon { width:80px; height:80px; background:rgba(26,122,74,.12); border:2px solid var(--success); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:2.2rem; box-shadow:0 0 30px rgba(26,122,74,.2); animation:pop .5s cubic-bezier(.34,1.56,.64,1); }
 @keyframes pop { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
 .success-title { font-size:1.4rem; font-weight:700; color:var(--text); margin-bottom:.5rem; }
 .success-sub { color:var(--muted); font-size:.88rem; line-height:1.8; }
-.ref-code { background:var(--surface2); border:1px solid var(--teal); border-radius:8px; padding:.8rem 1.6rem; display:inline-block; margin:1.2rem 0; font-family:'IBM Plex Mono',monospace; font-size:1rem; font-weight:600; color:var(--teal); letter-spacing:.12em; box-shadow:0 0 16px var(--teal-dim); }
+.ref-code { background:var(--surface2); border:1px solid var(--teal); border-radius:8px; padding:.8rem 1.6rem; display:inline-block; margin:1.2rem 0; font-family:monospace; font-size:1rem; font-weight:600; color:var(--teal); letter-spacing:.12em; }
+.cert-box { background:rgba(26,58,92,.04); border:1px solid rgba(26,58,92,.15); border-radius:10px; }
 
-/* CERT BOX */
-.cert-box { background:rgba(45,212,191,.05); border:1px solid rgba(45,212,191,.2); border-radius:10px; }
-
-/* TOAST */
-.toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(80px); background:var(--surface); border:1px solid var(--border); color:var(--text); padding:.65rem 1.4rem; border-radius:8px; font-size:.84rem; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,.4); opacity:0; transition:all .3s cubic-bezier(.34,1.56,.64,1); z-index:999; white-space:nowrap; }
+.toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(80px); background:var(--surface); border:1px solid var(--border); color:var(--text); padding:.65rem 1.4rem; border-radius:8px; font-size:.84rem; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,.2); opacity:0; transition:all .3s cubic-bezier(.34,1.56,.64,1); z-index:999; white-space:nowrap; }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 
 @media(max-width:600px) {
@@ -190,13 +180,11 @@ header {
 </header>
 
 <div class="container" id="mainContent">
-  <!-- Step dots -->
   <div class="step-dots" id="stepDots"></div>
-  <!-- Progress -->
   <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
   <div class="progress-label" id="progressLabel">ขั้นตอน 1 / 5</div>
 
-  <!-- STEP 1: ตำแหน่ง + ส่วนตัว -->
+  <!-- STEP 1 -->
   <div class="step active" id="step1">
     <div class="card">
       <div class="card-title">ตำแหน่งที่สมัคร</div>
@@ -211,7 +199,7 @@ header {
       <div class="card-title">ข้อมูลส่วนตัว</div>
       <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap;">
         <div>
-          <label style="font-size:.76rem;font-weight:500;color:var(--muted);display:block;margin-bottom:.28rem;">รูปถ่ายหน้าตรง<span class="req">*</span></label>
+          <label style="font-size:.76rem;font-weight:500;color:var(--muted);display:block;margin-bottom:.28rem;">รูปถ่ายหน้าตรง <span class="req">*</span></label>
           <div class="photo-box" onclick="document.getElementById('photoIn').click()">
             <img id="photoPreview" src="" style="display:none;">
             <div class="ph-hint" id="photoHint">📷<br>คลิกอัปโหลดรูปภาพ</div>
@@ -238,37 +226,28 @@ header {
         <div class="field"><label>อีเมล</label><input type="email" id="email" placeholder="email@gmail.com"></div>
         <div class="field"><label>ไอดีไลน์ <span class="req">*</span></label><input type="text" id="lineId"></div>
         <div class="field"><label>ลักษณะที่อยู่อาศัย <span class="req">*</span></label><select id="livingArr"><option value="">--</option><option>อาศัยอยู่กับครอบครัว</option><option>บ้านตัวเอง</option><option>บ้านเช่า</option><option>หอพัก/อพาร์ตเมนต์</option></select></div>
-        
         <div class="field" id="militaryField" style="display:none;"><label>ภาวะทางทหาร <span class="req">*</span></label><select id="military"><option value="">--</option><option>ยังไม่ได้รับการเกณฑ์</option><option>ผ่านการเรียนวิชาทหาร (รด.)</option><option>ได้รับการยกเว้น</option><option>ปลดเป็นทหารกองหนุน</option></select><div class="err-msg" id="err-military">กรุณาเลือกภาวะทางทหาร</div></div>
         <div class="field"><label>สถานภาพ <span class="req">*</span></label><select id="marital" onchange="onMaritalChange()"><option value="">--</option><option>โสด</option><option>แต่งงาน</option><option>หม้าย</option><option>แยกทางกัน</option></select></div>
       </div>
     </div>
-
-    <div class="step-nav">
-      <div></div>
-      <button class="btn-next" onclick="goStep(2)">ถัดไป → ครอบครัว &amp; การศึกษา</button>
-    </div>
+    <div class="step-nav"><div></div><button class="btn-next" onclick="goStep(2)">ถัดไป → ครอบครัว &amp; การศึกษา</button></div>
   </div>
 
-  <!-- STEP 2: ครอบครัว + การศึกษา -->
+  <!-- STEP 2 -->
   <div class="step" id="step2">
     <div class="card">
       <div class="card-title">ประวัติครอบครัว</div>
       <div class="fg2">
-        <!-- บิดา -->
         <div class="field"><label>ชื่อ-นามสกุล บิดา <span class="req">*</span></label><input type="text" id="fatherName" placeholder="ชื่อ-นามสกุล"></div>
         <div class="field"><label>อายุบิดา (ปี)</label><input type="number" id="fatherAge" placeholder="อายุ" min="0"></div>
         <div class="field s2"><label>อาชีพบิดา</label><input type="text" id="fatherOcc" placeholder="อาชีพ"></div>
-        <!-- มารดา -->
         <div class="field"><label>ชื่อ-นามสกุล มารดา <span class="req">*</span></label><input type="text" id="motherName" placeholder="ชื่อ-นามสกุล"></div>
         <div class="field"><label>อายุมารดา (ปี)</label><input type="number" id="motherAge" placeholder="อายุ" min="0"></div>
         <div class="field s2"><label>อาชีพมารดา</label><input type="text" id="motherOcc" placeholder="อาชีพ"></div>
-        <!-- พี่น้อง -->
         <div class="field s2">
           <label>มีพี่น้อง รวมผู้สมัคร (คน) <span class="req">*</span></label>
           <input type="number" id="siblings" value="1" min="1" onchange="onSiblingsChange()">
         </div>
-        <!-- แสดงเมื่อ > 1 คน -->
         <div id="sibDetailBlock" style="display:none;grid-column:span 2;">
           <div class="fg2">
             <div class="field"><label>พี่น้องเพศชาย (คน) <span class="req">*</span></label><input type="number" id="sibMale" value="0" min="0"></div>
@@ -280,7 +259,6 @@ header {
       </div>
     </div>
 
-    <!-- คู่สมรส — ขึ้นตามสถานภาพ -->
     <div id="spouseBlock" style="display:none;" class="card">
       <div class="card-title">ประวัติคู่สมรส</div>
       <div class="fg2" id="spouseFullFields">
@@ -302,14 +280,10 @@ header {
         </table>
       </div>
     </div>
-
-    <div class="step-nav">
-      <button class="btn-back" onclick="goStep(1)">← กลับ</button>
-      <button class="btn-next" onclick="goStep(3)">ถัดไป → ประวัติการทำงาน</button>
-    </div>
+    <div class="step-nav"><button class="btn-back" onclick="goStep(1)">← กลับ</button><button class="btn-next" onclick="goStep(3)">ถัดไป → ประวัติการทำงาน</button></div>
   </div>
 
-  <!-- STEP 3: การทำงาน -->
+  <!-- STEP 3 -->
   <div class="step" id="step3">
     <div class="card">
       <div class="card-title">ประวัติการทำงาน (เรียงลำดับก่อน-หลัง)</div>
@@ -319,14 +293,10 @@ header {
       <div id="workRows"></div>
       <button class="btn-add" onclick="addWorkRow()">＋ เพิ่มประวัติการทำงาน</button>
     </div>
-
-    <div class="step-nav">
-      <button class="btn-back" onclick="goStep(2)">← กลับ</button>
-      <button class="btn-next" onclick="goStep(4)">ถัดไป → ทักษะ &amp; ความสามารถ</button>
-    </div>
+    <div class="step-nav"><button class="btn-back" onclick="goStep(2)">← กลับ</button><button class="btn-next" onclick="goStep(4)">ถัดไป → ทักษะ &amp; ความสามารถ</button></div>
   </div>
 
-  <!-- STEP 4: ทักษะ -->
+  <!-- STEP 4 -->
   <div class="step" id="step4">
     <div class="card">
       <div class="card-title">ความสามารถทางภาษา</div>
@@ -343,7 +313,6 @@ header {
     <div class="card">
       <div class="card-title">ความสามารถพิเศษ</div>
       <div class="fg2">
-        <!-- พิมพ์ดีด -->
         <div class="field s2"><label>การพิมพ์ดีด</label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="typing" value="ไม่ได้" onchange="toggleTypingSpeed(false)"> ไม่ได้</label>
           <label class="radio-item"><input type="radio" name="typing" value="ได้" onchange="toggleTypingSpeed(true)"> ได้</label>
@@ -352,7 +321,6 @@ header {
           <label>ความเร็วในการพิมพ์ <span class="req">*</span></label>
           <input type="text" id="typingSpeed" placeholder="เช่น ภาษาไทย 30 คำ/นาที ภาษาอังกฤษ 20 คำ/นาที">
         </div>
-        <!-- คอมพิวเตอร์ -->
         <div class="field s2"><label>การใช้คอมพิวเตอร์</label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="computer" value="ไม่ได้" onchange="toggleComputer(false)"> ไม่ได้</label>
           <label class="radio-item"><input type="radio" name="computer" value="ได้" onchange="toggleComputer(true)"> ได้</label>
@@ -361,7 +329,6 @@ header {
           <label>โปรแกรมที่สามารถใช้ได้ <span class="req">*</span></label>
           <input type="text" id="computerPrograms" placeholder="Excel, Word...">
         </div>
-        <!-- ขับรถ (ไม่มีช่องใบขับขี่) -->
         <div class="field s2"><label>การขับรถยนต์</label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="driving" value="ไม่สามารถขับได้"> ไม่ได้</label>
           <label class="radio-item"><input type="radio" name="driving" value="ขับได้ ไม่มีใบขับขี่"> ขับได้ ไม่มีใบขับขี่</label>
@@ -372,7 +339,6 @@ header {
         <div class="field"><label>กีฬาที่ชอบ</label><input type="text" id="sport" placeholder="ระบุ"></div>
         <div class="field"><label>ความรู้พิเศษ</label><input type="text" id="specialKnowledge" placeholder="ระบุ"></div>
         <div class="field"><label>อื่นๆ</label><input type="text" id="abilityOther" placeholder="ระบุ"></div>
-        <!-- ต่างจังหวัด -->
         <div class="field s2"><label>สามารถไปปฏิบัติงานต่างจังหวัดได้หรือไม่?</label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="upcountry" value="ไม่ได้" onchange="toggleUpcountry(false)"> ไม่ได้</label>
           <label class="radio-item"><input type="radio" name="upcountry" value="ได้" onchange="toggleUpcountry(false)"> ได้</label>
@@ -384,14 +350,10 @@ header {
         </div>
       </div>
     </div>
-
-    <div class="step-nav">
-      <button class="btn-back" onclick="goStep(3)">← กลับ</button>
-      <button class="btn-next" onclick="goStep(5)">ถัดไป → ข้อมูลเพิ่มเติม</button>
-    </div>
+    <div class="step-nav"><button class="btn-back" onclick="goStep(3)">← กลับ</button><button class="btn-next" onclick="goStep(5)">ถัดไป → ข้อมูลเพิ่มเติม</button></div>
   </div>
 
-  <!-- STEP 5: ข้อมูลอื่น + ส่ง -->
+  <!-- STEP 5 -->
   <div class="step" id="step5">
     <div class="card">
       <div class="card-title">ผู้ติดต่อฉุกเฉิน กรณีเกิดเหตุฉุกเฉิน</div>
@@ -416,21 +378,21 @@ header {
       <div class="card-title">ข้อมูลเพิ่มเติม</div>
       <div class="fg2">
         <div class="field s2">
-  <label>ทราบข่าวการรับสมัครจาก <span class="req">*</span></label>
-  <select id="jobSource" onchange="toggleJobSourceOther()">
-    <option value="">-- เลือก --</option>
-    <option>เว็บไซต์หางาน เช่น JobThai, JobsDB, LinkedIn</option>
-    <option>Facebook</option>
-    <option>TikTok</option>
-    <option>แนะนำจากเพื่อน / คนรู้จัก</option>
-    <option>ป้ายประกาศที่บริษัท</option>
-    <option>อื่นๆ</option>
-  </select>
-</div>
-<div class="field s2" id="jobSourceOtherField" style="display:none;">
-  <label>อื่นๆ ระบุ <span class="req">*</span></label>
-  <input type="text" id="jobSourceOther" placeholder="ระบุแหล่งที่มา">
-</div>
+          <label>ทราบข่าวการรับสมัครจาก <span class="req">*</span></label>
+          <select id="jobSource" onchange="toggleJobSourceOther()">
+            <option value="">-- เลือก --</option>
+            <option>เว็บไซต์หางาน เช่น JobThai, JobsDB, LinkedIn</option>
+            <option>Facebook</option>
+            <option>TikTok</option>
+            <option>แนะนำจากเพื่อน / คนรู้จัก</option>
+            <option>ป้ายประกาศที่บริษัท</option>
+            <option>อื่นๆ</option>
+          </select>
+        </div>
+        <div class="field s2" id="jobSourceOtherField" style="display:none;">
+          <label>อื่นๆ ระบุ <span class="req">*</span></label>
+          <input type="text" id="jobSourceOther" placeholder="ระบุแหล่งที่มา">
+        </div>
         <div class="field"><label>รู้จักญาติ/เพื่อนที่ทำงานในบริษัทนี้หรือไม่?</label><input type="text" id="friendInCo" placeholder="-"></div>
         <div class="field s2"><label>เคยป่วยหนักหรือเป็นโรคติดต่อร้ายแรงมาก่อนหรือไม่?</label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="illness" value="ไม่เคย" onchange="toggleIllness(false)"> ไม่เคย</label>
@@ -454,7 +416,7 @@ header {
 
     <div class="card" style="background:#f0f7ff;border-color:#b8d4f0;padding:1rem;margin-bottom:.8rem;">
       <div style="font-size:.82rem;color:#1a4a7a;line-height:1.75;">
-        <strong>🔒 การให้ความยินยอม </strong><br>
+        <strong>🔒 การให้ความยินยอม</strong><br>
         ข้าพเจ้ารับทราบและยินยอมให้บริษัทฯ ใช้ข้อมูลส่วนบุคคลของข้าพเจ้าเพื่อการสมัครงานนี้ตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562
         <div style="margin-top:.6rem;"><label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-weight:600;">
           <input type="checkbox" id="pdpaConsent" style="accent-color:#1a3a5c;width:16px;height:16px;">
@@ -468,15 +430,10 @@ header {
         <strong>📋 คำรับรอง:</strong> ข้าพเจ้าขอรับรองว่า ข้อความดังกล่าวทั้งหมดในใบสมัครนี้เป็นความจริงทุกประการ หลังจากบริษัทฯ จ้างเข้ามาทำงานแล้วปรากฎว่า ข้อความในใบสมัครงานเอกสารหรือรายละเอียดที่ให้ไว้ไม่เป็นความจริง บริษัทฯ มีสิทธิ์ที่จะเลิกจ้างข้าพเจ้าได้โดยไม่ต้องจ่ายเงินชดเชยหรือค่าเสียหายใด ๆ ทั้งสิ้น
       </div>
     </div>
-
-    <div class="step-nav">
-      <button class="btn-back" onclick="goStep(4)">← กลับ</button>
-      <button class="btn-submit" id="submitBtn" onclick="submitApplication()">✅ ส่งใบสมัคร</button>
-    </div>
+    <div class="step-nav"><button class="btn-back" onclick="goStep(4)">← กลับ</button><button class="btn-submit" id="submitBtn" onclick="submitApplication()">✅ ส่งใบสมัคร</button></div>
   </div>
 </div>
 
-<!-- Success -->
 <div id="successScreen" class="container">
   <div class="card" style="padding:2.5rem;text-align:center;">
     <div class="success-icon">✅</div>
@@ -490,7 +447,6 @@ header {
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== CONSTANTS =====
 const EDU_LEVELS = ['มัธยมศึกษาตอนต้น (ม.3)','มัธยมศึกษาตอนปลาย (ม.6)','ปวช.','ปวท./ปวส.','ปริญญาตรี','สูงกว่าปริญญาตรี','อื่น ๆ'];
 const LANG_ROWS = ['ภาษาไทย (Thai)','ภาษาอังกฤษ (English)','ภาษาญี่ปุ่น (Japan)','ภาษาอื่น ๆ (Other)'];
 const STEP_LABELS = ['ข้อมูลส่วนตัว','ครอบครัว & การศึกษา','ประวัติการทำงาน','ทักษะ','ข้อมูลเพิ่มเติม'];
@@ -498,34 +454,28 @@ let currentStep = 1;
 let photoData = null;
 let coSettings = null;
 
-// ===== LOAD COMPANY SETTINGS =====
+// ===== COMPANY SETTINGS =====
 async function loadCompanySettings() {
   try {
     const res = await window.storage.get('hr:company_settings', true);
-    if (res && res.value) {
-      coSettings = JSON.parse(res.value);
-      applyCompanyBranding();
-    }
+    if (res && res.value) { coSettings = JSON.parse(res.value); applyCompanyBranding(); }
   } catch(e) {}
 }
 function applyCompanyBranding() {
   if (!coSettings) return;
   if (coSettings.logo) {
-    const box = document.getElementById('headerLogoBox');
-    box.innerHTML = `<img src="${coSettings.logo}" style="width:48px;height:48px;object-fit:contain;border-radius:8px;background:white;padding:3px;">`;
+    document.getElementById('headerLogoBox').innerHTML = `<img src="${coSettings.logo}" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">`;
   }
   if (coSettings.nameTH) document.getElementById('headerCoName').textContent = coSettings.nameTH;
-  if (coSettings.nameTH) document.getElementById('headerCoSub').textContent = (coSettings.nameEN || '') + ' — ใบสมัครงาน';
+  if (coSettings.nameTH) document.getElementById('headerCoSub').textContent = (coSettings.nameEN||'') + ' — ใบสมัครงาน';
   if (coSettings.nameTH) document.title = 'ใบสมัครงาน — ' + coSettings.nameTH;
 }
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', async () => {
   await loadCompanySettings();
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('applyDate').value = today;
-  buildEduTable();
-  buildLangTable();
+  document.getElementById('applyDate').value = new Date().toISOString().split('T')[0];
+  buildEduTable(); buildLangTable();
   addWorkRow(); addWorkRow(); addWorkRow();
   addRefRow(); addRefRow();
   buildStepDots();
@@ -533,19 +483,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // ===== STEP NAVIGATION =====
 function buildStepDots() {
-  const c = document.getElementById('stepDots');
-  c.innerHTML = STEP_LABELS.map((lbl, i) => `
-    <div class="step-dot ${i+1===currentStep?'active':''}" id="dot${i+1}">
+  document.getElementById('stepDots').innerHTML = STEP_LABELS.map((lbl, i) => `
+    <div class="step-dot ${i+1===currentStep?'active':''}" id="dot${i+1}" onclick="clickStepDot(${i+1})">
       <div class="dot">${i+1}</div>
       <div class="dot-label">${lbl}</div>
     </div>`).join('');
 }
 
 function updateProgress(step) {
-  const pct = (step / 5) * 100;
-  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressFill').style.width = (step/5*100)+'%';
   document.getElementById('progressLabel').textContent = `ขั้นตอน ${step} / 5 — ${STEP_LABELS[step-1]}`;
-  document.querySelectorAll('.step-dot').forEach((el, i) => {
+  document.querySelectorAll('.step-dot').forEach((el,i) => {
     el.classList.remove('active','done');
     if (i+1 < step) el.classList.add('done');
     if (i+1 === step) el.classList.add('active');
@@ -561,128 +509,169 @@ function goStep(n) {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
+// คลิก dot ตัวเลข
+function clickStepDot(n) {
+  if (n === currentStep) return;
+  if (n < currentStep) {
+    // ย้อนกลับได้เลย
+    document.getElementById('step'+currentStep).classList.remove('active');
+    currentStep = n;
+    document.getElementById('step'+n).classList.add('active');
+    updateProgress(n);
+    window.scrollTo({top:0, behavior:'smooth'});
+  } else {
+    // ไปข้างหน้า — validate ทุก step ก่อน
+    for (let s = currentStep; s < n; s++) {
+      if (!validateStep(s)) return;
+      // ผ่าน step นี้แล้ว mark done
+      document.getElementById('dot'+s)?.classList.add('done');
+    }
+    document.getElementById('step'+currentStep).classList.remove('active');
+    currentStep = n;
+    document.getElementById('step'+n).classList.add('active');
+    updateProgress(n);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+}
+
+// ===== TOGGLES =====
 function toggleMilitary(gender) {
   const mf = document.getElementById('militaryField');
   mf.style.display = gender === 'ชาย' ? 'block' : 'none';
-  if (gender !== 'ชาย') {
-    document.getElementById('military').value = '';
-    document.getElementById('err-military').classList.remove('show');
+  if (gender !== 'ชาย') { document.getElementById('military').value=''; document.getElementById('err-military').classList.remove('show'); }
+}
+function onMaritalChange() {
+  const mar = document.getElementById('marital').value;
+  const sb = document.getElementById('spouseBlock');
+  const ff = document.getElementById('spouseFullFields');
+  if (mar === 'แต่งงาน') { sb.style.display='block'; if(ff) ff.style.display='grid'; }
+  else if (mar==='หม้าย'||mar==='แยกทางกัน') { sb.style.display='block'; if(ff) ff.style.display='none'; }
+  else { sb.style.display='none'; }
+}
+function onSiblingsChange() {
+  const n = parseInt(document.getElementById('siblings').value)||1;
+  const block = document.getElementById('sibDetailBlock');
+  if (n <= 1) { block.style.display='none'; }
+  else { block.style.display='block'; buildSibNames(n); }
+}
+function buildSibNames(total) {
+  const block = document.getElementById('sibNamesBlock'); block.innerHTML='';
+  const count = total-1;
+  if (count<=0) return;
+  const title = document.createElement('div');
+  title.style.cssText='font-size:.76rem;font-weight:600;color:var(--teal);margin-bottom:.4rem;';
+  title.textContent=`รายละเอียดพี่น้อง ${count} คน (ไม่รวมผู้สมัคร)`;
+  block.appendChild(title);
+  for (let i=0;i<count;i++) {
+    const row=document.createElement('div'); row.className='fg3'; row.style.marginBottom='.4rem';
+    row.innerHTML=`<div class="field"><label>ชื่อ-นามสกุล คนที่ ${i+1}</label><input type="text" id="sibName_${i}" placeholder="ชื่อ นามสกุล"></div>
+      <div class="field"><label>อายุ</label><input type="number" id="sibAge_${i}" placeholder="อายุ" min="0"></div>
+      <div class="field"><label>อาชีพ</label><input type="text" id="sibJob_${i}" placeholder="อาชีพ"></div>`;
+    block.appendChild(row);
   }
 }
+function toggleTypingSpeed(show) { document.getElementById('typingSpeedField').style.display=show?'block':'none'; if(!show) document.getElementById('typingSpeed').value=''; }
+function toggleComputer(show) { document.getElementById('computerProgramsField').style.display=show?'block':'none'; if(!show) document.getElementById('computerPrograms').value=''; }
+function toggleUpcountry(show) { document.getElementById('upcountryNoteField').style.display=show?'block':'none'; if(!show) document.getElementById('upcountryNote').value=''; }
+function toggleJobSourceOther() { document.getElementById('jobSourceOtherField').style.display=document.getElementById('jobSource').value==='อื่นๆ'?'block':'none'; }
+function toggleIllness(show) { document.getElementById('illnessDetailField').style.display=show?'block':'none'; if(!show) document.getElementById('illnessDetail').value=''; }
+function togglePrevApply(show) { document.getElementById('prevApplyDetailField').style.display=show?'block':'none'; if(!show) (document.getElementById('prevApplyDetail')||{}).value=''; }
+
+// ===== VALIDATION =====
+function v(id) { return (document.getElementById(id)||{}).value||''; }
+function getRadio(name) { const el=document.querySelector(`input[name="${name}"]:checked`); return el?el.value:''; }
 
 function chkField(id, eid) {
-  const el = document.getElementById(id);
-  const err = document.getElementById(eid);
-  if (!el || el.closest('[style*="display:none"]')) return true; // skip hidden fields
-  const empty = el.tagName === 'SELECT' ? !el.value : !el.value.trim();
-  if (empty) { el.classList.add('field-error'); if(err) err.classList.add('show'); return false; }
-  el.classList.remove('field-error'); if(err) err.classList.remove('show'); return true;
+  const el=document.getElementById(id);
+  const err=document.getElementById(eid);
+  if (!el) return true;
+  // skip ถ้า hidden
+  let node=el; while(node&&node!==document.body){if(node.style&&node.style.display==='none')return true; node=node.parentElement;}
+  const empty=el.tagName==='SELECT'?!el.value:!el.value.trim();
+  if(empty){el.classList.add('field-error');if(err)err.classList.add('show');return false;}
+  el.classList.remove('field-error');if(err)err.classList.remove('show');return true;
 }
-
-function chkRadio(name, eid) {
-  const checked = document.querySelector(`input[name="${name}"]:checked`);
-  const err = document.getElementById(eid);
-  if (!checked) { if(err) err.classList.add('show'); return false; }
-  if(err) err.classList.remove('show'); return true;
+function chkRadio(name,eid) {
+  const checked=document.querySelector(`input[name="${name}"]:checked`);
+  const err=document.getElementById(eid);
+  if(!checked){if(err)err.classList.add('show');return false;}
+  if(err)err.classList.remove('show');return true;
 }
 
 function validateStep(step) {
-  let ok = true;
-  if (step === 1) {
-    // Photo
-    if (!photoData) {
-      document.getElementById('err-photo').classList.add('show');
-      ok = false;
-    } else {
-      document.getElementById('err-photo').classList.remove('show');
-    }
-    // Position card
-    ok = chkField('position','err-position') && ok;
-    ok = chkField('salary', null) && ok;
-    ok = chkField('applyDate', null) && ok;
-    // Personal
-    ok = chkField('prefix', null) && ok;
-    ok = chkField('nameTH','err-nameTH') && ok;
-    ok = chkField('birthDate', null) && ok;
-    ok = chkField('age', null) && ok;
-    ok = chkRadio('gender','err-gender') && ok;
-    ok = chkField('race', null) && ok;
-    ok = chkField('nationality', null) && ok;
-    ok = chkField('religion', null) && ok;
-    ok = chkField('height', null) && ok;
-    ok = chkField('weight', null) && ok;
-    ok = chkField('address','err-address') && ok;
-    ok = chkField('mobile','err-mobile') && ok;
-    ok = chkField('lineId', null) && ok;
-    ok = chkField('livingArr', null) && ok;
-    ok = chkField('marital', null) && ok;
-    // Military only if male
-    if (getRadio('gender') === 'ชาย') ok = chkField('military','err-military') && ok;
+  let ok=true;
+  if (step===1) {
+    if(!photoData){document.getElementById('err-photo').classList.add('show');ok=false;}
+    else{document.getElementById('err-photo').classList.remove('show');}
+    ok=chkField('position','err-position')&&ok;
+    ok=chkField('salary',null)&&ok;
+    ok=chkField('applyDate',null)&&ok;
+    ok=chkField('prefix',null)&&ok;
+    ok=chkField('nameTH','err-nameTH')&&ok;
+    ok=chkField('birthDate',null)&&ok;
+    ok=chkField('age',null)&&ok;
+    ok=chkRadio('gender','err-gender')&&ok;
+    ok=chkField('race',null)&&ok;
+    ok=chkField('nationality',null)&&ok;
+    ok=chkField('religion',null)&&ok;
+    ok=chkField('height',null)&&ok;
+    ok=chkField('weight',null)&&ok;
+    ok=chkField('address','err-address')&&ok;
+    ok=chkField('mobile','err-mobile')&&ok;
+    ok=chkField('lineId',null)&&ok;
+    ok=chkField('livingArr',null)&&ok;
+    ok=chkField('marital',null)&&ok;
+    if(getRadio('gender')==='ชาย') ok=chkField('military','err-military')&&ok;
   }
-  if (step === 2) {
-    ok = chkField('fatherName', null) && ok;
-    ok = chkField('motherName', null) && ok;
+  if (step===2) {
+    ok=chkField('fatherName',null)&&ok;
+    ok=chkField('motherName',null)&&ok;
   }
-  if (step === 5) {
-    ok = chkField('emergName', null) && ok;
-    ok = chkField('emergRelation', null) && ok;
-    ok = chkField('emergAddr', null) && ok;
-    ok = chkField('emergTel', null) && ok;
-    ok = chkField('jobSource', null) && ok;
-    if (document.getElementById('jobSource')?.value === 'อื่นๆ') ok = chkField('jobSourceOther', null) && ok;
-    ok = chkField('selfIntro', null) && ok;
-    ok = chkRadio('illness', null) && ok;
-    if (getRadio('illness') === 'เคย') ok = chkField('illnessDetail', null) && ok;
-    ok = chkRadio('prevApply', null) && ok;
-    if (getRadio('prevApply') === 'เคย') ok = chkField('prevApplyDetail', null) && ok;
-    // PDPA
-    if (!document.getElementById('pdpaConsent')?.checked) {
-      document.getElementById('err-pdpa').classList.add('show');
-      ok = false;
-    } else {
-      document.getElementById('err-pdpa').classList.remove('show');
-    }
+  if (step===5) {
+    ok=chkField('emergName',null)&&ok;
+    ok=chkField('emergRelation',null)&&ok;
+    ok=chkField('emergAddr',null)&&ok;
+    ok=chkField('emergTel',null)&&ok;
+    ok=chkField('jobSource',null)&&ok;
+    if(document.getElementById('jobSource')?.value==='อื่นๆ') ok=chkField('jobSourceOther',null)&&ok;
+    ok=chkField('selfIntro',null)&&ok;
+    ok=chkRadio('illness',null)&&ok;
+    if(getRadio('illness')==='เคย') ok=chkField('illnessDetail',null)&&ok;
+    ok=chkRadio('prevApply',null)&&ok;
+    if(getRadio('prevApply')==='เคย') ok=chkField('prevApplyDetail',null)&&ok;
+    if(!document.getElementById('pdpaConsent')?.checked){document.getElementById('err-pdpa').classList.add('show');ok=false;}
+    else{document.getElementById('err-pdpa').classList.remove('show');}
   }
-  // highlight missing fields
-  if (!ok) {
+  if(!ok){
     showToast('⚠️ กรุณากรอกข้อมูลที่จำเป็นให้ครบ');
-    // scroll to first error
-    const first = document.querySelector('.step.active .field-error, .step.active .err-msg.show');
-    if (first) first.scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(()=>{const first=document.querySelector('.step.active .field-error,.step.active .err-msg.show');if(first)first.scrollIntoView({behavior:'smooth',block:'center'});},100);
   }
   return ok;
 }
 
 // ===== PHOTO =====
 function handlePhoto(e) {
-  const file = e.target.files[0]; if (!file) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    photoData = ev.target.result;
-    document.getElementById('photoPreview').src = photoData;
-    document.getElementById('photoPreview').style.display = 'block';
-    document.getElementById('photoHint').style.display = 'none';
-  };
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=ev=>{photoData=ev.target.result;document.getElementById('photoPreview').src=photoData;document.getElementById('photoPreview').style.display='block';document.getElementById('photoHint').style.display='none';};
   r.readAsDataURL(file);
 }
-
 function calcAge() {
-  const d = new Date(document.getElementById('birthDate').value);
-  if (!isNaN(d)) document.getElementById('age').value = Math.floor((new Date()-d)/(365.25*24*60*60*1000));
+  const d=new Date(document.getElementById('birthDate').value);
+  if(!isNaN(d)) document.getElementById('age').value=Math.floor((new Date()-d)/(365.25*24*60*60*1000));
 }
 
 // ===== EDU TABLE =====
 function buildEduTable() {
-  const tb = document.getElementById('eduBody'); tb.innerHTML = '';
-  // ม.3 ม.6 (index 0,1) ไม่มีช่องสาขา
-  const noMajor = [0, 1];
-  EDU_LEVELS.forEach((lv,i) => {
-    const tr = document.createElement('tr');
-    tr.style.background = i%2===0?'':'#faf8f4';
-    const majorCell = noMajor.includes(i)
-      ? `<td style="padding:.15rem .28rem;text-align:center;color:var(--muted);font-size:.72rem;">-</td>`
-      : `<td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-major" data-i="${i}" placeholder="สาขา"></td>`;
-    tr.innerHTML = `<td style="padding:.3rem .45rem;font-weight:600;font-size:.78rem;color:var(--primary);">${lv}</td>
+  const tb=document.getElementById('eduBody'); tb.innerHTML='';
+  const noMajor=[0,1];
+  EDU_LEVELS.forEach((lv,i)=>{
+    const tr=document.createElement('tr');
+    tr.style.background=i%2===0?'':'#faf8f4';
+    const majorCell=noMajor.includes(i)
+      ?`<td style="padding:.15rem .28rem;text-align:center;color:var(--muted);font-size:.72rem;">-</td>`
+      :`<td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-major" data-i="${i}" placeholder="สาขา"></td>`;
+    tr.innerHTML=`<td style="padding:.3rem .45rem;font-weight:600;font-size:.78rem;color:var(--teal);">${lv}</td>
       <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-inst" data-i="${i}" placeholder="สถาบัน"></td>
       ${majorCell}
       <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-period" data-i="${i}" placeholder="เช่น 2555-2558"></td>`;
@@ -692,242 +681,133 @@ function buildEduTable() {
 
 // ===== LANG TABLE =====
 function buildLangTable() {
-  const tb = document.getElementById('langBody'); tb.innerHTML = '';
-  LANG_ROWS.forEach((lang,i) => {
-    const tr = document.createElement('tr');
-    const grps = ['lang_speak','lang_write','lang_read'];
-    const lvls = ['ดี','ปานกลาง','พอใช้'];
-    tr.innerHTML = `<td style="padding:.28rem .42rem;font-weight:600;">${lang}</td>`+
-      grps.map(g => lvls.map(lv => `<td style="padding:.12rem;"><label style="cursor:pointer;display:flex;align-items:center;justify-content:center;"><input type="radio" name="${g}_${i}" value="${lv}" style="accent-color:var(--primary);"></label></td>`).join('')).join('');
+  const tb=document.getElementById('langBody'); tb.innerHTML='';
+  LANG_ROWS.forEach((lang,i)=>{
+    const tr=document.createElement('tr');
+    const grps=['lang_speak','lang_write','lang_read'];
+    const lvls=['ดี','ปานกลาง','พอใช้'];
+    tr.innerHTML=`<td style="padding:.28rem .42rem;font-weight:600;">${lang}</td>`+
+      grps.map(g=>lvls.map(lv=>`<td style="padding:.12rem;"><label style="cursor:pointer;display:flex;align-items:center;justify-content:center;"><input type="radio" name="${g}_${i}" value="${lv}" style="accent-color:var(--teal);"></label></td>`).join('')).join('');
     tb.appendChild(tr);
   });
 }
 
 // ===== DYNAMIC ROWS =====
 function addWorkRow() {
-  const c = document.getElementById('workRows'), d = document.createElement('div');
-  d.className = 'dyn-row';
-  d.style.gridTemplateColumns = '1.4fr .85fr .95fr .95fr .8fr .8fr 32px';
-  [['ชื่อบริษัท','ชื่อบริษัท'],['ระยะเวลา','เช่น 2555-2558'],['ตำแหน่ง','ตำแหน่ง'],['ลักษณะงาน','ลักษณะงาน'],['ค่าจ้าง','ค่าจ้าง'],['เหตุผลที่ลาออก','เหตุผลที่ลาออก']].forEach(([_,ph]) => {
-    const div = document.createElement('div'); div.className = 'field';
-    div.innerHTML = `<input type="text" placeholder="${ph}">`;
-    d.appendChild(div);
+  const c=document.getElementById('workRows'),d=document.createElement('div');
+  d.className='dyn-row'; d.style.gridTemplateColumns='1.4fr .85fr .95fr .95fr .8fr .8fr 32px';
+  [['','ชื่อบริษัท'],['','เช่น 2555-2558'],['','ตำแหน่ง'],['','ลักษณะงาน'],['','ค่าจ้าง'],['','เหตุผลที่ลาออก']].forEach(([_,ph])=>{
+    const div=document.createElement('div'); div.className='field';
+    div.innerHTML=`<input type="text" placeholder="${ph}">`; d.appendChild(div);
   });
-  const rm = document.createElement('button'); rm.className = 'btn-rm'; rm.textContent = '×';
-  rm.onclick = () => d.remove(); d.appendChild(rm); c.appendChild(d);
+  const rm=document.createElement('button'); rm.className='btn-rm'; rm.textContent='×';
+  rm.onclick=()=>d.remove(); d.appendChild(rm); c.appendChild(d);
 }
 function addRefRow() {
-  const c = document.getElementById('refRows'), d = document.createElement('div');
-  d.className = 'dyn-row';
-  d.style.gridTemplateColumns = '1.4fr 1fr 1fr 1fr 32px';
-  ['ชื่อ-นามสกุล','ที่อยู่','เบอร์โทร','อาชีพ'].forEach(ph => {
-    const div = document.createElement('div'); div.className = 'field';
-    div.innerHTML = `<input type="text" placeholder="${ph}">`;
-    d.appendChild(div);
+  const c=document.getElementById('refRows'),d=document.createElement('div');
+  d.className='dyn-row'; d.style.gridTemplateColumns='1.4fr 1fr 1fr 1fr 32px';
+  ['ชื่อ-นามสกุล','ที่อยู่','เบอร์โทร','อาชีพ'].forEach(ph=>{
+    const div=document.createElement('div'); div.className='field';
+    div.innerHTML=`<input type="text" placeholder="${ph}">`; d.appendChild(div);
   });
-  const rm = document.createElement('button'); rm.className = 'btn-rm'; rm.textContent = '×';
-  rm.onclick = () => d.remove(); d.appendChild(rm); c.appendChild(d);
+  const rm=document.createElement('button'); rm.className='btn-rm'; rm.textContent='×';
+  rm.onclick=()=>d.remove(); d.appendChild(rm); c.appendChild(d);
 }
-
-// ===== HELPERS =====
-function v(id) { return (document.getElementById(id)||{}).value||''; }
-function getRadio(name) { const el = document.querySelector(`input[name="${name}"]:checked`); return el?el.value:''; }
 
 // ===== COLLECT DATA =====
 function collectData() {
-  const eduData = EDU_LEVELS.map((lv,i) => ({
-    level: lv,
-    inst: document.querySelector(`.edu-inst[data-i="${i}"]`)?.value||'',
-    major: document.querySelector(`.edu-major[data-i="${i}"]`)?.value||'',
-    period: document.querySelector(`.edu-period[data-i="${i}"]`)?.value||''
-  })).filter(r => r.inst||r.major||r.period);
-
-  const workData = Array.from(document.getElementById('workRows').querySelectorAll('.dyn-row')).map(row => {
-    const inp = row.querySelectorAll('input');
-    return {company:inp[0].value,period:inp[1].value,pos:inp[2].value,desc:inp[3].value,salary:inp[4].value,resign:inp[5].value};
-  }).filter(r => r.company);
-
-  const refData = Array.from(document.getElementById('refRows').querySelectorAll('.dyn-row')).map(row => {
-    const inp = row.querySelectorAll('input');
-    return {name:inp[0].value,addr:inp[1].value,tel:inp[2].value,occ:inp[3].value};
-  }).filter(r => r.name);
-
-  const langData = LANG_ROWS.map((lang,i) => ({
-    lang, speak:getRadio(`lang_speak_${i}`), write:getRadio(`lang_write_${i}`), read:getRadio(`lang_read_${i}`)
-  }));
-
+  const eduData=EDU_LEVELS.map((lv,i)=>({
+    level:lv,
+    inst:document.querySelector(`.edu-inst[data-i="${i}"]`)?.value||'',
+    major:document.querySelector(`.edu-major[data-i="${i}"]`)?.value||'',
+    period:document.querySelector(`.edu-period[data-i="${i}"]`)?.value||''
+  })).filter(r=>r.inst||r.major||r.period);
+  const workData=Array.from(document.getElementById('workRows').querySelectorAll('.dyn-row')).map(row=>{
+    const inp=row.querySelectorAll('input');
+    return{company:inp[0].value,period:inp[1].value,pos:inp[2].value,desc:inp[3].value,salary:inp[4].value,resign:inp[5].value};
+  }).filter(r=>r.company);
+  const refData=Array.from(document.getElementById('refRows').querySelectorAll('.dyn-row')).map(row=>{
+    const inp=row.querySelectorAll('input');
+    return{name:inp[0].value,addr:inp[1].value,tel:inp[2].value,occ:inp[3].value};
+  }).filter(r=>r.name);
+  const langData=LANG_ROWS.map((lang,i)=>({lang,speak:getRadio(`lang_speak_${i}`),write:getRadio(`lang_write_${i}`),read:getRadio(`lang_read_${i}`)}));
+  const n=parseInt(v('siblings'))||1;
+  const sibDetails=[];
+  for(let i=0;i<n-1;i++) sibDetails.push({name:(document.getElementById('sibName_'+i)||{}).value||'',age:(document.getElementById('sibAge_'+i)||{}).value||'',job:(document.getElementById('sibJob_'+i)||{}).value||''});
   return {
-    // meta
-    id: 'APP-' + Date.now(),
-    submittedAt: new Date().toISOString(),
-    status: 'new', // new | shortlisted | rejected | hired
-    // position
-    position: v('position'), salary: v('salary'), applyDate: v('applyDate'),
-    // personal
-    photo: photoData,
-    prefix: v('prefix'), nameTH: v('nameTH'), nameEN: v('nameEN'),
-    birthDate: v('birthDate'), age: v('age'), gender: getRadio('gender'),
-    race: v('race'), nationality: v('nationality'), religion: v('religion'),
-    height: v('height'), weight: v('weight'),
-    address: v('address'), mobile: v('mobile'), email: v('email'), lineId: v('lineId'),
-    livingArr: v('livingArr'), idCard: v('idCard'), idExpiry: v('idExpiry'),
-    military: v('military'), marital: v('marital'),
-    // family
-    fatherName: v('fatherName'), fatherAge: v('fatherAge'), fatherOcc: v('fatherOcc'),
-    motherName: v('motherName'), motherAge: v('motherAge'), motherOcc: v('motherOcc'),
-    spouseName: v('spouseName'), spouseOcc: v('spouseOcc'),
-    children: v('children'), siblings: v('siblings'),
-    sibMale: v('sibMale'), sibFemale: v('sibFemale'), childOrder: v('childOrder'),
-    sibDetails: (() => {
-      const n = parseInt(v('siblings'))||1;
-      const arr = [];
-      for (let i=0; i<n-1; i++) {
-        arr.push({name: (document.getElementById('sibName_'+i)||{}).value||'',
-                  age:  (document.getElementById('sibAge_'+i)||{}).value||'',
-                  job:  (document.getElementById('sibJob_'+i)||{}).value||''});
-      }
-      return arr;
-    })(),
-    spouseWork: v('spouseWork'),
-    jobSourceFull: document.getElementById('jobSource')?.value === 'อื่นๆ' ? v('jobSourceOther') : v('jobSource'),
-    // edu & work
-    education: eduData, workHistory: workData,
-    // lang & skills
-    languages: langData, langOther: v('langOther'),
-    typing: getRadio('typing'), typingSpeed: v('typingSpeed'),
-    computer: getRadio('computer'), computerPrograms: v('computerPrograms'),
-    driving: getRadio('driving'), driveNo: v('driveNo'),
-    officeMachine: v('officeMachine'), hobby: v('hobby'), sport: v('sport'),
-    specialKnowledge: v('specialKnowledge'), abilityOther: v('abilityOther'),
-    upcountry: getRadio('upcountry'), upcountryNote: v('upcountryNote'),
-    // misc
-    emergName: v('emergName'), emergRelation: v('emergRelation'), emergAddr: v('emergAddr'), emergTel: v('emergTel'),
-    references: refData,
-    jobSource: document.getElementById('jobSource')?.value === 'อื่นๆ' ? v('jobSourceOther') : v('jobSource'), friendInCo: v('friendInCo'),
-    illness: getRadio('illness'), illnessDetail: v('illnessDetail'),
-    prevApply: getRadio('prevApply'), prevApplyDetail: v('prevApplyDetail'),
-    selfIntro: v('selfIntro'),
+    id:'APP-'+Date.now(), submittedAt:new Date().toISOString(), status:'new',
+    position:v('position'),salary:v('salary'),applyDate:v('applyDate'),
+    photo:photoData, prefix:v('prefix'),nameTH:v('nameTH'),nameEN:'',
+    birthDate:v('birthDate'),age:v('age'),gender:getRadio('gender'),
+    race:v('race'),nationality:v('nationality'),religion:v('religion'),
+    height:v('height'),weight:v('weight'),
+    address:v('address'),mobile:v('mobile'),email:v('email'),lineId:v('lineId'),
+    livingArr:v('livingArr'),military:v('military'),marital:v('marital'),
+    fatherName:v('fatherName'),fatherAge:v('fatherAge'),fatherOcc:v('fatherOcc'),
+    motherName:v('motherName'),motherAge:v('motherAge'),motherOcc:v('motherOcc'),
+    spouseName:v('spouseName'),spouseOcc:v('spouseOcc'),spouseWork:v('spouseWork'),
+    children:v('children'),siblings:v('siblings'),
+    sibMale:v('sibMale'),sibFemale:v('sibFemale'),childOrder:v('childOrder'),sibDetails,
+    education:eduData,workHistory:workData,
+    languages:langData,langOther:v('langOther'),
+    typing:getRadio('typing'),typingSpeed:v('typingSpeed'),
+    computer:getRadio('computer'),computerPrograms:v('computerPrograms'),
+    driving:getRadio('driving'),
+    officeMachine:v('officeMachine'),hobby:v('hobby'),sport:v('sport'),
+    specialKnowledge:v('specialKnowledge'),abilityOther:v('abilityOther'),
+    upcountry:getRadio('upcountry'),upcountryNote:v('upcountryNote'),
+    emergName:v('emergName'),emergRelation:v('emergRelation'),emergAddr:v('emergAddr'),emergTel:v('emergTel'),
+    references:refData,
+    jobSource:document.getElementById('jobSource')?.value==='อื่นๆ'?v('jobSourceOther'):v('jobSource'),
+    friendInCo:v('friendInCo'),
+    illness:getRadio('illness'),illnessDetail:v('illnessDetail'),
+    prevApply:getRadio('prevApply'),prevApplyDetail:v('prevApplyDetail'),
+    selfIntro:v('selfIntro'),
   };
 }
 
-// ===== GOOGLE SHEETS ENDPOINT =====
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyBHJrTK9WuXXMLrothDsxqhXTY3JX6zaAyfb-2t0t-z2cO4Dc3AAlfEL_9HsAvr_fABQ/exec';
+// ===== SHEETS =====
+const SHEETS_URL='https://script.google.com/macros/s/AKfycbyBHJrTK9WuXXMLrothDsxqhXTY3JX6zaAyfb-2t0t-z2cO4Dc3AAlfEL_9HsAvr_fABQ/exec';
 
-
-// ===== SIBLING / SPOUSE / SPECIAL ABILITY TOGGLES =====
-function onSiblingsChange() {
-  const n = parseInt(document.getElementById('siblings').value) || 1;
-  const block = document.getElementById('sibDetailBlock');
-  if (n <= 1) {
-    block.style.display = 'none';
-    // set defaults
-    ['sibMale','sibFemale','childOrder'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '-';
-    });
-  } else {
-    block.style.display = 'block';
-    ['sibMale','sibFemale','childOrder'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el && el.value === '-') el.value = '';
-    });
-    buildSibNames(n);
-  }
-}
-
-function buildSibNames(total) {
-  const block = document.getElementById('sibNamesBlock');
-  block.innerHTML = '';
-  const count = total - 1; // ตัดผู้สมัครออก
-  if (count <= 0) return;
-  const title = document.createElement('div');
-  title.style.cssText = 'font-size:.76rem;font-weight:600;color:var(--teal);margin-bottom:.4rem;';
-  title.textContent = `รายละเอียดพี่น้อง ${count} คน (ไม่รวมผู้สมัคร)`;
-  block.appendChild(title);
-  for (let i = 0; i < count; i++) {
-    const row = document.createElement('div');
-    row.className = 'fg3';
-    row.style.marginBottom = '.4rem';
-    row.innerHTML = `
-      <div class="field"><label>ชื่อ-นามสกุล คนที่ ${i+1}</label><input type="text" id="sibName_${i}" placeholder="ชื่อ นามสกุล"></div>
-      <div class="field"><label>อายุ</label><input type="number" id="sibAge_${i}" placeholder="อายุ" min="0"></div>
-      <div class="field"><label>อาชีพ</label><input type="text" id="sibJob_${i}" placeholder="อาชีพ"></div>`;
-    block.appendChild(row);
-  }
-}
-
-function onMaritalChange() {
-  const mar = document.getElementById('marital').value;
-  const spouseBlock = document.getElementById('spouseBlock');
-  const fullFields = document.getElementById('spouseFullFields');
-  const childrenField = document.getElementById('children');
-  if (mar === 'แต่งงาน') {
-    spouseBlock.style.display = 'block';
-    if (fullFields) fullFields.style.display = 'grid';
-  } else if (mar === 'หม้าย' || mar === 'แยกทางกัน') {
-    spouseBlock.style.display = 'block';
-    if (fullFields) fullFields.style.display = 'none';
-  } else {
-    spouseBlock.style.display = 'none';
-  }
-}
-
-function toggleTypingSpeed(show) {
-  document.getElementById('typingSpeedField').style.display = show ? 'block' : 'none';
-  if (!show) document.getElementById('typingSpeed').value = '';
-}
-function toggleComputer(show) {
-  document.getElementById('computerProgramsField').style.display = show ? 'block' : 'none';
-  if (!show) document.getElementById('computerPrograms').value = '';
-}
-function toggleUpcountry(show) {
-  document.getElementById('upcountryNoteField').style.display = show ? 'block' : 'none';
-  if (!show) document.getElementById('upcountryNote').value = '';
-}
-function toggleJobSourceOther() {
-  const v = document.getElementById('jobSource').value;
-  document.getElementById('jobSourceOtherField').style.display = v === 'อื่นๆ' ? 'block' : 'none';
-}
-
-
-function toggleIllness(show) {
-  document.getElementById('illnessDetailField').style.display = show ? 'block' : 'none';
-  if (!show) document.getElementById('illnessDetail').value = '';
-}
-function togglePrevApply(show) {
-  document.getElementById('prevApplyDetailField').style.display = show ? 'block' : 'none';
-  if (!show) (document.getElementById('prevApplyDetail')||{}).value = '';
-}
-// ===== SUBMIT =====
+// ===== SUBMIT — validate ทุก step ก่อนส่ง =====
 async function submitApplication() {
-  if (!validateStep(5)) return;
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '⏳ กำลังส่ง...';
+  // ไล่ validate ทุก step — ถ้าไม่ผ่านเด้งไปหน้านั้นพร้อมขึ้นสีแดง
+  const saved = currentStep;
+  for (let s=1; s<=5; s++) {
+    // ชั่วคราวเปิด step นั้น
+    document.getElementById('step'+currentStep).classList.remove('active');
+    currentStep=s;
+    document.getElementById('step'+s).classList.add('active');
+    updateProgress(s);
+    if (!validateStep(s)) {
+      window.scrollTo({top:0,behavior:'smooth'});
+      setTimeout(()=>{
+        const first=document.querySelector('.step.active .field-error,.step.active .err-msg.show');
+        if(first) first.scrollIntoView({behavior:'smooth',block:'center'});
+      },150);
+      showToast(`⚠️ กรุณากรอกข้อมูลในขั้นตอนที่ ${s} ให้ครบ`);
+      return; // หยุดที่ step นี้
+    }
+  }
+  // ผ่านทุก step — อยู่ที่ step 5 อยู่แล้ว
+  const btn=document.getElementById('submitBtn');
+  btn.disabled=true; btn.innerHTML='⏳ กำลังส่ง...';
   try {
-    const data = collectData();
-    // ส่งข้อมูลไปยัง Google Sheets ผ่าน Apps Script
-    const res = await fetch(SHEETS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    // no-cors ไม่สามารถอ่าน response ได้ แต่ถ้าไม่ throw = สำเร็จ
-    document.getElementById('mainContent').style.display = 'none';
-    document.getElementById('successScreen').style.display = 'block';
-    document.getElementById('refCodeDisplay').textContent = data.id;
+    const data=collectData();
+    await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    document.getElementById('mainContent').style.display='none';
+    document.getElementById('successScreen').style.display='block';
+    document.getElementById('refCodeDisplay').textContent=data.id;
   } catch(e) {
     showToast('❌ เกิดข้อผิดพลาด กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่');
-    btn.disabled = false;
-    btn.innerHTML = '✅ ส่งใบสมัคร';
+    btn.disabled=false; btn.innerHTML='✅ ส่งใบสมัคร';
   }
 }
 
 // ===== TOAST =====
 function showToast(msg) {
-  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3500);
 }
 </script>
 </body>
