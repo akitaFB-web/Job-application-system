@@ -335,7 +335,17 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
               </select>
             </div>
             <div class="filter-field"><label>เพศ</label><select id="fGender" onchange="applyFilters()"><option value="">ทั้งหมด</option><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option></select></div>
-            <div class="filter-field"><label>สถานะ</label><select id="fStatus" onchange="applyFilters()"><option value="">ทั้งหมด</option><option value="new">ใหม่</option><option value="shortlisted">ผ่านคุณสมบัติ</option><option value="rejected">ไม่ผ่าน</option><option value="hired">รับเข้าทำงาน</option></select></div>
+            <div class="filter-field"><label>สถานะ</label><select id="fStatus" onchange="applyFilters()">
+              <option value="">ทั้งหมด</option>
+              <option value="new">🆕 ใหม่</option>
+              <option value="shortlisted">⭐ ผ่านคุณสมบัติ</option>
+              <option value="interviewed">📅 นัดสัมภาษณ์แล้ว</option>
+              <option value="unreachable">📵 ติดต่อไม่ได้</option>
+              <option value="passed_interview">✅ ผ่านสัมภาษณ์</option>
+              <option value="hired">🏢 รับเข้าทำงาน</option>
+              <option value="resigned">🚪 ลาออกแล้ว</option>
+              <option value="rejected">❌ ไม่ผ่าน</option>
+            </select></div>
             <button class="btn-reset" onclick="resetFilters()">↺ ล้างตัวกรอง</button>
           </div>
         </div>
@@ -497,11 +507,6 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
     <div class="modal-actions" style="flex-wrap:wrap;gap:.5rem;">
       <button class="btn-primary" style="background:#1a7a4a;border:none;" onclick="downloadExcelSingle()">📥 Excel</button>
       <button class="btn-sm btn-shortlist" style="padding:.5rem .8rem;" onclick="setModalStatus('shortlisted')">⭐ ผ่านคุณสมบัติ</button>
-      <button class="btn-sm" style="background:rgba(56,139,253,.15);color:#388bfd;padding:.5rem .8rem;" onclick="setModalStatus('interviewed')">📅 นัดสัมภาษณ์</button>
-      <button class="btn-sm" style="background:rgba(210,153,34,.15);color:#d29922;padding:.5rem .8rem;" onclick="setModalStatus('showed')">🙋 มาสัมแล้ว</button>
-      <button class="btn-sm" style="background:rgba(26,122,74,.15);color:#1a7a4a;padding:.5rem .8rem;" onclick="setModalStatus('passed_interview')">✅ ผ่านสัม</button>
-      <button class="btn-sm" style="background:rgba(26,58,92,.15);color:#1a3a5c;padding:.5rem .8rem;" onclick="setModalStatus('hired')">🏢 รับเข้าทำงาน</button>
-      <button class="btn-sm" style="background:rgba(130,80,20,.15);color:#7a4a10;padding:.5rem .8rem;" onclick="openResignModal(null)">🚪 ลาออก</button>
       <button class="btn-sm btn-reject" style="padding:.5rem .8rem;" onclick="setModalStatus('rejected')">❌ ไม่ผ่าน</button>
       <button class="btn-sm btn-delete-sm" style="padding:.5rem .8rem;" onclick="deleteApp()">🗑 ลบ</button>
       <button class="btn-secondary" onclick="closeModal()" style="margin-left:auto;">ปิด</button>
@@ -598,7 +603,8 @@ async function refreshApps() {
       allApps = json.apps.map(d => ({
         id: d.id, name: (d.prefix||'') + d.nameTH, position: d.position,
         submittedAt: d.submittedAt, status: d.status || 'new',
-        age: d.age, gender: d.gender, mobile: d.mobile, education: d.education
+        age: d.age, gender: d.gender, mobile: d.mobile, education: d.education,
+        startDate: d.startDate || ''
       }));
     } else { allApps = []; }
   } catch(e) { allApps = []; showToast('⚠️ ไม่สามารถโหลดข้อมูลได้'); }
@@ -793,8 +799,8 @@ function updateSelectedCount() {
 // ===== STATUS =====
 async function quickStatus(id, status) {
   await updateStatus(id, status);
-  await refreshApps();
   applyFilters();
+  renderAllViews();
   showToast(status==='shortlisted'?'⭐ ผ่านคุณสมบัติแล้ว':'❌ ไม่ผ่านคุณสมบัติ');
 }
 async function updateStatus(id, status) {
@@ -814,8 +820,19 @@ async function bulkStatus(status) {
   if (!selectedIds.size) { showToast('⚠️ เลือกผู้สมัครก่อน'); return; }
   for (const id of selectedIds) await updateStatus(id, status);
   selectedIds.clear();
-  await refreshApps(); applyFilters();
-  showToast(`✅ อัปเดตสถานะ ${selectedIds.size} คนแล้ว`);
+  applyFilters();
+  renderAllViews();
+  showToast(`✅ อัปเดตสถานะแล้ว`);
+}
+
+function renderAllViews() {
+  renderStats();
+  renderRecentTable();
+  renderAppTable(filteredApps);
+  renderShortlisted();
+  renderInterview();
+  renderHiring();
+  renderWorking();
 }
 
 // ===== SHORTLISTED VIEW =====
@@ -882,8 +899,10 @@ async function deleteApp() {
   } catch(e) {}
   allApps = allApps.filter(a => a.id !== currentModalApp.id);
   appsCache = appsCache.filter(a => a.id !== currentModalApp.id);
+  filteredApps = filteredApps.filter(a => a.id !== currentModalApp.id);
   closeModal();
-  renderStats(); renderRecentTable(); renderAppTable(allApps); renderShortlisted();
+  applyFilters();
+  renderAllViews();
   showToast('🗑 ลบแล้ว');
 }
 
@@ -932,13 +951,13 @@ function renderAppDetail(d, forPrint=false) {
       <div class="d-sec-title">▪ ข้อมูลส่วนตัว</div>
       <div class="d-2col">
         ${fl('ชื่อ-นามสกุล', name)}
-        ${fl('Name (EN)',d.nameEN)}
         ${fl('วัน/เดือน/ปีเกิด',fmtD(d.birthDate))}
         ${fl('อายุ',d.age?d.age+' ปี':'')}
         ${fl('เพศ',d.gender)}
-        ${fl('สัญชาติ/เชื้อชาติ',[d.nationality,d.race].filter(Boolean).join('/'))}
-        ${fl('ศาสนา',d.religion)}
         ${fl('ส่วนสูง/น้ำหนัก',(d.height?d.height+' ซม.':'')+(d.height&&d.weight?' / ':'')+(d.weight?d.weight+' กก.':''))}
+        ${fl('สถานภาพ',d.marital)}
+        ${fl('ที่อยู่อาศัย',d.livingArr)}
+        ${fl('สถานะทหาร',d.military)}
       </div>
     </div>
   </div>
@@ -948,11 +967,6 @@ function renderAppDetail(d, forPrint=false) {
     <div class="d-field"><span class="d-lbl">ที่อยู่</span><span class="d-val">${esc(d.address)}</span></div>
     <div class="d-2col" style="margin-top:1mm;">
       ${fl('เบอร์โทร',d.mobile)} ${fl('อีเมล',d.email)} ${fl('ไอดีไลน์',d.lineId)}
-    </div>
-    <div style="font-size:7.2pt;margin-top:1.5mm;">
-      <strong>ที่อยู่อาศัย:</strong> ${esc(d.livingArr||'-')} &nbsp;|&nbsp;
-      <strong>ทหาร:</strong> ${esc(d.military||'-')} &nbsp;|&nbsp;
-      <strong>สถานภาพ:</strong> ${esc(d.marital||'-')}
     </div>
   </div>
 
@@ -973,11 +987,13 @@ function renderAppDetail(d, forPrint=false) {
     </table></div>`;
   }
 
-  if (d.workHistory && d.workHistory.length) {
+  if (d.workHistory && Array.isArray(d.workHistory) && d.workHistory.length) {
     html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ ประวัติการทำงาน</div>
     <table class="d-table"><thead><tr><th>บริษัท</th><th>ระยะเวลา</th><th>ตำแหน่ง</th><th>ลักษณะงาน</th><th>ค่าจ้าง</th><th>เหตุผลที่ลาออก</th></tr></thead>
-    <tbody>${d.workHistory.map(w=>`<tr><td>${esc(w.company)}</td><td>${esc(w.period)}</td><td>${esc(w.pos)}</td><td>${esc(w.desc)}</td><td>${esc(w.salary)}</td><td>${esc(w.resign)}</td></tr>`).join('')}</tbody>
+    <tbody>${d.workHistory.map(w=>`<tr><td>${esc(w.company||'')}</td><td>${esc(w.period||'')}</td><td>${esc(w.pos||'')}</td><td>${esc(w.desc||'')}</td><td>${esc(w.salary||'')}</td><td>${esc(w.resign||'')}</td></tr>`).join('')}</tbody>
     </table></div>`;
+  } else if (d.workHistory && !Array.isArray(d.workHistory)) {
+    html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ ประวัติการทำงาน</div><div style="font-size:8pt;padding:4px 0;">${esc(String(d.workHistory))}</div></div>`;
   }
 
   if (d.languages) {
@@ -1491,22 +1507,22 @@ async function saveResign() {
   } catch(e) {}
   closeResignModal();
   currentResignApp = null;
-  await refreshApps(); applyFilters();
-  renderWorking();
+  applyFilters();
+  renderAllViews();
   showToast('🚪 บันทึกการลาออกแล้ว');
 }
 
 // ===== PIPELINE: SHORTLISTED → INTERVIEW =====
 async function moveToInterview(id) {
   await updateStatus(id, 'interviewed');
-  await refreshApps(); applyFilters();
-  renderShortlisted(); renderInterview();
+  applyFilters();
+  renderAllViews();
   showToast('📅 นัดสัมภาษณ์แล้ว — ย้ายไปหน้าการสัมภาษณ์');
 }
 async function markUnreachable(id) {
   await updateStatus(id, 'unreachable');
-  await refreshApps(); applyFilters();
-  renderShortlisted();
+  applyFilters();
+  renderAllViews();
   showToast('📵 บันทึกว่าติดต่อไม่ได้แล้ว');
 }
 
@@ -1534,14 +1550,14 @@ function renderInterview() {
 }
 async function interviewPass(id) {
   await updateStatus(id, 'passed_interview');
-  await refreshApps(); applyFilters();
-  renderInterview(); renderHiring();
+  applyFilters();
+  renderAllViews();
   showToast('✅ ผ่านสัมภาษณ์ — ย้ายไปหน้าการรับเข้าทำงาน');
 }
 async function interviewFail(id) {
   await updateStatus(id, 'rejected');
-  await refreshApps(); applyFilters();
-  renderInterview();
+  applyFilters();
+  renderAllViews();
   showToast('❌ ไม่ผ่านสัมภาษณ์');
 }
 
@@ -1599,14 +1615,14 @@ async function confirmStartDate() {
     });
   } catch(e) {}
   closeStartDateModal();
-  await refreshApps(); applyFilters();
-  renderHiring(); renderWorking();
+  applyFilters();
+  renderAllViews();
   showToast('🎉 รับเข้าทำงานแล้ว — ย้ายไปหน้าการทำงาน');
 }
 async function hiringReject(id) {
   await updateStatus(id, 'rejected');
-  await refreshApps(); applyFilters();
-  renderHiring();
+  applyFilters();
+  renderAllViews();
   showToast('🚫 ปฏิเสธการร่วมงานแล้ว');
 }
 
@@ -1618,7 +1634,7 @@ function renderWorking() {
   if (!list.length) { tbody.innerHTML = ''; return; }
   tbody.innerHTML = list.map((a, idx) => {
     const d = appsCache.find(x=>x.id===a.id)||a;
-    const startDate = d.startDate ? new Date(d.startDate).toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}) : '-';
+    const startDate = (d.startDate || a.startDate) ? new Date(d.startDate||a.startDate).toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}) : '-';
     return `<tr>
       <td style="color:var(--muted);font-size:.78rem;">${idx+1}</td>
       <td><div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#e8e2d8;display:flex;align-items:center;justify-content:center;">${d.photo?`<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`:'👤'}</div></td>
