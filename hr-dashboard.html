@@ -599,16 +599,24 @@ async function refreshApps() {
     const res = await fetch(SHEETS_URL + '?action=getAll&t=' + Date.now());
     const json = await res.json();
     if (json.apps) {
-      appsCache = json.apps;
-      allApps = json.apps.map(d => ({
+      // กรองแถวว่าง และ dedup ด้วย id
+      const seen = new Set();
+      const clean = json.apps.filter(d => {
+        if (!d.id || !d.nameTH) return false;
+        if (seen.has(d.id)) return false;
+        seen.add(d.id);
+        return true;
+      });
+      appsCache = clean;
+      allApps = clean.map(d => ({
         id: d.id, name: (d.prefix||'') + d.nameTH, position: d.position,
         submittedAt: d.submittedAt, status: d.status || 'new',
         age: d.age, gender: d.gender, mobile: d.mobile, education: d.education,
         startDate: d.startDate || ''
       }));
-    } else { allApps = []; }
-  } catch(e) { allApps = []; showToast('⚠️ ไม่สามารถโหลดข้อมูลได้'); }
-  filteredApps = [...allApps];
+    } else { allApps = []; appsCache = []; }
+  } catch(e) { allApps = []; appsCache = []; showToast('⚠️ ไม่สามารถโหลดข้อมูลได้'); }
+  filteredApps = allApps.filter(a => APPLICANT_STATUSES.includes(a.status));
   renderStats();
   renderRecentTable();
   renderAppTable(filteredApps);
@@ -743,6 +751,9 @@ async function loadAppDetail(id) {
 }
 
 // ===== FILTERS =====
+// สถานะที่แสดงในหน้ารายชื่อผู้สมัคร (ยังไม่เข้า pipeline สัมภาษณ์/รับเข้า/ทำงาน)
+const APPLICANT_STATUSES = ['new','shortlisted','rejected','unreachable'];
+
 function applyFilters() {
   const name = document.getElementById('fName').value.toLowerCase();
   const pos = document.getElementById('fPosition').value.toLowerCase();
@@ -755,6 +766,8 @@ function applyFilters() {
   const eduMin = eduFilter ? eduOrder.findIndex(e => e.includes(eduFilter.replace('.','').replace('ปวส','ปวส'))) : -1;
 
   filteredApps = allApps.filter(a => {
+    // ถ้าไม่ได้เลือกสถานะ → แสดงเฉพาะที่ยังอยู่ในขั้นรับสมัคร
+    if (!status && !APPLICANT_STATUSES.includes(a.status)) return false;
     if (name && !a.name.toLowerCase().includes(name)) return false;
     if (pos && !(a.position||'').toLowerCase().includes(pos)) return false;
     if (a.age && (parseInt(a.age) < ageMin || parseInt(a.age) > ageMax)) return false;
@@ -769,7 +782,7 @@ function applyFilters() {
 function resetFilters() {
   ['fName','fPosition','fAgeMin','fAgeMax'].forEach(id => document.getElementById(id).value = '');
   ['fGender','fStatus','fEdu'].forEach(id => document.getElementById(id).value = '');
-  filteredApps = [...allApps];
+  filteredApps = allApps.filter(a => APPLICANT_STATUSES.includes(a.status));
   renderAppTable(filteredApps);
 }
 
@@ -828,7 +841,7 @@ async function bulkStatus(status) {
 function renderAllViews() {
   renderStats();
   renderRecentTable();
-  renderAppTable(filteredApps);
+  applyFilters();
   renderShortlisted();
   renderInterview();
   renderHiring();
@@ -865,13 +878,44 @@ function renderShortlisted() {
 
 // ===== MODAL =====
 async function openModal(id) {
-  const d = appsCache.find(a => a.id === id);
+  let d = appsCache.find(a => a.id === id);
   if (!d) { showToast('❌ ไม่พบข้อมูล'); return; }
+
+  // parse JSON string fields ที่มาจาก Sheets
+  d = parseJsonFields(d);
+
+  // ดึงรูปถ้ายังไม่มี
+  if (!d.photo && d.id) {
+    try {
+      const res = await fetch(SHEETS_URL + '?action=getPhoto&id=' + d.id);
+      const json = await res.json();
+      if (json.photo) {
+        d.photo = json.photo;
+        const cidx = appsCache.findIndex(a => a.id === id);
+        if (cidx >= 0) appsCache[cidx].photo = json.photo;
+      }
+    } catch(e) {}
+  }
+
   currentModalApp = d;
   document.getElementById('modalTitle').textContent = `ใบสมัคร — ${d.prefix||''}${d.nameTH}`;
   document.getElementById('modalStatus').value = d.status || 'new';
   document.getElementById('modalBody').innerHTML = renderAppDetail(d, false);
   document.getElementById('detailModal').classList.add('open');
+}
+
+// แปลง field ที่เป็น JSON string กลับเป็น array/object
+function parseJsonFields(d) {
+  const obj = { ...d };
+  const jsonFields = ['education','workHistory','languages','references','sibDetails'];
+  jsonFields.forEach(f => {
+    if (typeof obj[f] === 'string' && obj[f].startsWith('[')) {
+      try { obj[f] = JSON.parse(obj[f]); } catch(e) { obj[f] = []; }
+    } else if (typeof obj[f] === 'string' && obj[f].startsWith('{')) {
+      try { obj[f] = JSON.parse(obj[f]); } catch(e) { obj[f] = {}; }
+    }
+  });
+  return obj;
 }
 function closeModal() {
   document.getElementById('detailModal').classList.remove('open');
@@ -1329,6 +1373,9 @@ function b64ToBuffer(b64) {
 async function fillAndDownload(d, printMode=false) {
   try {
     showToast('⏳ กำลังสร้าง Excel...');
+
+    // parse JSON string fields ที่มาจาก Sheets
+    d = parseJsonFields(d);
 
     // ดึงรูปถ่ายแยกต่างหาก (ถ้ายังไม่มีใน cache)
     if (!d.photo && d.id) {
