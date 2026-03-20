@@ -1065,7 +1065,6 @@ function renderAppDetail(d, forPrint=false) {
     <div><strong>คอมพิวเตอร์:</strong> ${esc(d.computer||d['คอมพิวเตอร์']||d['การใช้คอมพิวเตอร์']||'-')} ${(d.computerPrograms||d['โปรแกรม'])?' — '+esc(d.computerPrograms||d['โปรแกรม']):''}</div>
     <div><strong>ขับรถ:</strong> ${esc(d.driving||d['ขับรถ']||'-')}</div>
     <div><strong>เครื่องสำนักงาน:</strong> ${esc(d.officeMachine||d['เครื่องสำนักงาน']||d['เครื่องใช้สำนักงาน']||'-')}</div>
-    <div><strong>งานอดิเรก:</strong> ${esc(d.hobby||d['งานอดิเรก']||'-')}</div>
     <div><strong>กีฬา:</strong> ${esc(d.sport||d['กีฬา']||'-')}</div>
     <div><strong>ความรู้พิเศษ:</strong> ${esc(d.specialKnowledge||d['ความรู้พิเศษ']||'-')}</div>
   </div></div>`;
@@ -1102,19 +1101,6 @@ function renderAppDetail(d, forPrint=false) {
         ${fl('วันที่ลาออก', rDate)}
         ${fl('เหตุผล', rReason)}
       </div></div>`;
-  }
-
-  const refsRaw = d.references || d['บุคคลอ้างอิง'];
-  let refs = [];
-  if (Array.isArray(refsRaw)) refs = refsRaw;
-  else if (typeof refsRaw === 'string' && refsRaw.startsWith('[')) {
-    try { refs = JSON.parse(refsRaw); } catch(e) { refs = []; }
-  }
-  if (refs.length) {
-    html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ บุคคลอ้างอิง</div>
-    <table class="d-table"><thead><tr><th>ชื่อ-นามสกุล</th><th>ที่อยู่</th><th>โทรศัพท์</th><th>อาชีพ</th></tr></thead>
-    <tbody>${refs.map(r=>`<tr><td>${esc(r.name||'')}</td><td>${esc(r.addr||'')}</td><td>${esc(r.tel||'')}</td><td>${esc(r.occ||'')}</td></tr>`).join('')}</tbody>
-    </table></div>`;
   }
 
   if (forPrint) {
