@@ -1061,44 +1061,59 @@ function renderAppDetail(d, forPrint=false) {
 
   html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ ความสามารถพิเศษ</div>
   <div style="font-size:7.2pt;display:grid;grid-template-columns:1fr 1fr;gap:1mm 4mm;">
-    <div><strong>พิมพ์ดีด:</strong> ${esc(d.typing||'-')} ${d.typingSpeed?'('+esc(d.typingSpeed)+')':''}</div>
-    <div><strong>คอมพิวเตอร์:</strong> ${esc(d.computer||'-')} ${d.computerPrograms?' — '+esc(d.computerPrograms):''}</div>
-    <div><strong>ขับรถ:</strong> ${esc(d.driving||'-')} ${d.driveNo?'('+esc(d.driveNo)+')':''}</div>
-    <div><strong>เครื่องสำนักงาน:</strong> ${esc(d.officeMachine||'-')}</div>
-    <div><strong>งานอดิเรก:</strong> ${esc(d.hobby||'-')}</div>
-    <div><strong>กีฬา:</strong> ${esc(d.sport||'-')}</div>
-    <div><strong>ความรู้พิเศษ:</strong> ${esc(d.specialKnowledge||'-')}</div>
-    <div><strong>ต่างจังหวัด:</strong> ${esc(d.upcountry||'-')} ${d.upcountryNote?esc(d.upcountryNote):''}</div>
+    <div><strong>พิมพ์ดีด:</strong> ${esc(d.typing||d['พิมพ์ดีด']||'-')} ${(d.typingSpeed||d['ความเร็วพิมพ์'])?'('+(d.typingSpeed||d['ความเร็วพิมพ์'])+')':''}</div>
+    <div><strong>คอมพิวเตอร์:</strong> ${esc(d.computer||d['คอมพิวเตอร์']||d['การใช้คอมพิวเตอร์']||'-')} ${(d.computerPrograms||d['โปรแกรม'])?' — '+esc(d.computerPrograms||d['โปรแกรม']):''}</div>
+    <div><strong>ขับรถ:</strong> ${esc(d.driving||d['ขับรถ']||'-')}</div>
+    <div><strong>เครื่องสำนักงาน:</strong> ${esc(d.officeMachine||d['เครื่องสำนักงาน']||d['เครื่องใช้สำนักงาน']||'-')}</div>
+    <div><strong>งานอดิเรก:</strong> ${esc(d.hobby||d['งานอดิเรก']||'-')}</div>
+    <div><strong>กีฬา:</strong> ${esc(d.sport||d['กีฬา']||'-')}</div>
+    <div><strong>ความรู้พิเศษ:</strong> ${esc(d.specialKnowledge||d['ความรู้พิเศษ']||'-')}</div>
   </div></div>`;
 
   // ข้อมูลเพิ่มเติม
+  const illnessVal = d.illness||d['ประวัติป่วย']||'-';
+  const illnessDetail = d.illnessDetail||d['รายละเอียดป่วย']||'';
+  const prevApplyVal = d.prevApply||d['เคยสมัคร']||'-';
+  const prevApplyDetail = d.prevApplyDetail||d['รายละเอียดสมัคร']||'';
+  const jobSourceVal = d.jobSource||d['แหล่งข่าว']||'-';
+  const friendInCoVal = d.friendInCo||d['รู้จักในบริษัท']||'-';
+  const selfIntroVal = d.selfIntro||d['แนะนำตัว']||'';
+
   html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ ข้อมูลเพิ่มเติม</div>
   <div class="d-2col">
-    ${fl('เคยป่วยหนัก/โรคติดต่อ', (d.illness||'-') + (d.illnessDetail ? ' — '+d.illnessDetail : ''))}
-    ${fl('เคยสมัครบริษัทนี้', (d.prevApply||'-') + (d.prevApplyDetail ? ' — '+d.prevApplyDetail : ''))}
-    ${fl('แหล่งข่าวสาร', d.jobSource||'-')}
-    ${fl('ญาติ/เพื่อนในบริษัท', d.friendInCo||'-')}
+    ${fl('เคยป่วยหนัก/โรคติดต่อ', illnessVal + (illnessDetail ? ' — '+illnessDetail : ''))}
+    ${fl('เคยสมัครบริษัทนี้', prevApplyVal + (prevApplyDetail ? ' — '+prevApplyDetail : ''))}
+    ${fl('แหล่งข่าวสาร', jobSourceVal)}
+    ${fl('ญาติ/เพื่อนในบริษัท', friendInCoVal)}
   </div></div>`;
 
-  if (d.selfIntro) {
+  if (selfIntroVal) {
     html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ แนะนำตัว</div>
-    <div style="font-size:7.8pt;line-height:1.7;padding:2mm;border:1pt solid #c5b99a;background:#fdfaf5;">${esc(d.selfIntro)}</div></div>`;
+    <div style="font-size:7.8pt;line-height:1.7;padding:2mm;border:1pt solid #c5b99a;background:#fdfaf5;">${esc(selfIntroVal)}</div></div>`;
   }
 
   // แสดงข้อมูลลาออก (ถ้ามี)
-  if (d.resignDays || d.resignReason) {
+  if (d.resignDate || d.resignReason || d['วันลาออก'] || d['เหตุผลลาออก']) {
+    const rDate = d.resignDate || d['วันลาออก'] || '-';
+    const rReason = d.resignReason || d['เหตุผลลาออก'] || '-';
     html += `<div style="margin-bottom:3mm;background:#fff5f5;border:1pt solid #f5b7b1;border-radius:4pt;padding:2mm;">
       <div class="d-sec-title" style="background:#c0392b;">▪ ข้อมูลการลาออก</div>
       <div class="d-2col">
-        ${fl('ทำงานได้', (d.resignDays||'-')+' วัน')}
-        ${fl('เหตุผล', d.resignReason||'-')}
+        ${fl('วันที่ลาออก', rDate)}
+        ${fl('เหตุผล', rReason)}
       </div></div>`;
   }
 
-  if (d.references && d.references.length) {
+  const refsRaw = d.references || d['บุคคลอ้างอิง'];
+  let refs = [];
+  if (Array.isArray(refsRaw)) refs = refsRaw;
+  else if (typeof refsRaw === 'string' && refsRaw.startsWith('[')) {
+    try { refs = JSON.parse(refsRaw); } catch(e) { refs = []; }
+  }
+  if (refs.length) {
     html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ บุคคลอ้างอิง</div>
     <table class="d-table"><thead><tr><th>ชื่อ-นามสกุล</th><th>ที่อยู่</th><th>โทรศัพท์</th><th>อาชีพ</th></tr></thead>
-    <tbody>${d.references.map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.addr)}</td><td>${esc(r.tel)}</td><td>${esc(r.occ)}</td></tr>`).join('')}</tbody>
+    <tbody>${refs.map(r=>`<tr><td>${esc(r.name||'')}</td><td>${esc(r.addr||'')}</td><td>${esc(r.tel||'')}</td><td>${esc(r.occ||'')}</td></tr>`).join('')}</tbody>
     </table></div>`;
   }
 
