@@ -193,6 +193,9 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
     <div class="sidebar-item active" onclick="showView('dashboard')" id="nav-dashboard"><span class="icon">📊</span> ภาพรวม</div>
     <div class="sidebar-item" onclick="showView('applicants')" id="nav-applicants"><span class="icon">👥</span> รายชื่อผู้สมัคร</div>
     <div class="sidebar-item" onclick="showView('shortlisted')" id="nav-shortlisted"><span class="icon">⭐</span> ผ่านคุณสมบัติ</div>
+    <div class="sidebar-item" onclick="showView('interview')" id="nav-interview"><span class="icon">📅</span> การสัมภาษณ์</div>
+    <div class="sidebar-item" onclick="showView('hiring')" id="nav-hiring"><span class="icon">🏢</span> การรับเข้าทำงาน</div>
+    <div class="sidebar-item" onclick="showView('working')" id="nav-working"><span class="icon">💼</span> การทำงาน</div>
     <div class="sidebar-section">ตั้งค่า</div>
     <div class="sidebar-item" onclick="showView('settings')" id="nav-settings"><span class="icon">⚙️</span> ตั้งค่าบริษัท</div>
   </div>
@@ -205,11 +208,91 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
         <h1 style="font-size:1.2rem;font-weight:600;color:var(--text);">ภาพรวมการรับสมัครงาน</h1>
         <p style="color:var(--muted);font-size:.8rem;">อัปเดตล่าสุด: <span id="lastUpdate">-</span></p>
       </div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="stat-num" id="statTotal">0</div><div class="stat-label">📋 ใบสมัครทั้งหมด</div></div>
-        <div class="stat-card accent"><div class="stat-num" id="statNew">0</div><div class="stat-label">🆕 รับเข้าใหม่</div></div>
-        <div class="stat-card success"><div class="stat-num" id="statShort">0</div><div class="stat-label">⭐ ผ่านคุณสมบัติ</div></div>
-        <div class="stat-card danger"><div class="stat-num" id="statReject">0</div><div class="stat-label">❌ ไม่ผ่าน</div></div>
+
+      <!-- ROW 1: ทั้งหมด + ใหม่ + ไม่ผ่าน + ติดต่อไม่ได้ -->
+      <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:.8rem;">
+        <div class="stat-card" style="cursor:pointer;" onclick="showView('applicants')">
+          <div class="stat-num" id="statTotal">0</div>
+          <div class="stat-label">📋 ใบสมัครทั้งหมด</div>
+        </div>
+        <div class="stat-card accent" style="cursor:pointer;" onclick="showView('applicants')">
+          <div class="stat-num" id="statNew">0</div>
+          <div class="stat-label">🆕 รอพิจารณา</div>
+        </div>
+        <div class="stat-card danger" style="cursor:pointer;" onclick="showView('applicants')">
+          <div class="stat-num" id="statReject">0</div>
+          <div class="stat-label">❌ ไม่ผ่าน / ปฏิเสธ</div>
+        </div>
+        <div class="stat-card" style="cursor:pointer;" onclick="showView('applicants')">
+          <div class="stat-num" id="statUnreachable" style="color:var(--warning);">0</div>
+          <div class="stat-label">📵 ติดต่อไม่ได้</div>
+        </div>
+      </div>
+
+      <!-- PIPELINE FLOW -->
+      <div style="margin-bottom:.6rem;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">⚡ Pipeline การรับสมัคร</div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin-bottom:1.3rem;align-items:center;">
+        <!-- ผ่านคุณสมบัติ -->
+        <div class="stat-card" style="cursor:pointer;border-top:3px solid #3fb950;" onclick="showView('shortlisted')">
+          <div class="stat-num" id="statShort" style="color:#3fb950;">0</div>
+          <div class="stat-label">⭐ ผ่านคุณสมบัติ</div>
+        </div>
+        <!-- arrow -->
+        <div style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--border);">→</div>
+        <!-- นัดสัมภาษณ์ -->
+        <div class="stat-card" style="cursor:pointer;border-top:3px solid #388bfd;" onclick="showView('interview')">
+          <div class="stat-num" id="statInterviewed" style="color:#388bfd;">0</div>
+          <div class="stat-label">📅 นัดสัมภาษณ์แล้ว</div>
+        </div>
+        <!-- arrow -->
+        <div style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--border);">→</div>
+        <!-- ผ่านสัมภาษณ์ -->
+        <div class="stat-card" style="cursor:pointer;border-top:3px solid #1a7a4a;" onclick="showView('hiring')">
+          <div class="stat-num" id="statPassed" style="color:#1a7a4a;">0</div>
+          <div class="stat-label">✅ ผ่านสัมภาษณ์</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;margin-bottom:1.3rem;align-items:center;">
+        <!-- เริ่มงาน -->
+        <div class="stat-card" style="cursor:pointer;border-top:3px solid #1a3a5c;" onclick="showView('working')">
+          <div class="stat-num" id="statHired" style="color:#1a3a5c;">0</div>
+          <div class="stat-label">🏢 กำลังทำงาน</div>
+        </div>
+        <!-- arrow -->
+        <div style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--border);">→</div>
+        <!-- ลาออก -->
+        <div class="stat-card" style="cursor:pointer;border-top:3px solid #c0392b;" onclick="showView('working')">
+          <div class="stat-num" id="statResigned" style="color:#c0392b;">0</div>
+          <div class="stat-label">🚪 ลาออกแล้ว</div>
+        </div>
+        <!-- อัตราคงอยู่ -->
+        <div style="display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--border);">|</div>
+        <div class="stat-card" style="border-top:3px solid var(--border);">
+          <div class="stat-num" id="statRetentionRate" style="color:var(--teal);font-size:1.5rem;">-%</div>
+          <div class="stat-label">📊 อัตราคงอยู่</div>
+        </div>
+      </div>
+
+      <!-- อัตราแปลง -->
+      <div style="margin-bottom:.6rem;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;">📈 อัตราการแปลง (Conversion Rate)</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-bottom:1.3rem;">
+        <div class="stat-card">
+          <div class="stat-num" id="rateShortlist" style="font-size:1.4rem;color:#3fb950;">-%</div>
+          <div class="stat-label">ผ่านคุณสมบัติ / ทั้งหมด</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="rateInterview" style="font-size:1.4rem;color:#388bfd;">-%</div>
+          <div class="stat-label">นัดสัมภาษณ์ / ผ่านคุณสมบัติ</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="ratePass" style="font-size:1.4rem;color:#1a7a4a;">-%</div>
+          <div class="stat-label">ผ่านสัมภาษณ์ / นัดสัมภาษณ์</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="rateHire" style="font-size:1.4rem;color:#1a3a5c;">-%</div>
+          <div class="stat-label">รับเข้าทำงาน / ผ่านสัมภาษณ์</div>
+        </div>
       </div>
 
       <div class="card">
@@ -252,7 +335,6 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
               </select>
             </div>
             <div class="filter-field"><label>เพศ</label><select id="fGender" onchange="applyFilters()"><option value="">ทั้งหมด</option><option value="ชาย">ชาย</option><option value="หญิง">หญิง</option></select></div>
-            <div class="filter-field"><label>ขับรถได้</label><select id="fDriving" onchange="applyFilters()"><option value="">ทั้งหมด</option><option value="yes">ขับได้</option></select></div>
             <div class="filter-field"><label>สถานะ</label><select id="fStatus" onchange="applyFilters()"><option value="">ทั้งหมด</option><option value="new">ใหม่</option><option value="shortlisted">ผ่านคุณสมบัติ</option><option value="rejected">ไม่ผ่าน</option><option value="hired">รับเข้าทำงาน</option></select></div>
             <button class="btn-reset" onclick="resetFilters()">↺ ล้างตัวกรอง</button>
           </div>
@@ -295,12 +377,66 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
           <table class="app-table">
             <thead><tr>
               <th class="no-print" style="width:32px;"><input type="checkbox" id="selectAllShort" onchange="toggleSelectShortlist(this.checked)"></th>
-              <th>#</th><th>รูป</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th>อายุ</th><th>การศึกษาสูงสุด</th><th>โทรศัพท์</th><th>วันที่ส่ง</th><th class="no-print">การดำเนินการ</th>
+              <th>#</th><th>รูป</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th>อายุ</th><th>เพศ</th><th>โทรศัพท์</th><th class="no-print">การดำเนินการ</th>
             </tr></thead>
             <tbody id="shortlistedBody"></tbody>
           </table>
         </div>
         <div id="shortEmpty" class="empty-state" style="display:none;"><div class="icon">⭐</div><div>ยังไม่มีผู้สมัครที่ผ่านคุณสมบัติ<br><small style="color:var(--muted);">ไปที่รายชื่อผู้สมัครแล้วกด "ผ่านคุณสมบัติ"</small></div></div>
+      </div>
+    </div>
+
+    <!-- INTERVIEW VIEW -->
+    <div class="view" id="interviewView">
+      <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+        <h1 style="font-size:1.1rem;font-weight:600;color:var(--text);">📅 การสัมภาษณ์</h1>
+      </div>
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table class="app-table">
+            <thead><tr>
+              <th>#</th><th>รูป</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th>อายุ</th><th>เพศ</th><th>การดำเนินการ</th>
+            </tr></thead>
+            <tbody id="interviewBody"></tbody>
+          </table>
+        </div>
+        <div id="interviewEmpty" class="empty-state" style="display:none;"><div class="icon">📅</div><div>ยังไม่มีผู้สมัครในขั้นตอนสัมภาษณ์<br><small style="color:var(--muted);">ไปที่หน้าผ่านคุณสมบัติแล้วกด "นัดสัมภาษณ์แล้ว"</small></div></div>
+      </div>
+    </div>
+
+    <!-- HIRING VIEW -->
+    <div class="view" id="hiringView">
+      <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+        <h1 style="font-size:1.1rem;font-weight:600;color:var(--text);">🏢 การรับเข้าทำงาน</h1>
+      </div>
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table class="app-table">
+            <thead><tr>
+              <th>#</th><th>รูป</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th>อายุ</th><th>เพศ</th><th>การดำเนินการ</th>
+            </tr></thead>
+            <tbody id="hiringBody"></tbody>
+          </table>
+        </div>
+        <div id="hiringEmpty" class="empty-state" style="display:none;"><div class="icon">🏢</div><div>ยังไม่มีผู้สมัครในขั้นตอนรับเข้าทำงาน<br><small style="color:var(--muted);">ไปที่หน้าการสัมภาษณ์แล้วกด "ผ่าน"</small></div></div>
+      </div>
+    </div>
+
+    <!-- WORKING VIEW -->
+    <div class="view" id="workingView">
+      <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
+        <h1 style="font-size:1.1rem;font-weight:600;color:var(--text);">💼 การทำงาน</h1>
+      </div>
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table class="app-table">
+            <thead><tr>
+              <th>#</th><th>รูป</th><th>ชื่อ-นามสกุล</th><th>ตำแหน่ง</th><th>อายุ</th><th>เพศ</th><th>วันเริ่มงาน</th><th>การดำเนินการ</th>
+            </tr></thead>
+            <tbody id="workingBody"></tbody>
+          </table>
+        </div>
+        <div id="workingEmpty" class="empty-state" style="display:none;"><div class="icon">💼</div><div>ยังไม่มีพนักงานในระบบ<br><small style="color:var(--muted);">ไปที่หน้าการรับเข้าทำงานแล้วกด "ตอบรับเริ่มงาน"</small></div></div>
       </div>
     </div>
 
@@ -348,6 +484,7 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
         <option value="new">🆕 ใหม่</option>
         <option value="shortlisted">⭐ ผ่านคุณสมบัติ</option>
         <option value="interviewed">📅 นัดสัมภาษณ์แล้ว</option>
+        <option value="unreachable">📵 ติดต่อไม่ได้</option>
         <option value="showed">🙋 มาสัมภาษณ์แล้ว</option>
         <option value="passed_interview">✅ ผ่านสัมภาษณ์</option>
         <option value="hired">🏢 รับเข้าทำงาน</option>
@@ -364,10 +501,29 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
       <button class="btn-sm" style="background:rgba(210,153,34,.15);color:#d29922;padding:.5rem .8rem;" onclick="setModalStatus('showed')">🙋 มาสัมแล้ว</button>
       <button class="btn-sm" style="background:rgba(26,122,74,.15);color:#1a7a4a;padding:.5rem .8rem;" onclick="setModalStatus('passed_interview')">✅ ผ่านสัม</button>
       <button class="btn-sm" style="background:rgba(26,58,92,.15);color:#1a3a5c;padding:.5rem .8rem;" onclick="setModalStatus('hired')">🏢 รับเข้าทำงาน</button>
-      <button class="btn-sm" style="background:rgba(130,80,20,.15);color:#7a4a10;padding:.5rem .8rem;" onclick="openResignModal()">🚪 ลาออก</button>
+      <button class="btn-sm" style="background:rgba(130,80,20,.15);color:#7a4a10;padding:.5rem .8rem;" onclick="openResignModal(null)">🚪 ลาออก</button>
       <button class="btn-sm btn-reject" style="padding:.5rem .8rem;" onclick="setModalStatus('rejected')">❌ ไม่ผ่าน</button>
       <button class="btn-sm btn-delete-sm" style="padding:.5rem .8rem;" onclick="deleteApp()">🗑 ลบ</button>
       <button class="btn-secondary" onclick="closeModal()" style="margin-left:auto;">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- START DATE MODAL -->
+<div class="modal-overlay" id="startDateModal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-head"><h2>🏢 กำหนดวันเริ่มงาน</h2><button class="modal-close" onclick="closeStartDateModal()">✕</button></div>
+    <div style="padding:1.2rem 1.3rem;">
+      <div id="startDatePersonInfo" style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.8rem 1rem;">
+      </div>
+      <div class="field">
+        <label>วันเริ่มงาน *</label>
+        <input type="date" id="startDateInput" style="width:100%;padding:.5rem .7rem;border:1.5px solid var(--border);border-radius:7px;font-family:'IBM Plex Sans Thai',sans-serif;font-size:.88rem;">
+      </div>
+    </div>
+    <div style="padding:.8rem 1.3rem;border-top:1px solid var(--border);display:flex;gap:.6rem;justify-content:flex-end;">
+      <button class="btn-secondary" onclick="closeStartDateModal()">ยกเลิก</button>
+      <button class="btn-primary" style="background:#1a3a5c;border:none;" onclick="confirmStartDate()">✅ ยืนยันรับเข้าทำงาน</button>
     </div>
   </div>
 </div>
@@ -377,9 +533,11 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
   <div class="modal" style="max-width:480px;">
     <div class="modal-head"><h2>🚪 บันทึกการลาออก</h2><button class="modal-close" onclick="closeResignModal()">✕</button></div>
     <div style="padding:1.2rem 1.3rem;">
+      <div id="resignPersonInfo" style="display:flex;align-items:center;gap:1rem;margin-bottom:1.2rem;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:.8rem 1rem;">
+      </div>
       <div class="field" style="margin-bottom:.8rem;">
-        <label>ทำงานได้กี่วัน</label>
-        <input type="number" id="resignDays" placeholder="จำนวนวัน" min="0" style="width:100%;padding:.5rem .7rem;border:1.5px solid var(--border);border-radius:7px;font-family:'IBM Plex Sans Thai',sans-serif;font-size:.88rem;">
+        <label>วันที่ลาออก</label>
+        <input type="date" id="resignDate" style="width:100%;padding:.5rem .7rem;border:1.5px solid var(--border);border-radius:7px;font-family:'IBM Plex Sans Thai',sans-serif;font-size:.88rem;">
       </div>
       <div class="field">
         <label>เหตุผลที่ลาออก</label>
@@ -424,6 +582,9 @@ function showView(v) {
   document.getElementById(v+'View').classList.add('active');
   document.getElementById('nav-'+v).classList.add('active');
   if (v === 'shortlisted') renderShortlisted();
+  if (v === 'interview') renderInterview();
+  if (v === 'hiring') renderHiring();
+  if (v === 'working') renderWorking();
 }
 
 // ===== LOAD APPS =====
@@ -446,6 +607,9 @@ async function refreshApps() {
   renderRecentTable();
   renderAppTable(filteredApps);
   renderShortlisted();
+  renderInterview();
+  renderHiring();
+  renderWorking();
   document.getElementById('lastUpdate').textContent = new Date().toLocaleString('th-TH');
   const newCount = allApps.filter(a => a.status === 'new').length;
   document.getElementById('topNewCount').textContent = newCount > 0 ? `🆕 ${newCount} ใหม่` : '';
@@ -453,10 +617,40 @@ async function refreshApps() {
 
 // ===== STATS =====
 function renderStats() {
-  document.getElementById('statTotal').textContent = allApps.length;
-  document.getElementById('statNew').textContent = allApps.filter(a=>a.status==='new').length;
-  document.getElementById('statShort').textContent = allApps.filter(a=>a.status==='shortlisted').length;
-  document.getElementById('statReject').textContent = allApps.filter(a=>a.status==='rejected').length;
+  const total      = allApps.length;
+  const newCount   = allApps.filter(a=>a.status==='new').length;
+  const shortlisted= allApps.filter(a=>a.status==='shortlisted').length;
+  const interviewed= allApps.filter(a=>a.status==='interviewed').length;
+  const passed     = allApps.filter(a=>a.status==='passed_interview').length;
+  const hired      = allApps.filter(a=>a.status==='hired').length;
+  const resigned   = allApps.filter(a=>a.status==='resigned').length;
+  const rejected   = allApps.filter(a=>['rejected'].includes(a.status)).length;
+  const unreachable= allApps.filter(a=>a.status==='unreachable').length;
+
+  // pipeline counts (cumulative — those who passed through each stage)
+  const everShortlisted  = allApps.filter(a=>['shortlisted','interviewed','passed_interview','hired','resigned'].includes(a.status)).length;
+  const everInterviewed  = allApps.filter(a=>['interviewed','passed_interview','hired','resigned'].includes(a.status)).length;
+  const everPassed       = allApps.filter(a=>['passed_interview','hired','resigned'].includes(a.status)).length;
+  const everHired        = allApps.filter(a=>['hired','resigned'].includes(a.status)).length;
+
+  const pct = (n,d) => d>0 ? Math.round(n/d*100)+'%' : '-%';
+  const retentionBase = everHired;
+
+  document.getElementById('statTotal').textContent       = total;
+  document.getElementById('statNew').textContent         = newCount;
+  document.getElementById('statReject').textContent      = rejected;
+  document.getElementById('statUnreachable').textContent = unreachable;
+  document.getElementById('statShort').textContent       = shortlisted;
+  document.getElementById('statInterviewed').textContent = interviewed;
+  document.getElementById('statPassed').textContent      = passed;
+  document.getElementById('statHired').textContent       = hired;
+  document.getElementById('statResigned').textContent    = resigned;
+  document.getElementById('statRetentionRate').textContent = retentionBase>0 ? pct(hired, retentionBase) : '-%';
+
+  document.getElementById('rateShortlist').textContent = pct(everShortlisted, total);
+  document.getElementById('rateInterview').textContent = pct(everInterviewed, everShortlisted);
+  document.getElementById('ratePass').textContent      = pct(everPassed, everInterviewed);
+  document.getElementById('rateHire').textContent      = pct(everHired, everPassed);
 }
 
 // ===== STATUS BADGE =====
@@ -465,13 +659,13 @@ function statusBadge(s) {
     new:'🆕 ใหม่', shortlisted:'⭐ ผ่านคุณสมบัติ',
     interviewed:'📅 นัดสัมภาษณ์', showed:'🙋 มาสัมแล้ว',
     passed_interview:'✅ ผ่านสัมภาษณ์', hired:'🏢 รับเข้าทำงาน',
-    resigned:'🚪 ลาออก', rejected:'❌ ไม่ผ่าน'
+    resigned:'🚪 ลาออก', rejected:'❌ ไม่ผ่าน', unreachable:'📵 ติดต่อไม่ได้'
   };
   const cls = {
     new:'status-new', shortlisted:'status-shortlisted',
     interviewed:'status-interviewed', showed:'status-showed',
     passed_interview:'status-passed', hired:'status-hired',
-    resigned:'status-resigned', rejected:'status-rejected'
+    resigned:'status-resigned', rejected:'status-rejected', unreachable:'status-showed'
   };
   return `<span class="status-badge ${cls[s]||'status-new'}">${map[s]||s}</span>`;
 }
@@ -550,7 +744,6 @@ function applyFilters() {
   const ageMax = parseInt(document.getElementById('fAgeMax').value)||999;
   const gender = document.getElementById('fGender').value;
   const status = document.getElementById('fStatus').value;
-  const driving = document.getElementById('fDriving').value;
   const eduFilter = document.getElementById('fEdu').value;
   const eduOrder = ['มัธยมศึกษาตอนต้น (ม.3)','มัธยมศึกษาตอนปลาย (ม.6)','ปวช.','ปวท./ปวส.','ปริญญาตรี','สูงกว่าปริญญาตรี'];
   const eduMin = eduFilter ? eduOrder.findIndex(e => e.includes(eduFilter.replace('.','').replace('ปวส','ปวส'))) : -1;
@@ -569,7 +762,7 @@ function applyFilters() {
 
 function resetFilters() {
   ['fName','fPosition','fAgeMin','fAgeMax'].forEach(id => document.getElementById(id).value = '');
-  ['fGender','fStatus','fDriving','fEdu'].forEach(id => document.getElementById(id).value = '');
+  ['fGender','fStatus','fEdu'].forEach(id => document.getElementById(id).value = '');
   filteredApps = [...allApps];
   renderAppTable(filteredApps);
 }
@@ -631,23 +824,26 @@ function renderShortlisted() {
   const tbody = document.getElementById('shortlistedBody');
   document.getElementById('shortEmpty').style.display = short.length ? 'none' : 'block';
   if (!short.length) { tbody.innerHTML = ''; return; }
-  tbody.innerHTML = short.map((a,idx) => `<tr id="srow-${a.id}">
+  tbody.innerHTML = short.map((a,idx) => {
+    const d = appsCache.find(x=>x.id===a.id)||a;
+    return `<tr id="srow-${a.id}">
     <td class="no-print"><input type="checkbox" onchange="toggleSelect('${a.id}',this.checked)" ${selectedIds.has(a.id)?'checked':''}></td>
     <td style="color:var(--muted);font-size:.78rem;">${idx+1}</td>
-    <td><div style="width:32px;height:32px;border-radius:50%;overflow:hidden;background:#e8e2d8;display:flex;align-items:center;justify-content:center;" id="sthumb-${a.id}">👤</div></td>
+    <td><div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#e8e2d8;display:flex;align-items:center;justify-content:center;" id="sthumb-${a.id}">${d.photo?`<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`:'👤'}</div></td>
     <td><strong>${esc(a.name)}</strong></td>
     <td>${esc(a.position||'-')}</td>
     <td>${a.age||'-'}</td>
-    <td id="sedu-${a.id}">-</td>
+    <td>${esc(a.gender||'-')}</td>
     <td>${a.mobile||'-'}</td>
-    <td style="font-size:.76rem;color:var(--muted);">${fmtDate(a.submittedAt)}</td>
     <td class="no-print" style="white-space:nowrap;">
       <button class="btn-sm btn-view" onclick="openModal('${a.id}')">ดูรายละเอียด</button>
+      <button class="btn-sm" style="background:rgba(56,139,253,.15);color:#388bfd;font-weight:600;" onclick="moveToInterview('${a.id}')">📅 นัดสัมภาษณ์แล้ว</button>
+      <button class="btn-sm" style="background:rgba(210,153,34,.15);color:#d29922;font-weight:600;" onclick="markUnreachable('${a.id}')">📵 ติดต่อไม่ได้</button>
       <button class="btn-sm" style="background:rgba(26,122,74,.15);color:#1a7a4a;font-weight:600;" onclick="downloadExcel('${a.id}')">📥 Excel</button>
       <button class="btn-sm btn-reject" onclick="quickStatus('${a.id}','rejected')">ยกเลิก</button>
     </td>
-  </tr>`).join('');
-  short.forEach(a => loadAppDetail(a.id));
+  </tr>`;
+  }).join('');
 }
 
 // ===== MODAL =====
@@ -1262,37 +1458,189 @@ async function printExcelAllShortlisted() {
 
 
 // ===== RESIGN MODAL =====
-function openResignModal() {
-  document.getElementById('resignDays').value = '';
+function openResignModal(id) {
+  const d = id ? appsCache.find(a=>a.id===id) : currentModalApp;
+  if (!d) return;
+  currentResignApp = d;
+  document.getElementById('resignDate').value = '';
   document.getElementById('resignReason').value = '';
+  // Show person info
+  const info = document.getElementById('resignPersonInfo');
+  info.innerHTML = personInfoHTML(d);
   document.getElementById('resignModal').classList.add('open');
 }
 function closeResignModal() {
   document.getElementById('resignModal').classList.remove('open');
 }
 async function saveResign() {
-  const days = document.getElementById('resignDays').value;
+  const date = document.getElementById('resignDate').value;
   const reason = document.getElementById('resignReason').value;
-  if (!currentModalApp) return;
-  // บันทึกข้อมูลลาออก
-  currentModalApp.resignDays = days;
-  currentModalApp.resignReason = reason;
-  // อัปเดต cache
-  const idx = appsCache.findIndex(a => a.id === currentModalApp.id);
-  if (idx >= 0) { appsCache[idx].resignDays = days; appsCache[idx].resignReason = reason; }
-  await updateStatus(currentModalApp.id, 'resigned');
-  // ส่งข้อมูลลาออกไป Sheets
+  const d = currentResignApp || currentModalApp;
+  if (!d) return;
+  d.resignDate = date;
+  d.resignReason = reason;
+  const idx = appsCache.findIndex(a => a.id === d.id);
+  if (idx >= 0) { appsCache[idx].resignDate = date; appsCache[idx].resignReason = reason; }
+  await updateStatus(d.id, 'resigned');
   try {
     await fetch(SHEETS_URL, {
       method:'POST', mode:'no-cors',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({action:'updateResign', id:currentModalApp.id, resignDays:days, resignReason:reason})
+      body: JSON.stringify({action:'updateResign', id:d.id, resignDate:date, resignReason:reason})
     });
   } catch(e) {}
   closeResignModal();
+  currentResignApp = null;
   await refreshApps(); applyFilters();
+  renderWorking();
   showToast('🚪 บันทึกการลาออกแล้ว');
 }
+
+// ===== PIPELINE: SHORTLISTED → INTERVIEW =====
+async function moveToInterview(id) {
+  await updateStatus(id, 'interviewed');
+  await refreshApps(); applyFilters();
+  renderShortlisted(); renderInterview();
+  showToast('📅 นัดสัมภาษณ์แล้ว — ย้ายไปหน้าการสัมภาษณ์');
+}
+async function markUnreachable(id) {
+  await updateStatus(id, 'unreachable');
+  await refreshApps(); applyFilters();
+  renderShortlisted();
+  showToast('📵 บันทึกว่าติดต่อไม่ได้แล้ว');
+}
+
+// ===== RENDER INTERVIEW VIEW =====
+function renderInterview() {
+  const list = allApps.filter(a => a.status === 'interviewed');
+  const tbody = document.getElementById('interviewBody');
+  document.getElementById('interviewEmpty').style.display = list.length ? 'none' : 'block';
+  if (!list.length) { tbody.innerHTML = ''; return; }
+  tbody.innerHTML = list.map((a, idx) => {
+    const d = appsCache.find(x=>x.id===a.id)||a;
+    return `<tr>
+      <td style="color:var(--muted);font-size:.78rem;">${idx+1}</td>
+      <td><div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#e8e2d8;display:flex;align-items:center;justify-content:center;">${d.photo?`<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`:'👤'}</div></td>
+      <td><strong>${esc(a.name)}</strong></td>
+      <td>${esc(a.position||'-')}</td>
+      <td>${a.age||'-'}</td>
+      <td>${esc(a.gender||'-')}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn-sm" style="background:rgba(26,122,74,.2);color:#1a7a4a;font-weight:700;" onclick="interviewPass('${a.id}')">✅ ผ่าน</button>
+        <button class="btn-sm btn-reject" onclick="interviewFail('${a.id}')">❌ ไม่ผ่าน</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+async function interviewPass(id) {
+  await updateStatus(id, 'passed_interview');
+  await refreshApps(); applyFilters();
+  renderInterview(); renderHiring();
+  showToast('✅ ผ่านสัมภาษณ์ — ย้ายไปหน้าการรับเข้าทำงาน');
+}
+async function interviewFail(id) {
+  await updateStatus(id, 'rejected');
+  await refreshApps(); applyFilters();
+  renderInterview();
+  showToast('❌ ไม่ผ่านสัมภาษณ์');
+}
+
+// ===== RENDER HIRING VIEW =====
+function renderHiring() {
+  const list = allApps.filter(a => a.status === 'passed_interview');
+  const tbody = document.getElementById('hiringBody');
+  document.getElementById('hiringEmpty').style.display = list.length ? 'none' : 'block';
+  if (!list.length) { tbody.innerHTML = ''; return; }
+  tbody.innerHTML = list.map((a, idx) => {
+    const d = appsCache.find(x=>x.id===a.id)||a;
+    return `<tr>
+      <td style="color:var(--muted);font-size:.78rem;">${idx+1}</td>
+      <td><div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#e8e2d8;display:flex;align-items:center;justify-content:center;">${d.photo?`<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`:'👤'}</div></td>
+      <td><strong>${esc(a.name)}</strong></td>
+      <td>${esc(a.position||'-')}</td>
+      <td>${a.age||'-'}</td>
+      <td>${esc(a.gender||'-')}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn-sm" style="background:rgba(26,58,92,.2);color:#1a3a5c;font-weight:700;" onclick="openStartDateModal('${a.id}')">🏢 ตอบรับเริ่มงาน</button>
+        <button class="btn-sm btn-reject" onclick="hiringReject('${a.id}')">🚫 ปฏิเสธร่วมงาน</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+let currentHiringId = null;
+let currentResignApp = null;
+function openStartDateModal(id) {
+  currentHiringId = id;
+  const d = appsCache.find(a=>a.id===id);
+  if (!d) return;
+  document.getElementById('startDateInput').value = '';
+  const info = document.getElementById('startDatePersonInfo');
+  info.innerHTML = personInfoHTML(d);
+  document.getElementById('startDateModal').classList.add('open');
+}
+function closeStartDateModal() {
+  document.getElementById('startDateModal').classList.remove('open');
+  currentHiringId = null;
+}
+async function confirmStartDate() {
+  const date = document.getElementById('startDateInput').value;
+  if (!date) { showToast('⚠️ กรุณาระบุวันเริ่มงาน'); return; }
+  if (!currentHiringId) return;
+  const idx = appsCache.findIndex(a => a.id === currentHiringId);
+  if (idx >= 0) appsCache[idx].startDate = date;
+  const aidx = allApps.findIndex(a => a.id === currentHiringId);
+  if (aidx >= 0) allApps[aidx].startDate = date;
+  await updateStatus(currentHiringId, 'hired');
+  try {
+    await fetch(SHEETS_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'updateStartDate', id:currentHiringId, startDate:date})
+    });
+  } catch(e) {}
+  closeStartDateModal();
+  await refreshApps(); applyFilters();
+  renderHiring(); renderWorking();
+  showToast('🎉 รับเข้าทำงานแล้ว — ย้ายไปหน้าการทำงาน');
+}
+async function hiringReject(id) {
+  await updateStatus(id, 'rejected');
+  await refreshApps(); applyFilters();
+  renderHiring();
+  showToast('🚫 ปฏิเสธการร่วมงานแล้ว');
+}
+
+// ===== RENDER WORKING VIEW =====
+function renderWorking() {
+  const list = allApps.filter(a => a.status === 'hired');
+  const tbody = document.getElementById('workingBody');
+  document.getElementById('workingEmpty').style.display = list.length ? 'none' : 'block';
+  if (!list.length) { tbody.innerHTML = ''; return; }
+  tbody.innerHTML = list.map((a, idx) => {
+    const d = appsCache.find(x=>x.id===a.id)||a;
+    const startDate = d.startDate ? new Date(d.startDate).toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}) : '-';
+    return `<tr>
+      <td style="color:var(--muted);font-size:.78rem;">${idx+1}</td>
+      <td><div style="width:36px;height:36px;border-radius:50%;overflow:hidden;background:#e8e2d8;display:flex;align-items:center;justify-content:center;">${d.photo?`<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`:'👤'}</div></td>
+      <td><strong>${esc(a.name)}</strong></td>
+      <td>${esc(a.position||'-')}</td>
+      <td>${a.age||'-'}</td>
+      <td>${esc(a.gender||'-')}</td>
+      <td style="font-size:.82rem;color:var(--teal);font-weight:600;">${startDate}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn-sm" style="background:rgba(130,60,20,.15);color:#7a3c14;font-weight:700;" onclick="openResignModal('${a.id}')">🚪 ลาออก</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+// ===== HELPER: person info card HTML =====
+function personInfoHTML(d) {
+  const name = (d.prefix||'') + (d.nameTH||d.name||'');
+  const photo = d.photo ? `<img src="${d.photo}" style="width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--border);">` : `<div style="width:44px;height:44px;border-radius:50%;background:#e8e2d8;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">👤</div>`;
+  return `${photo}<div><div style="font-weight:700;font-size:.92rem;">${esc(name)}</div><div style="font-size:.78rem;color:var(--muted);">${esc(d.position||'-')} · อายุ ${d.age||'-'} ปี · ${esc(d.gender||'-')}</div></div>`;
+}
+
 
 function showToast(msg) {
   const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
