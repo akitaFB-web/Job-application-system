@@ -87,7 +87,11 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
 .status-new { background:rgba(56,139,253,.15); color:#388bfd; border:1px solid rgba(56,139,253,.3); }
 .status-shortlisted { background:rgba(63,185,80,.12); color:#3fb950; border:1px solid rgba(63,185,80,.3); }
 .status-rejected { background:rgba(248,81,73,.12); color:#f85149; border:1px solid rgba(248,81,73,.3); }
-.status-hired { background:rgba(210,153,34,.12); color:#d29922; border:1px solid rgba(210,153,34,.3); }
+.status-hired { background:rgba(26,58,92,.12); color:#1a3a5c; border:1px solid rgba(26,58,92,.3); }
+.status-interviewed { background:rgba(56,139,253,.15); color:#388bfd; border:1px solid rgba(56,139,253,.3); }
+.status-showed { background:rgba(210,153,34,.15); color:#d29922; border:1px solid rgba(210,153,34,.3); }
+.status-passed { background:rgba(26,122,74,.15); color:#1a7a4a; border:1px solid rgba(26,122,74,.3); }
+.status-resigned { background:rgba(130,60,20,.12); color:#7a3c14; border:1px solid rgba(130,60,20,.3); }
 
 .btn-sm { font-family:'IBM Plex Sans Thai',sans-serif; font-size:.73rem; font-weight:600; padding:3px 9px; border-radius:5px; cursor:pointer; border:none; white-space:nowrap; transition:all .15s; }
 .btn-view { background:rgba(56,139,253,.15); color:#388bfd; }
@@ -224,8 +228,7 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
       <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
         <h1 style="font-size:1.1rem;font-weight:600;color:var(--text);">รายชื่อผู้สมัครงานทั้งหมด</h1>
         <div style="display:flex;gap:.5rem;">
-          <button class="btn-accent" onclick="printExcelSelected()">🖨️ ปริ้นที่เลือก</button>
-          <button class="btn-primary" style="background:#1a7a4a;border:none;padding:.62rem 1.4rem;border-radius:8px;font-family:'IBM Plex Sans Thai',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;color:white;" onclick="downloadExcelSelected()">📥 Excel ที่เลือก</button>
+          <button class="btn-accent" onclick="downloadExcelSelected()">📥 Excel ที่เลือก</button>
         </div>
       </div>
 
@@ -262,7 +265,6 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
             <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;font-weight:600;"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)"> เลือกทั้งหมดในหน้านี้</label>
             <span id="selectedCount" style="color:var(--muted);">เลือก 0 คน</span>
             <div class="bulk-btns">
-              <button class="btn-bulk btn-bulk-print" onclick="printExcelSelected()">🖨️ ปริ้นที่เลือก</button>
               <button class="btn-bulk" style="background:rgba(26,122,74,.2);color:#1a7a4a;border:1px solid rgba(26,122,74,.4);" onclick="downloadExcelSelected()">📥 Excel</button>
               <button class="btn-bulk btn-bulk-shortlist" onclick="bulkStatus('shortlisted')">⭐ ผ่านคุณสมบัติ</button>
               <button class="btn-bulk btn-bulk-reject" onclick="bulkStatus('rejected')">❌ ไม่ผ่าน</button>
@@ -286,8 +288,7 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
     <div class="view" id="shortlistedView">
       <div style="margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;">
         <h1 style="font-size:1.1rem;font-weight:600;color:var(--text);">⭐ ผู้สมัครที่ผ่านคุณสมบัติ</h1>
-        <button class="btn-accent" onclick="printExcelAllShortlisted()">🖨️ ปริ้นทั้งหมด</button>
-        <button class="btn-primary" style="background:#1a7a4a;border:none;padding:.62rem 1.4rem;border-radius:8px;font-family:'IBM Plex Sans Thai',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;color:white;" onclick="downloadExcelAllShortlisted()">📥 Excel ทั้งหมด</button>
+        <button class="btn-accent" onclick="downloadExcelAllShortlisted()">📥 Excel ทั้งหมด</button>
       </div>
       <div class="card">
         <div style="overflow-x:auto;">
@@ -343,22 +344,51 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
   <div class="modal">
     <div class="modal-head">
       <h2 id="modalTitle">รายละเอียดใบสมัคร</h2>
-      <select id="modalStatus" onchange="updateStatusFromModal()" style="font-size:.78rem;padding:.28rem .5rem;border:1.5px solid var(--border);border-radius:6px;font-family:'Kanit',sans-serif;background:#fdfaf5;cursor:pointer;">
+      <select id="modalStatus" onchange="updateStatusFromModal()" style="font-size:.78rem;padding:.28rem .5rem;border:1.5px solid var(--border);border-radius:6px;font-family:'IBM Plex Sans Thai',sans-serif;background:#fdfaf5;cursor:pointer;">
         <option value="new">🆕 ใหม่</option>
         <option value="shortlisted">⭐ ผ่านคุณสมบัติ</option>
+        <option value="interviewed">📅 นัดสัมภาษณ์แล้ว</option>
+        <option value="showed">🙋 มาสัมภาษณ์แล้ว</option>
+        <option value="passed_interview">✅ ผ่านสัมภาษณ์</option>
+        <option value="hired">🏢 รับเข้าทำงาน</option>
+        <option value="resigned">🚪 ลาออกแล้ว</option>
         <option value="rejected">❌ ไม่ผ่าน</option>
-        <option value="hired">✅ รับเข้าทำงาน</option>
       </select>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body" id="modalBody"></div>
-    <div class="modal-actions">
-      <button class="btn-accent" onclick="printExcelSingle()">🖨️ ปริ้นใบสมัครนี้</button> <button class="btn-primary" style="background:#1a7a4a;" onclick="downloadExcelSingle()">📥 Excel</button>
-      <button class="btn-primary" style="background:#1a7a4a;" onclick="downloadExcelSingle()">📥 ดาวน์โหลด Excel</button>
-      <button class="btn-sm btn-shortlist" style="padding:.5rem 1rem;font-size:.85rem;" onclick="setModalStatus('shortlisted')">⭐ ผ่านคุณสมบัติ</button>
-      <button class="btn-sm btn-reject" style="padding:.5rem 1rem;font-size:.85rem;" onclick="setModalStatus('rejected')">❌ ไม่ผ่าน</button>
-      <button class="btn-sm btn-delete-sm" style="padding:.5rem 1rem;font-size:.85rem;" onclick="deleteApp()">🗑 ลบ</button>
+    <div class="modal-actions" style="flex-wrap:wrap;gap:.5rem;">
+      <button class="btn-primary" style="background:#1a7a4a;border:none;" onclick="downloadExcelSingle()">📥 Excel</button>
+      <button class="btn-sm btn-shortlist" style="padding:.5rem .8rem;" onclick="setModalStatus('shortlisted')">⭐ ผ่านคุณสมบัติ</button>
+      <button class="btn-sm" style="background:rgba(56,139,253,.15);color:#388bfd;padding:.5rem .8rem;" onclick="setModalStatus('interviewed')">📅 นัดสัมภาษณ์</button>
+      <button class="btn-sm" style="background:rgba(210,153,34,.15);color:#d29922;padding:.5rem .8rem;" onclick="setModalStatus('showed')">🙋 มาสัมแล้ว</button>
+      <button class="btn-sm" style="background:rgba(26,122,74,.15);color:#1a7a4a;padding:.5rem .8rem;" onclick="setModalStatus('passed_interview')">✅ ผ่านสัม</button>
+      <button class="btn-sm" style="background:rgba(26,58,92,.15);color:#1a3a5c;padding:.5rem .8rem;" onclick="setModalStatus('hired')">🏢 รับเข้าทำงาน</button>
+      <button class="btn-sm" style="background:rgba(130,80,20,.15);color:#7a4a10;padding:.5rem .8rem;" onclick="openResignModal()">🚪 ลาออก</button>
+      <button class="btn-sm btn-reject" style="padding:.5rem .8rem;" onclick="setModalStatus('rejected')">❌ ไม่ผ่าน</button>
+      <button class="btn-sm btn-delete-sm" style="padding:.5rem .8rem;" onclick="deleteApp()">🗑 ลบ</button>
       <button class="btn-secondary" onclick="closeModal()" style="margin-left:auto;">ปิด</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESIGN MODAL -->
+<div class="modal-overlay" id="resignModal">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-head"><h2>🚪 บันทึกการลาออก</h2><button class="modal-close" onclick="closeResignModal()">✕</button></div>
+    <div style="padding:1.2rem 1.3rem;">
+      <div class="field" style="margin-bottom:.8rem;">
+        <label>ทำงานได้กี่วัน</label>
+        <input type="number" id="resignDays" placeholder="จำนวนวัน" min="0" style="width:100%;padding:.5rem .7rem;border:1.5px solid var(--border);border-radius:7px;font-family:'IBM Plex Sans Thai',sans-serif;font-size:.88rem;">
+      </div>
+      <div class="field">
+        <label>เหตุผลที่ลาออก</label>
+        <textarea id="resignReason" rows="3" placeholder="ระบุเหตุผล..." style="width:100%;padding:.5rem .7rem;border:1.5px solid var(--border);border-radius:7px;font-family:'IBM Plex Sans Thai',sans-serif;font-size:.88rem;resize:vertical;"></textarea>
+      </div>
+    </div>
+    <div style="padding:.8rem 1.3rem;border-top:1px solid var(--border);display:flex;gap:.6rem;justify-content:flex-end;">
+      <button class="btn-secondary" onclick="closeResignModal()">ยกเลิก</button>
+      <button class="btn-primary" style="background:#c0392b;border:none;" onclick="saveResign()">บันทึกการลาออก</button>
     </div>
   </div>
 </div>
@@ -431,8 +461,18 @@ function renderStats() {
 
 // ===== STATUS BADGE =====
 function statusBadge(s) {
-  const map = { new:'🆕 ใหม่', shortlisted:'⭐ ผ่านคุณสมบัติ', rejected:'❌ ไม่ผ่าน', hired:'✅ รับเข้าทำงาน' };
-  const cls = { new:'status-new', shortlisted:'status-shortlisted', rejected:'status-rejected', hired:'status-hired' };
+  const map = {
+    new:'🆕 ใหม่', shortlisted:'⭐ ผ่านคุณสมบัติ',
+    interviewed:'📅 นัดสัมภาษณ์', showed:'🙋 มาสัมแล้ว',
+    passed_interview:'✅ ผ่านสัมภาษณ์', hired:'🏢 รับเข้าทำงาน',
+    resigned:'🚪 ลาออก', rejected:'❌ ไม่ผ่าน'
+  };
+  const cls = {
+    new:'status-new', shortlisted:'status-shortlisted',
+    interviewed:'status-interviewed', showed:'status-showed',
+    passed_interview:'status-passed', hired:'status-hired',
+    resigned:'status-resigned', rejected:'status-rejected'
+  };
   return `<span class="status-badge ${cls[s]||'status-new'}">${map[s]||s}</span>`;
 }
 
@@ -478,8 +518,7 @@ function renderAppTable(apps) {
       <td>${statusBadge(a.status)}</td>
       <td class="no-print" style="white-space:nowrap;">
         <button class="btn-sm btn-view" onclick="openModal('${a.id}')">ดู</button>
-        <button class="btn-sm btn-print-sm" onclick="printExcel('${a.id}')">🖨️</button> <button class="btn-sm" style="background:rgba(26,122,74,.15);color:#1a7a4a;" onclick="downloadExcel('${a.id}')">📥</button>
-        <button class="btn-sm" style="background:rgba(26,122,74,.15);color:#1a7a4a;" onclick="downloadExcel('${a.id}')">📥</button>
+        <button class="btn-sm" style="background:rgba(26,122,74,.15);color:#1a7a4a;font-weight:600;" onclick="downloadExcel('${a.id}')">📥 Excel</button>
         <button class="btn-sm btn-shortlist" onclick="quickStatus('${a.id}','shortlisted')">⭐</button>
         <button class="btn-sm btn-reject" onclick="quickStatus('${a.id}','rejected')">❌</button>
       </td>
@@ -604,8 +643,7 @@ function renderShortlisted() {
     <td style="font-size:.76rem;color:var(--muted);">${fmtDate(a.submittedAt)}</td>
     <td class="no-print" style="white-space:nowrap;">
       <button class="btn-sm btn-view" onclick="openModal('${a.id}')">ดูรายละเอียด</button>
-      <button class="btn-sm btn-print-sm" onclick="printExcel('${a.id}')">🖨️ ปริ้น</button> <button class="btn-sm" style="background:rgba(26,122,74,.15);color:#1a7a4a;" onclick="downloadExcel('${a.id}')">📥 Excel</button>
-      <button class="btn-sm" style="background:rgba(26,122,74,.15);color:#1a7a4a;" onclick="downloadExcel('${a.id}')">📥 Excel</button>
+      <button class="btn-sm" style="background:rgba(26,122,74,.15);color:#1a7a4a;font-weight:600;" onclick="downloadExcel('${a.id}')">📥 Excel</button>
       <button class="btn-sm btn-reject" onclick="quickStatus('${a.id}','rejected')">ยกเลิก</button>
     </td>
   </tr>`).join('');
@@ -697,7 +735,7 @@ function renderAppDetail(d, forPrint=false) {
     <div style="flex:1;">
       <div class="d-sec-title">▪ ข้อมูลส่วนตัว</div>
       <div class="d-2col">
-        ${fl('ชื่อ-นามสกุล','<strong>'+esc(name)+'</strong>')}
+        ${fl('ชื่อ-นามสกุล', name)}
         ${fl('Name (EN)',d.nameEN)}
         ${fl('วัน/เดือน/ปีเกิด',fmtD(d.birthDate))}
         ${fl('อายุ',d.age?d.age+' ปี':'')}
@@ -713,7 +751,7 @@ function renderAppDetail(d, forPrint=false) {
     <div class="d-sec-title">▪ ข้อมูลติดต่อ</div>
     <div class="d-field"><span class="d-lbl">ที่อยู่</span><span class="d-val">${esc(d.address)}</span></div>
     <div class="d-2col" style="margin-top:1mm;">
-      ${fl('เบอร์โทร',d.mobile)} ${fl('อีเมล',d.email)} ${fl('ไลน์',d.lineId)} ${fl('บัตรประชาชน',d.idCard)}
+      ${fl('เบอร์โทร',d.mobile)} ${fl('อีเมล',d.email)} ${fl('ไอดีไลน์',d.lineId)}
     </div>
     <div style="font-size:7.2pt;margin-top:1.5mm;">
       <strong>ที่อยู่อาศัย:</strong> ${esc(d.livingArr||'-')} &nbsp;|&nbsp;
@@ -728,9 +766,7 @@ function renderAppDetail(d, forPrint=false) {
       ${fl('บิดา',[d.fatherName,d.fatherAge?d.fatherAge+' ปี':'',d.fatherOcc].filter(Boolean).join(' / '))}
       ${fl('มารดา',[d.motherName,d.motherAge?d.motherAge+' ปี':'',d.motherOcc].filter(Boolean).join(' / '))}
       ${fl('คู่สมรส',d.spouseName||'-')}
-      ${fl('อาชีพคู่สมรส',d.spouseOcc||'-')}
       ${fl('บุตร',(d.children||'0')+' คน')}
-      ${fl('พี่น้อง',[d.siblings?d.siblings+' คน':'',d.sibMale?'ชาย '+d.sibMale+'คน':'',d.sibFemale?'หญิง '+d.sibFemale+'คน':'',d.childOrder?'บุตรคนที่ '+d.childOrder:''].filter(Boolean).join(' / '))}
     </div>
   </div>`;
 
@@ -775,9 +811,28 @@ function renderAppDetail(d, forPrint=false) {
     <div><strong>ต่างจังหวัด:</strong> ${esc(d.upcountry||'-')} ${d.upcountryNote?esc(d.upcountryNote):''}</div>
   </div></div>`;
 
+  // ข้อมูลเพิ่มเติม
+  html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ ข้อมูลเพิ่มเติม</div>
+  <div class="d-2col">
+    ${fl('เคยป่วยหนัก/โรคติดต่อ', (d.illness||'-') + (d.illnessDetail ? ' — '+d.illnessDetail : ''))}
+    ${fl('เคยสมัครบริษัทนี้', (d.prevApply||'-') + (d.prevApplyDetail ? ' — '+d.prevApplyDetail : ''))}
+    ${fl('แหล่งข่าวสาร', d.jobSource||'-')}
+    ${fl('ญาติ/เพื่อนในบริษัท', d.friendInCo||'-')}
+  </div></div>`;
+
   if (d.selfIntro) {
     html += `<div style="margin-bottom:3mm;"><div class="d-sec-title">▪ แนะนำตัว</div>
     <div style="font-size:7.8pt;line-height:1.7;padding:2mm;border:1pt solid #c5b99a;background:#fdfaf5;">${esc(d.selfIntro)}</div></div>`;
+  }
+
+  // แสดงข้อมูลลาออก (ถ้ามี)
+  if (d.resignDays || d.resignReason) {
+    html += `<div style="margin-bottom:3mm;background:#fff5f5;border:1pt solid #f5b7b1;border-radius:4pt;padding:2mm;">
+      <div class="d-sec-title" style="background:#c0392b;">▪ ข้อมูลการลาออก</div>
+      <div class="d-2col">
+        ${fl('ทำงานได้', (d.resignDays||'-')+' วัน')}
+        ${fl('เหตุผล', d.resignReason||'-')}
+      </div></div>`;
   }
 
   if (d.references && d.references.length) {
@@ -1062,6 +1117,16 @@ function b64ToBuffer(b64) {
 async function fillAndDownload(d, printMode=false) {
   try {
     showToast('⏳ กำลังสร้าง Excel...');
+
+    // ดึงรูปถ่ายแยกต่างหาก (ถ้ายังไม่มีใน cache)
+    if (!d.photo && d.id) {
+      try {
+        const res = await fetch(SHEETS_URL + '?action=getPhoto&id=' + d.id);
+        const json = await res.json();
+        if (json.photo) d.photo = json.photo;
+      } catch(e) { console.warn('Photo fetch failed:', e); }
+    }
+
     const wb = new ExcelJS.Workbook();
     await wb.xlsx.load(b64ToBuffer(TEMPLATE_B64));
     const ws = wb.getWorksheet('ใบสมัครงาน');
@@ -1119,6 +1184,21 @@ async function fillAndDownload(d, printMode=false) {
     if(refs[0]) put('B136',`${refs[0].name||''}  ที่อยู่: ${refs[0].addr||''}  โทร: ${refs[0].tel||''}  อาชีพ: ${refs[0].occ||''}`,12);
     if(refs[1]) put('B138',`${refs[1].name||''}  ที่อยู่: ${refs[1].addr||''}  โทร: ${refs[1].tel||''}  อาชีพ: ${refs[1].occ||''}`,12);
     put('B145',d.selfIntro);
+
+    // ใส่รูปถ่ายใน Excel (cell AK2 area)
+    const photoData = d.photo || '';
+    if (photoData && photoData.includes(',')) {
+      try {
+        const imgId = wb.addImage({
+          base64: photoData.split(',')[1],
+          extension: photoData.startsWith('data:image/png') ? 'png' : 'jpeg',
+        });
+        ws.addImage(imgId, {
+          tl: { col: 36.2, row: 1.1 },  // AK2 area
+          ext: { width: 80, height: 100 }
+        });
+      } catch(imgErr) { console.warn('Photo insert failed:', imgErr); }
+    }
 
     const buf = await wb.xlsx.writeBuffer();
     const blob = new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
@@ -1178,6 +1258,40 @@ async function printExcelAllShortlisted() {
   const apps = appsCache.filter(a=>a.status==='shortlisted');
   if (!apps.length) { showToast('⚠️ ไม่มีผู้สมัครที่ผ่านคุณสมบัติ'); return; }
   for (const d of apps) await fillAndDownload(d, true);
+}
+
+
+// ===== RESIGN MODAL =====
+function openResignModal() {
+  document.getElementById('resignDays').value = '';
+  document.getElementById('resignReason').value = '';
+  document.getElementById('resignModal').classList.add('open');
+}
+function closeResignModal() {
+  document.getElementById('resignModal').classList.remove('open');
+}
+async function saveResign() {
+  const days = document.getElementById('resignDays').value;
+  const reason = document.getElementById('resignReason').value;
+  if (!currentModalApp) return;
+  // บันทึกข้อมูลลาออก
+  currentModalApp.resignDays = days;
+  currentModalApp.resignReason = reason;
+  // อัปเดต cache
+  const idx = appsCache.findIndex(a => a.id === currentModalApp.id);
+  if (idx >= 0) { appsCache[idx].resignDays = days; appsCache[idx].resignReason = reason; }
+  await updateStatus(currentModalApp.id, 'resigned');
+  // ส่งข้อมูลลาออกไป Sheets
+  try {
+    await fetch(SHEETS_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({action:'updateResign', id:currentModalApp.id, resignDays:days, resignReason:reason})
+    });
+  } catch(e) {}
+  closeResignModal();
+  await refreshApps(); applyFilters();
+  showToast('🚪 บันทึกการลาออกแล้ว');
 }
 
 function showToast(msg) {
