@@ -593,6 +593,22 @@ function showView(v) {
 }
 
 // ===== LOAD APPS =====
+// ===== PARSE JSON FIELDS (education, workHistory etc. ที่เก็บเป็น string ใน Sheets) =====
+function parseJsonFields(d) {
+  const obj = { ...d };
+  const jsonFields = ['education','workHistory','languages','references','sibDetails'];
+  jsonFields.forEach(f => {
+    if (typeof obj[f] === 'string' && obj[f].trim().startsWith('[')) {
+      try { obj[f] = JSON.parse(obj[f]); } catch(e) { obj[f] = []; }
+    } else if (typeof obj[f] === 'string' && obj[f].trim().startsWith('{')) {
+      try { obj[f] = JSON.parse(obj[f]); } catch(e) { obj[f] = {}; }
+    } else if (!obj[f] || obj[f] === '') {
+      obj[f] = [];
+    }
+  });
+  return obj;
+}
+
 async function refreshApps() {
   try {
     document.getElementById('topNewCount').textContent = '⏳ กำลังโหลด...';
@@ -606,7 +622,7 @@ async function refreshApps() {
         if (seen.has(d.id)) return false;
         seen.add(d.id);
         return true;
-      });
+      }).map(d => parseJsonFields(d));  // parse JSON fields ทันทีหลังโหลด
       appsCache = clean;
       allApps = clean.map(d => ({
         id: d.id, name: (d.prefix||'') + d.nameTH, position: d.position,
@@ -905,18 +921,6 @@ async function openModal(id) {
 }
 
 // แปลง field ที่เป็น JSON string กลับเป็น array/object
-function parseJsonFields(d) {
-  const obj = { ...d };
-  const jsonFields = ['education','workHistory','languages','references','sibDetails'];
-  jsonFields.forEach(f => {
-    if (typeof obj[f] === 'string' && obj[f].startsWith('[')) {
-      try { obj[f] = JSON.parse(obj[f]); } catch(e) { obj[f] = []; }
-    } else if (typeof obj[f] === 'string' && obj[f].startsWith('{')) {
-      try { obj[f] = JSON.parse(obj[f]); } catch(e) { obj[f] = {}; }
-    }
-  });
-  return obj;
-}
 function closeModal() {
   document.getElementById('detailModal').classList.remove('open');
   currentModalApp = null;
