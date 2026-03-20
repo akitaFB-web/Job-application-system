@@ -1449,7 +1449,7 @@ async function fillAndDownload(d, printMode=false) {
     if(refs[1]) put('B138',`${refs[1].name||''}  ที่อยู่: ${refs[1].addr||''}  โทร: ${refs[1].tel||''}  อาชีพ: ${refs[1].occ||''}`,12);
     put('B145',d.selfIntro);
 
-    // ใส่รูปถ่ายใน Excel (cell AK2 area)
+    // ใส่รูปถ่ายใน Excel (cell AE3:AI6)
     const photoData = d.photo || '';
     if (photoData && photoData.includes(',')) {
       try {
@@ -1458,8 +1458,8 @@ async function fillAndDownload(d, printMode=false) {
           extension: photoData.startsWith('data:image/png') ? 'png' : 'jpeg',
         });
         ws.addImage(imgId, {
-          tl: { col: 36.2, row: 1.1 },  // AK2 area
-          ext: { width: 80, height: 100 }
+          tl: { col: 30, row: 2 },  // AE3 (0-based)
+          ext: { width: 95, height: 120 },
         });
       } catch(imgErr) { console.warn('Photo insert failed:', imgErr); }
     }
