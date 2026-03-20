@@ -393,7 +393,14 @@ header {
           <label>อื่นๆ ระบุ <span class="req">*</span></label>
           <input type="text" id="jobSourceOther" placeholder="ระบุแหล่งที่มา">
         </div>
-        <div class="field"><label>รู้จักญาติ/เพื่อนที่ทำงานในบริษัทนี้หรือไม่?</label><input type="text" id="friendInCo" placeholder="-"></div>
+        <div class="field s2"><label>รู้จักญาติ/เพื่อนที่ทำงานในบริษัทนี้หรือไม่?</label><div class="radio-group">
+          <label class="radio-item"><input type="radio" name="friendInCo" value="ไม่มี" onchange="toggleFriendInCo(false)"> ไม่มี</label>
+          <label class="radio-item"><input type="radio" name="friendInCo" value="มี" onchange="toggleFriendInCo(true)"> มี</label>
+        </div></div>
+        <div class="field s2" id="friendInCoNameField" style="display:none;">
+          <label>ชื่อ-นามสกุล ญาติ/เพื่อนที่รู้จัก <span class="req">*</span></label>
+          <input type="text" id="friendInCoName" placeholder="ระบุชื่อ-นามสกุล">
+        </div>
         <div class="field s2"><label>เคยป่วยหนักหรือเป็นโรคติดต่อร้ายแรงมาก่อนหรือไม่?</label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="illness" value="ไม่เคย" onchange="toggleIllness(false)"> ไม่เคย</label>
           <label class="radio-item"><input type="radio" name="illness" value="เคย" onchange="toggleIllness(true)"> เคย</label>
@@ -576,6 +583,7 @@ function toggleUpcountry(show) { document.getElementById('upcountryNoteField').s
 function toggleJobSourceOther() { document.getElementById('jobSourceOtherField').style.display=document.getElementById('jobSource').value==='อื่นๆ'?'block':'none'; }
 function toggleIllness(show) { document.getElementById('illnessDetailField').style.display=show?'block':'none'; if(!show) document.getElementById('illnessDetail').value=''; }
 function togglePrevApply(show) { document.getElementById('prevApplyDetailField').style.display=show?'block':'none'; if(!show) (document.getElementById('prevApplyDetail')||{}).value=''; }
+function toggleFriendInCo(show) { document.getElementById('friendInCoNameField').style.display=show?'block':'none'; if(!show) document.getElementById('friendInCoName').value=''; }
 
 // ===== VALIDATION =====
 function v(id) { return (document.getElementById(id)||{}).value||''; }
@@ -759,7 +767,7 @@ function collectData() {
     emergName:v('emergName'),emergRelation:v('emergRelation'),emergAddr:v('emergAddr'),emergTel:v('emergTel'),
     references:refData,
     jobSource:document.getElementById('jobSource')?.value==='อื่นๆ'?v('jobSourceOther'):v('jobSource'),
-    friendInCo:v('friendInCo'),
+    friendInCo:getRadio('friendInCo')==='มี' ? ('มี — '+v('friendInCoName')) : (getRadio('friendInCo')||'-'),
     illness:getRadio('illness'),illnessDetail:v('illnessDetail'),
     prevApply:getRadio('prevApply'),prevApplyDetail:v('prevApplyDetail'),
     selfIntro:v('selfIntro'),
