@@ -163,9 +163,197 @@ header {
 .toast { position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(80px); background:var(--surface); border:1px solid var(--border); color:var(--text); padding:.65rem 1.4rem; border-radius:8px; font-size:.84rem; font-weight:500; box-shadow:0 8px 24px rgba(0,0,0,.2); opacity:0; transition:all .3s cubic-bezier(.34,1.56,.64,1); z-index:999; white-space:nowrap; }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 
+/* ===== MOBILE OVERRIDES ===== */
+.mobile-label { font-size:.72rem; font-weight:500; color:var(--muted); margin-bottom:.28rem; letter-spacing:.02em; }
+
 @media(max-width:600px) {
+  /* Layout */
   .fg2,.fg3 { grid-template-columns:1fr; }
   .s2,.s3 { grid-column:span 1; }
+
+  /* Header */
+  header { padding:.65rem 1rem; gap:.6rem; }
+  .header-text h1 { font-size:.82rem; line-height:1.35; }
+  .header-text p { font-size:.68rem; }
+  .header-logo-placeholder { width:34px; height:34px; font-size:1rem; flex-shrink:0; }
+
+  /* Container */
+  .container { padding:1rem .75rem; }
+
+  /* Cards */
+  .card { padding:1rem .85rem; border-radius:10px; }
+  .card-title { font-size:.76rem; margin-bottom:.8rem; }
+
+  /* Fields — bigger tap targets */
+  .field label { font-size:.76rem; margin-bottom:.3rem; }
+  .field input,
+  .field select,
+  .field textarea {
+    padding:.65rem .8rem;
+    font-size:1rem !important;
+    border-radius:8px;
+    -webkit-appearance:none;
+  }
+  .field select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237a7060' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right .8rem center; padding-right:2rem; }
+  .field textarea { min-height:80px; }
+
+  /* Radio groups — stack vertically and bigger hit area */
+  .radio-group { flex-direction:column; gap:.55rem; padding:.2rem 0; }
+  .radio-item { font-size:.9rem; padding:.2rem 0; }
+  .radio-item input[type=radio] { width:18px; height:18px; flex-shrink:0; }
+
+  /* Photo box */
+  .photo-box { width:90px; height:113px; }
+  .ph-hint { font-size:.66rem; }
+
+  /* Photo + fields layout */
+  div[style*="display:flex;gap:1rem;align-items:flex-start"] {
+    flex-direction:column;
+    align-items:center !important;
+  }
+  div[style*="flex:1;min-width:200px"] {
+    width:100% !important;
+    min-width:0 !important;
+  }
+
+  /* Education table → card layout */
+  .edu-table,
+  .edu-table thead,
+  .edu-table tbody,
+  .edu-table th,
+  .edu-table td,
+  .edu-table tr { display:block; }
+  .edu-table thead { display:none; }
+  .edu-table tr {
+    border:1px solid var(--border2);
+    border-radius:8px;
+    padding:.55rem .65rem;
+    margin-bottom:.5rem;
+    background:var(--surface2);
+  }
+  .edu-table td {
+    border:none !important;
+    padding:.22rem 0 !important;
+    display:flex;
+    align-items:center;
+    gap:.5rem;
+  }
+  .edu-table td::before {
+    content:attr(data-label);
+    font-size:.68rem;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    min-width:70px;
+    flex-shrink:0;
+  }
+  .edu-inp {
+    font-size:.9rem !important;
+    padding:.38rem .5rem !important;
+    flex:1;
+  }
+
+  /* Language table → card layout */
+  .lang-table,
+  .lang-table thead,
+  .lang-table tbody,
+  .lang-table th,
+  .lang-table td,
+  .lang-table tr { display:block; }
+  .lang-table thead { display:none; }
+  .lang-table tr {
+    border:1px solid var(--border2);
+    border-radius:8px;
+    padding:.7rem .75rem;
+    margin-bottom:.6rem;
+    background:var(--surface2);
+  }
+  .lang-table td { border:none !important; padding:.1rem 0 !important; }
+  .lang-table td:first-child {
+    font-size:.82rem;
+    font-weight:700;
+    color:var(--teal);
+    padding-bottom:.45rem !important;
+    border-bottom:1px solid var(--border2) !important;
+    margin-bottom:.4rem;
+  }
+  .lang-skill-group {
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:.3rem;
+    margin-bottom:.3rem;
+  }
+  .lang-skill-label {
+    font-size:.62rem;
+    font-weight:600;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    margin-bottom:.15rem;
+  }
+  .lang-radio-row {
+    display:flex;
+    flex-direction:column;
+    gap:.25rem;
+  }
+  .lang-radio-item {
+    display:flex;
+    align-items:center;
+    gap:.3rem;
+    font-size:.78rem;
+    cursor:pointer;
+  }
+  .lang-radio-item input { accent-color:var(--teal); width:15px; height:15px; }
+
+  /* Work history dynamic rows → stacked */
+  #workRows .dyn-row,
+  #refRows .dyn-row {
+    grid-template-columns:1fr !important;
+    border:1px solid var(--border2);
+    border-radius:8px;
+    padding:.65rem .75rem;
+    background:var(--surface2);
+    margin-bottom:.6rem;
+    position:relative;
+    padding-top:2.2rem;
+  }
+  #workRows .dyn-row .btn-rm,
+  #refRows .dyn-row .btn-rm {
+    position:absolute;
+    top:.45rem;
+    right:.45rem;
+  }
+  /* Work/Ref header labels hidden on mobile since fields stacked */
+  .work-header-labels, .ref-header-labels { display:none !important; }
+
+  /* Step dots — compact on mobile */
+  .step-dots { gap:.3rem; margin-bottom:1rem; }
+  .step-dot { gap:.2rem; }
+  .step-dot .dot { width:32px; height:32px; font-size:.72rem; }
+  .step-dot .dot-label { font-size:.62rem; max-width:52px; text-align:center; line-height:1.2; }
+
+  /* Progress */
+  .progress-label { font-size:.7rem; }
+
+  /* Nav buttons — full width */
+  .step-nav { flex-direction:column-reverse; gap:.55rem; margin-top:1rem; }
+  .btn-next, .btn-back, .btn-submit {
+    width:100%;
+    justify-content:center;
+    padding:.78rem 1rem;
+    font-size:.95rem;
+    border-radius:10px;
+  }
+
+  /* Consent checkbox */
+  #pdpaConsent { width:20px !important; height:20px !important; }
+
+  /* Toast */
+  .toast { font-size:.8rem; max-width:90vw; white-space:normal; text-align:center; }
+
+  /* Btn-add */
+  .btn-add { padding:.5rem 1rem; font-size:.82rem; width:100%; justify-content:center; }
 }
 </style>
 </head>
@@ -190,8 +378,8 @@ header {
       <div class="card-title">ตำแหน่งที่สมัคร</div>
       <div class="fg2">
         <div class="field s2"><label>ตำแหน่งที่ต้องการ <span class="req">*</span></label><input type="text" id="position" placeholder="ชื่อตำแหน่งงาน"><div class="err-msg" id="err-position">กรุณากรอกตำแหน่งที่ต้องการ</div></div>
-        <div class="field"><label>เงินเดือนที่ต้องการ (บาท/เดือน) <span class="req">*</span></label><input type="text" id="salary" placeholder="12,000"></div>
-        <div class="field"><label>วันที่สมัคร <span class="req">*</span></label><input type="date" id="applyDate"></div>
+        <div class="field"><label>เงินเดือนที่ต้องการ (บาท/เดือน) <span class="req">*</span></label><input type="text" id="salary" placeholder="12,000"><div class="err-msg" id="err-salary">กรุณากรอกเงินเดือนที่ต้องการ</div></div>
+        <div class="field"><label>วันที่สมัคร <span class="req">*</span></label><input type="date" id="applyDate"><div class="err-msg" id="err-applyDate">กรุณาระบุวันที่สมัคร</div></div>
       </div>
     </div>
 
@@ -208,26 +396,26 @@ header {
           <div class="err-msg" id="err-photo" style="margin-top:.3rem;">กรุณาอัปโหลดรูปถ่าย</div>
         </div>
         <div style="flex:1;min-width:200px;" class="fg2">
-          <div class="field"><label>คำนำหน้า <span class="req">*</span></label><select id="prefix"><option value="">--</option><option>นาย</option><option>นาง</option><option>นางสาว</option></select></div>
+          <div class="field"><label>คำนำหน้า <span class="req">*</span></label><select id="prefix"><option value="">--</option><option>นาย</option><option>นาง</option><option>นางสาว</option></select><div class="err-msg" id="err-prefix">กรุณาเลือกคำนำหน้า</div></div>
           <div class="field"><label>ชื่อ-นามสกุล (ไทย) <span class="req">*</span></label><input type="text" id="nameTH" placeholder="ชื่อ นามสกุล"><div class="err-msg" id="err-nameTH">กรุณากรอกชื่อ-นามสกุล</div></div>
-          <div class="field"><label>วัน/เดือน/ปีเกิด <span class="req">*</span></label><input type="date" id="birthDate" onchange="calcAge()"><div style="font-size:.68rem;color:var(--muted);margin-top:.2rem;">⚠️ กรอกปีเป็น ค.ศ. เช่น 1995</div></div>
-          <div class="field"><label>อายุ (ปี) <span class="req">*</span></label><input type="number" id="age" placeholder="25" min="15" max="80"></div>
+          <div class="field"><label>วัน/เดือน/ปีเกิด <span class="req">*</span></label><input type="date" id="birthDate" onchange="calcAge()"><div style="font-size:.68rem;color:var(--muted);margin-top:.2rem;">⚠️ กรอกปีเป็น ค.ศ. เช่น 1995</div><div class="err-msg" id="err-birthDate">กรุณาระบุวันเกิด</div></div>
+          <div class="field"><label>อายุ (ปี) <span class="req">*</span></label><input type="number" id="age" placeholder="25" min="15" max="80"><div class="err-msg" id="err-age">กรุณากรอกอายุ</div></div>
           <div class="field"><label>เพศ <span class="req">*</span></label><div class="radio-group"><label class="radio-item"><input type="radio" name="gender" value="ชาย" onchange="toggleMilitary(this.value)"> ชาย</label><label class="radio-item"><input type="radio" name="gender" value="หญิง" onchange="toggleMilitary(this.value)"> หญิง</label></div><div class="err-msg" id="err-gender">กรุณาเลือกเพศ</div></div>
-          <div class="field"><label>เชื้อชาติ <span class="req">*</span></label><input type="text" id="race" value="ไทย"></div>
-          <div class="field"><label>สัญชาติ <span class="req">*</span></label><input type="text" id="nationality" value="ไทย"></div>
-          <div class="field"><label>ศาสนา <span class="req">*</span></label><input type="text" id="religion" placeholder="พุทธ"></div>
-          <div class="field"><label>ส่วนสูง (ซม.) <span class="req">*</span></label><input type="number" id="height" placeholder="170"></div>
-          <div class="field"><label>น้ำหนัก (กก.) <span class="req">*</span></label><input type="number" id="weight" placeholder="65"></div>
+          <div class="field"><label>เชื้อชาติ <span class="req">*</span></label><input type="text" id="race" value="ไทย"><div class="err-msg" id="err-race">กรุณากรอกเชื้อชาติ</div></div>
+          <div class="field"><label>สัญชาติ <span class="req">*</span></label><input type="text" id="nationality" value="ไทย"><div class="err-msg" id="err-nationality">กรุณากรอกสัญชาติ</div></div>
+          <div class="field"><label>ศาสนา <span class="req">*</span></label><input type="text" id="religion" placeholder="พุทธ"><div class="err-msg" id="err-religion">กรุณากรอกศาสนา</div></div>
+          <div class="field"><label>ส่วนสูง (ซม.) <span class="req">*</span></label><input type="number" id="height" placeholder="170"><div class="err-msg" id="err-height">กรุณากรอกส่วนสูง</div></div>
+          <div class="field"><label>น้ำหนัก (กก.) <span class="req">*</span></label><input type="number" id="weight" placeholder="65"><div class="err-msg" id="err-weight">กรุณากรอกน้ำหนัก</div></div>
         </div>
       </div>
       <div class="fg2" style="margin-top:.75rem;">
         <div class="field s2"><label>ที่อยู่ปัจจุบัน <span class="req">*</span></label><textarea id="address" rows="2" placeholder="บ้านเลขที่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"></textarea><div class="err-msg" id="err-address">กรุณากรอกที่อยู่</div></div>
         <div class="field"><label>เบอร์โทรศัพท์มือถือ <span class="req">*</span></label><input type="tel" id="mobile" placeholder="08x-xxx-xxxx"><div class="err-msg" id="err-mobile">กรุณากรอกเบอร์โทร</div></div>
-        <div class="field"><label>อีเมล</label><input type="email" id="email" placeholder="email@gmail.com"></div>
-        <div class="field"><label>ไอดีไลน์ <span class="req">*</span></label><input type="text" id="lineId"></div>
-        <div class="field"><label>ลักษณะที่อยู่อาศัย <span class="req">*</span></label><select id="livingArr"><option value="">--</option><option>อาศัยอยู่กับครอบครัว</option><option>บ้านตัวเอง</option><option>บ้านเช่า</option><option>หอพัก/อพาร์ตเมนต์</option></select></div>
+        <div class="field"><label>อีเมล <span class="req">*</span></label><input type="email" id="email" placeholder="email@gmail.com"><div class="err-msg" id="err-email">กรุณากรอกอีเมล</div></div>
+        <div class="field"><label>ไอดีไลน์ <span class="req">*</span></label><input type="text" id="lineId"><div class="err-msg" id="err-lineId">กรุณากรอก Line ID</div></div>
+        <div class="field"><label>ลักษณะที่อยู่อาศัย <span class="req">*</span></label><select id="livingArr"><option value="">--</option><option>อาศัยอยู่กับครอบครัว</option><option>บ้านตัวเอง</option><option>บ้านเช่า</option><option>หอพัก/อพาร์ตเมนต์</option></select><div class="err-msg" id="err-livingArr">กรุณาเลือกลักษณะที่อยู่อาศัย</div></div>
         <div class="field" id="militaryField" style="display:none;"><label>ภาวะทางทหาร <span class="req">*</span></label><select id="military"><option value="">--</option><option>ยังไม่ได้รับการเกณฑ์</option><option>ผ่านการเรียนวิชาทหาร (รด.)</option><option>ได้รับการยกเว้น</option><option>ปลดเป็นทหารกองหนุน</option></select><div class="err-msg" id="err-military">กรุณาเลือกภาวะทางทหาร</div></div>
-        <div class="field"><label>สถานภาพ <span class="req">*</span></label><select id="marital" onchange="onMaritalChange()"><option value="">--</option><option>โสด</option><option>แต่งงาน</option><option>หม้าย</option><option>แยกทางกัน</option></select></div>
+        <div class="field"><label>สถานภาพ <span class="req">*</span></label><select id="marital" onchange="onMaritalChange()"><option value="">--</option><option>โสด</option><option>แต่งงาน</option><option>หม้าย</option><option>แยกทางกัน</option></select><div class="err-msg" id="err-marital">กรุณาเลือกสถานภาพ</div></div>
       </div>
     </div>
     <div class="step-nav"><div></div><button class="btn-next" onclick="goStep(2)">ถัดไป → ครอบครัว &amp; การศึกษา</button></div>
@@ -238,12 +426,12 @@ header {
     <div class="card">
       <div class="card-title">ประวัติครอบครัว</div>
       <div class="fg2">
-        <div class="field"><label>ชื่อ-นามสกุล บิดา <span class="req">*</span></label><input type="text" id="fatherName" placeholder="ชื่อ-นามสกุล"></div>
-        <div class="field"><label>อายุบิดา (ปี)</label><input type="number" id="fatherAge" placeholder="อายุ" min="0"></div>
-        <div class="field s2"><label>อาชีพบิดา</label><input type="text" id="fatherOcc" placeholder="อาชีพ"></div>
-        <div class="field"><label>ชื่อ-นามสกุล มารดา <span class="req">*</span></label><input type="text" id="motherName" placeholder="ชื่อ-นามสกุล"></div>
-        <div class="field"><label>อายุมารดา (ปี)</label><input type="number" id="motherAge" placeholder="อายุ" min="0"></div>
-        <div class="field s2"><label>อาชีพมารดา</label><input type="text" id="motherOcc" placeholder="อาชีพ"></div>
+        <div class="field"><label>ชื่อ-นามสกุล บิดา <span class="req">*</span></label><input type="text" id="fatherName" placeholder="ชื่อ-นามสกุล"><div class="err-msg" id="err-fatherName">กรุณากรอกชื่อบิดา</div></div>
+        <div class="field"><label>อายุบิดา (ปี) <span class="req">*</span></label><input type="number" id="fatherAge" placeholder="อายุ" min="0"><div class="err-msg" id="err-fatherAge">กรุณากรอกอายุบิดา</div></div>
+        <div class="field s2"><label>อาชีพบิดา <span class="req">*</span></label><input type="text" id="fatherOcc" placeholder="อาชีพ"><div class="err-msg" id="err-fatherOcc">กรุณากรอกอาชีพบิดา</div></div>
+        <div class="field"><label>ชื่อ-นามสกุล มารดา <span class="req">*</span></label><input type="text" id="motherName" placeholder="ชื่อ-นามสกุล"><div class="err-msg" id="err-motherName">กรุณากรอกชื่อมารดา</div></div>
+        <div class="field"><label>อายุมารดา (ปี) <span class="req">*</span></label><input type="number" id="motherAge" placeholder="อายุ" min="0"><div class="err-msg" id="err-motherAge">กรุณากรอกอายุมารดา</div></div>
+        <div class="field s2"><label>อาชีพมารดา <span class="req">*</span></label><input type="text" id="motherOcc" placeholder="อาชีพ"><div class="err-msg" id="err-motherOcc">กรุณากรอกอาชีพมารดา</div></div>
         <div class="field s2">
           <label>มีพี่น้อง รวมผู้สมัคร (คน) <span class="req">*</span></label>
           <input type="number" id="siblings" value="1" min="1" onchange="onSiblingsChange()">
@@ -262,9 +450,9 @@ header {
     <div id="spouseBlock" style="display:none;" class="card">
       <div class="card-title">ประวัติคู่สมรส</div>
       <div class="fg2" id="spouseFullFields">
-        <div class="field"><label>ชื่อ-นามสกุลคู่สมรส</label><input type="text" id="spouseName" placeholder="ชื่อ-นามสกุล"></div>
-        <div class="field"><label>อาชีพคู่สมรส</label><input type="text" id="spouseOcc" placeholder="อาชีพ"></div>
-        <div class="field s2"><label>บริษัท/ที่ทำงานคู่สมรส</label><input type="text" id="spouseWork" placeholder="ชื่อบริษัท / สถานที่ทำงาน"></div>
+        <div class="field"><label>ชื่อ-นามสกุลคู่สมรส <span class="req">*</span></label><input type="text" id="spouseName" placeholder="ชื่อ-นามสกุล"><div class="err-msg" id="err-spouseName">กรุณากรอกชื่อคู่สมรส</div></div>
+        <div class="field"><label>อาชีพคู่สมรส <span class="req">*</span></label><input type="text" id="spouseOcc" placeholder="อาชีพ"><div class="err-msg" id="err-spouseOcc">กรุณากรอกอาชีพคู่สมรส</div></div>
+        <div class="field s2"><label>บริษัท/ที่ทำงานคู่สมรส <span class="req">*</span></label><input type="text" id="spouseWork" placeholder="ชื่อบริษัท / สถานที่ทำงาน"><div class="err-msg" id="err-spouseWork">กรุณากรอกที่ทำงานคู่สมรส</div></div>
       </div>
       <div class="fg2" style="margin-top:.6rem;">
         <div class="field s2"><label>มีบุตร (คน)</label><input type="number" id="children" value="0" min="0"></div>
@@ -287,7 +475,7 @@ header {
   <div class="step" id="step3">
     <div class="card">
       <div class="card-title">ประวัติการทำงาน (เรียงลำดับก่อน-หลัง)</div>
-      <div style="display:grid;grid-template-columns:1.4fr .85fr .95fr .95fr .8fr .8fr 32px;gap:.35rem;margin-bottom:.35rem;font-size:.7rem;font-weight:600;color:var(--muted);">
+      <div class="work-header-labels" style="display:grid;grid-template-columns:1.4fr .85fr .95fr .95fr .8fr .8fr 32px;gap:.35rem;margin-bottom:.35rem;font-size:.7rem;font-weight:600;color:var(--muted);">
         <div>บริษัท/องค์กร</div><div>ระยะเวลาการทำงาน</div><div>ตำแหน่ง</div><div>ลักษณะงาน</div><div>ค่าจ้าง</div><div>เหตุผลที่ลาออก</div><div></div>
       </div>
       <div id="workRows"></div>
@@ -313,37 +501,37 @@ header {
     <div class="card">
       <div class="card-title">ความสามารถพิเศษ</div>
       <div class="fg2">
-        <div class="field s2"><label>การพิมพ์ดีด</label><div class="radio-group">
+        <div class="field s2"><label>การพิมพ์ดีด <span class="req">*</span></label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="typing" value="ไม่ได้" onchange="toggleTypingSpeed(false)"> ไม่ได้</label>
           <label class="radio-item"><input type="radio" name="typing" value="ได้" onchange="toggleTypingSpeed(true)"> ได้</label>
-        </div></div>
+        </div><div class="err-msg" id="err-typing">กรุณาเลือกความสามารถพิมพ์ดีด</div></div>
         <div class="field s2" id="typingSpeedField" style="display:none;">
           <label>ความเร็วในการพิมพ์ <span class="req">*</span></label>
           <input type="text" id="typingSpeed" placeholder="เช่น ภาษาไทย 30 คำ/นาที ภาษาอังกฤษ 20 คำ/นาที">
         </div>
-        <div class="field s2"><label>การใช้คอมพิวเตอร์</label><div class="radio-group">
+        <div class="field s2"><label>การใช้คอมพิวเตอร์ <span class="req">*</span></label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="computer" value="ไม่ได้" onchange="toggleComputer(false)"> ไม่ได้</label>
           <label class="radio-item"><input type="radio" name="computer" value="ได้" onchange="toggleComputer(true)"> ได้</label>
-        </div></div>
+        </div><div class="err-msg" id="err-computer">กรุณาเลือกความสามารถใช้คอมพิวเตอร์</div></div>
         <div class="field s2" id="computerProgramsField" style="display:none;">
           <label>โปรแกรมที่สามารถใช้ได้ <span class="req">*</span></label>
           <input type="text" id="computerPrograms" placeholder="Excel, Word...">
         </div>
-        <div class="field s2"><label>การขับรถยนต์</label><div class="radio-group">
+        <div class="field s2"><label>การขับรถยนต์ <span class="req">*</span></label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="driving" value="ไม่สามารถขับได้"> ไม่ได้</label>
           <label class="radio-item"><input type="radio" name="driving" value="ขับได้ ไม่มีใบขับขี่"> ขับได้ ไม่มีใบขับขี่</label>
           <label class="radio-item"><input type="radio" name="driving" value="ขับได้มีใบขับขี่"> ขับได้มีใบขับขี่</label>
-        </div></div>
+        </div><div class="err-msg" id="err-driving">กรุณาเลือกความสามารถขับรถ</div></div>
         <div class="field"><label>เครื่องใช้สำนักงาน</label><input type="text" id="officeMachine" placeholder="เช่น เครื่องถ่ายเอกสาร, เครื่องเคลือบเอกสาร"></div>
         <div class="field"><label>งานอดิเรก</label><input type="text" id="hobby" placeholder="ระบุ"></div>
         <div class="field"><label>กีฬาที่ชอบ</label><input type="text" id="sport" placeholder="ระบุ"></div>
         <div class="field"><label>ความรู้พิเศษ</label><input type="text" id="specialKnowledge" placeholder="ระบุ"></div>
         <div class="field"><label>อื่นๆ</label><input type="text" id="abilityOther" placeholder="ระบุ"></div>
-        <div class="field s2"><label>สามารถไปปฏิบัติงานต่างจังหวัดได้หรือไม่?</label><div class="radio-group">
+        <div class="field s2"><label>สามารถไปปฏิบัติงานต่างจังหวัดได้หรือไม่? <span class="req">*</span></label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="upcountry" value="ไม่ได้" onchange="toggleUpcountry(false)"> ไม่ได้</label>
           <label class="radio-item"><input type="radio" name="upcountry" value="ได้" onchange="toggleUpcountry(false)"> ได้</label>
           <label class="radio-item"><input type="radio" name="upcountry" value="other" onchange="toggleUpcountry(true)"> อื่นๆ</label>
-        </div></div>
+        </div><div class="err-msg" id="err-upcountry">กรุณาเลือก</div></div>
         <div class="field s2" id="upcountryNoteField" style="display:none;">
           <label>อื่นๆ ระบุ</label>
           <input type="text" id="upcountryNote">
@@ -367,7 +555,7 @@ header {
 
     <div class="card">
       <div class="card-title">บุคคลอ้างอิงที่รู้จักคุ้นเคยตัวท่านดี (2 คน — ไม่ใช่ญาติหรือนายจ้างเดิม)</div>
-      <div style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 32px;gap:.35rem;margin-bottom:.35rem;font-size:.7rem;font-weight:600;color:var(--muted);">
+      <div class="ref-header-labels" style="display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 32px;gap:.35rem;margin-bottom:.35rem;font-size:.7rem;font-weight:600;color:var(--muted);">
         <div>ชื่อ-นามสกุล</div><div>ที่อยู่</div><div>เบอร์โทร</div><div>อาชีพ</div><div></div>
       </div>
       <div id="refRows"></div>
@@ -393,26 +581,26 @@ header {
           <label>อื่นๆ ระบุ <span class="req">*</span></label>
           <input type="text" id="jobSourceOther" placeholder="ระบุแหล่งที่มา">
         </div>
-        <div class="field s2"><label>รู้จักญาติ/เพื่อนที่ทำงานในบริษัทนี้หรือไม่?</label><div class="radio-group">
+        <div class="field s2"><label>รู้จักญาติ/เพื่อนที่ทำงานในบริษัทนี้หรือไม่? <span class="req">*</span></label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="friendInCo" value="ไม่มี" onchange="toggleFriendInCo(false)"> ไม่มี</label>
           <label class="radio-item"><input type="radio" name="friendInCo" value="มี" onchange="toggleFriendInCo(true)"> มี</label>
-        </div></div>
+        </div><div class="err-msg" id="err-friendInCo">กรุณาเลือก</div></div>
         <div class="field s2" id="friendInCoNameField" style="display:none;">
           <label>ชื่อ-นามสกุล ญาติ/เพื่อนที่รู้จัก <span class="req">*</span></label>
           <input type="text" id="friendInCoName" placeholder="ระบุชื่อ-นามสกุล">
         </div>
-        <div class="field s2"><label>เคยป่วยหนักหรือเป็นโรคติดต่อร้ายแรงมาก่อนหรือไม่?</label><div class="radio-group">
+        <div class="field s2"><label>เคยป่วยหนักหรือเป็นโรคติดต่อร้ายแรงมาก่อนหรือไม่? <span class="req">*</span></label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="illness" value="ไม่เคย" onchange="toggleIllness(false)"> ไม่เคย</label>
           <label class="radio-item"><input type="radio" name="illness" value="เคย" onchange="toggleIllness(true)"> เคย</label>
-        </div></div>
+        </div><div class="err-msg" id="err-illness">กรุณาเลือก</div></div>
         <div class="field s2" id="illnessDetailField" style="display:none;">
           <label>โปรดระบุชื่อโรค <span class="req">*</span></label>
           <input type="text" id="illnessDetail" placeholder="ระบุชื่อโรค">
         </div>
-        <div class="field s2"><label>เคยสมัครงานกับบริษัทนี้มาก่อนหรือไม่?</label><div class="radio-group">
+        <div class="field s2"><label>เคยสมัครงานกับบริษัทนี้มาก่อนหรือไม่? <span class="req">*</span></label><div class="radio-group">
           <label class="radio-item"><input type="radio" name="prevApply" value="ไม่เคย" onchange="togglePrevApply(false)"> ไม่เคย</label>
           <label class="radio-item"><input type="radio" name="prevApply" value="เคย" onchange="togglePrevApply(true)"> เคย</label>
-        </div></div>
+        </div><div class="err-msg" id="err-prevApply">กรุณาเลือก</div></div>
         <div class="field s2" id="prevApplyDetailField" style="display:none;">
           <label>เคยสมัครมาเมื่อใด <span class="req">*</span></label>
           <input type="text" id="prevApplyDetail" placeholder="ระบุช่วงเวลาที่เคยสมัคร เช่น มกราคม 2566">
@@ -608,51 +796,149 @@ function chkRadio(name,eid) {
 
 function validateStep(step) {
   let ok=true;
+
+  // ===== STEP 1: ข้อมูลส่วนตัว =====
   if (step===1) {
     if(!photoData){document.getElementById('err-photo').classList.add('show');ok=false;}
     else{document.getElementById('err-photo').classList.remove('show');}
     ok=chkField('position','err-position')&&ok;
-    ok=chkField('salary',null)&&ok;
-    ok=chkField('applyDate',null)&&ok;
-    ok=chkField('prefix',null)&&ok;
+    ok=chkField('salary','err-salary')&&ok;
+    ok=chkField('applyDate','err-applyDate')&&ok;
+    ok=chkField('prefix','err-prefix')&&ok;
     ok=chkField('nameTH','err-nameTH')&&ok;
-    ok=chkField('birthDate',null)&&ok;
-    ok=chkField('age',null)&&ok;
+    ok=chkField('birthDate','err-birthDate')&&ok;
+    ok=chkField('age','err-age')&&ok;
     ok=chkRadio('gender','err-gender')&&ok;
-    ok=chkField('race',null)&&ok;
-    ok=chkField('nationality',null)&&ok;
-    ok=chkField('religion',null)&&ok;
-    ok=chkField('height',null)&&ok;
-    ok=chkField('weight',null)&&ok;
+    ok=chkField('race','err-race')&&ok;
+    ok=chkField('nationality','err-nationality')&&ok;
+    ok=chkField('religion','err-religion')&&ok;
+    ok=chkField('height','err-height')&&ok;
+    ok=chkField('weight','err-weight')&&ok;
     ok=chkField('address','err-address')&&ok;
     ok=chkField('mobile','err-mobile')&&ok;
-    ok=chkField('lineId',null)&&ok;
-    ok=chkField('livingArr',null)&&ok;
-    ok=chkField('marital',null)&&ok;
+    ok=chkField('email','err-email')&&ok;
+    ok=chkField('lineId','err-lineId')&&ok;
+    ok=chkField('livingArr','err-livingArr')&&ok;
+    ok=chkField('marital','err-marital')&&ok;
     if(getRadio('gender')==='ชาย') ok=chkField('military','err-military')&&ok;
   }
+
+  // ===== STEP 2: ครอบครัว & การศึกษา =====
   if (step===2) {
-    ok=chkField('fatherName',null)&&ok;
-    ok=chkField('motherName',null)&&ok;
+    ok=chkField('fatherName','err-fatherName')&&ok;
+    ok=chkField('fatherAge','err-fatherAge')&&ok;
+    ok=chkField('fatherOcc','err-fatherOcc')&&ok;
+    ok=chkField('motherName','err-motherName')&&ok;
+    ok=chkField('motherAge','err-motherAge')&&ok;
+    ok=chkField('motherOcc','err-motherOcc')&&ok;
+    // ถ้ามีพี่น้อง > 1 ต้องกรอก sibMale/sibFemale/childOrder
+    const sibN=parseInt(document.getElementById('siblings')?.value)||1;
+    if(sibN>1){
+      ok=chkField('sibMale',null)&&ok;
+      ok=chkField('sibFemale',null)&&ok;
+      ok=chkField('childOrder',null)&&ok;
+    }
+    // ถ้าแต่งงาน — ต้องกรอกข้อมูลคู่สมรส
+    const mar=document.getElementById('marital')?.value;
+    if(mar==='แต่งงาน'){
+      ok=chkField('spouseName','err-spouseName')&&ok;
+      ok=chkField('spouseOcc','err-spouseOcc')&&ok;
+      ok=chkField('spouseWork','err-spouseWork')&&ok;
+    }
+    // ต้องกรอกการศึกษาอย่างน้อย 1 ระดับ
+    const hasEdu = EDU_LEVELS.some((_,i)=>{
+      const inst=document.querySelector(`.edu-inst[data-i="${i}"]`)?.value?.trim();
+      return inst && inst.length>0;
+    });
+    if(!hasEdu){
+      showToast('⚠️ กรุณากรอกประวัติการศึกษาอย่างน้อย 1 ระดับ');
+      ok=false;
+    }
   }
+
+  // ===== STEP 3: ประวัติการทำงาน =====
+  if (step===3) {
+    const workRowEls=Array.from(document.getElementById('workRows').querySelectorAll('.dyn-row'));
+    let hasWork=false;
+    workRowEls.forEach(row=>{
+      const inputs=row.querySelectorAll('input');
+      const filled=[...inputs].filter(i=>i.value.trim());
+      if(filled.length>0) hasWork=true;
+    });
+    if(!hasWork){
+      showToast('⚠️ กรุณากรอกประวัติการทำงานอย่างน้อย 1 รายการ หรือระบุ "ไม่มีประสบการณ์" ในช่องบริษัท');
+      ok=false;
+    }
+  }
+
+  // ===== STEP 4: ทักษะ =====
+  if (step===4) {
+    // ภาษา — ต้องเลือกทุกช่องสำหรับภาษาไทยและอังกฤษ (index 0,1)
+    const langRequired=[0,1];
+    langRequired.forEach(i=>{
+      ['lang_speak','lang_write','lang_read'].forEach(g=>{
+        const checked=document.querySelector(`input[name="${g}_${i}"]:checked`);
+        if(!checked){
+          ok=false;
+          // highlight row
+          const row=document.getElementById('langBody')?.children[i];
+          if(row) row.style.outline='2px solid var(--danger)';
+        } else {
+          const row=document.getElementById('langBody')?.children[i];
+          if(row) row.style.outline='';
+        }
+      });
+    });
+    if(!ok || document.querySelectorAll('#langBody tr[style*="outline"]').length>0){
+      if(ok) ok=false;
+      showToast('⚠️ กรุณาเลือกระดับภาษาไทยและภาษาอังกฤษให้ครบ');
+    }
+    ok=chkRadio('typing','err-typing')&&ok;
+    ok=chkRadio('computer','err-computer')&&ok;
+    ok=chkRadio('driving','err-driving')&&ok;
+    ok=chkRadio('upcountry','err-upcountry')&&ok;
+    if(getRadio('upcountry')==='other') ok=chkField('upcountryNote',null)&&ok;
+    if(getRadio('typing')==='ได้') ok=chkField('typingSpeed',null)&&ok;
+    if(getRadio('computer')==='ได้') ok=chkField('computerPrograms',null)&&ok;
+  }
+
+  // ===== STEP 5: ข้อมูลเพิ่มเติม =====
   if (step===5) {
     ok=chkField('emergName',null)&&ok;
     ok=chkField('emergRelation',null)&&ok;
     ok=chkField('emergAddr',null)&&ok;
     ok=chkField('emergTel',null)&&ok;
+    // บุคคลอ้างอิง — ต้องมีอย่างน้อย 2 คน
+    const refRowEls=Array.from(document.getElementById('refRows').querySelectorAll('.dyn-row'));
+    const filledRefs=refRowEls.filter(row=>row.querySelectorAll('input')[0]?.value?.trim());
+    if(filledRefs.length<2){
+      showToast('⚠️ กรุณากรอกบุคคลอ้างอิงอย่างน้อย 2 คน');
+      ok=false;
+    } else {
+      // validate ทุก field ในแต่ละ ref row
+      filledRefs.forEach(row=>{
+        row.querySelectorAll('input').forEach(inp=>{
+          if(!inp.value.trim()){inp.classList.add('field-error');ok=false;}
+          else inp.classList.remove('field-error');
+        });
+      });
+    }
     ok=chkField('jobSource',null)&&ok;
     if(document.getElementById('jobSource')?.value==='อื่นๆ') ok=chkField('jobSourceOther',null)&&ok;
-    ok=chkField('selfIntro',null)&&ok;
-    ok=chkRadio('illness',null)&&ok;
+    ok=chkRadio('friendInCo','err-friendInCo')&&ok;
+    if(getRadio('friendInCo')==='มี') ok=chkField('friendInCoName',null)&&ok;
+    ok=chkRadio('illness','err-illness')&&ok;
     if(getRadio('illness')==='เคย') ok=chkField('illnessDetail',null)&&ok;
-    ok=chkRadio('prevApply',null)&&ok;
+    ok=chkRadio('prevApply','err-prevApply')&&ok;
     if(getRadio('prevApply')==='เคย') ok=chkField('prevApplyDetail',null)&&ok;
+    ok=chkField('selfIntro',null)&&ok;
     if(!document.getElementById('pdpaConsent')?.checked){document.getElementById('err-pdpa').classList.add('show');ok=false;}
     else{document.getElementById('err-pdpa').classList.remove('show');}
   }
+
   if(!ok){
     showToast('⚠️ กรุณากรอกข้อมูลที่จำเป็นให้ครบ');
-    setTimeout(()=>{const first=document.querySelector('.step.active .field-error,.step.active .err-msg.show');if(first)first.scrollIntoView({behavior:'smooth',block:'center'});},100);
+    setTimeout(()=>{const first=document.querySelector('.step.active .field-error,.step.active .err-msg.show,.step.active [style*="outline"]');if(first)first.scrollIntoView({behavior:'smooth',block:'center'});},100);
   }
   return ok;
 }
@@ -677,49 +963,73 @@ function buildEduTable() {
     const tr=document.createElement('tr');
     tr.style.background=i%2===0?'':'#faf8f4';
     const majorCell=noMajor.includes(i)
-      ?`<td style="padding:.15rem .28rem;text-align:center;color:var(--muted);font-size:.72rem;">-</td>`
-      :`<td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-major" data-i="${i}" placeholder="สาขา"></td>`;
-    tr.innerHTML=`<td style="padding:.3rem .45rem;font-weight:600;font-size:.78rem;color:var(--teal);">${lv}</td>
-      <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-inst" data-i="${i}" placeholder="สถาบัน"></td>
+      ?`<td data-label="สาขาวิชา" style="padding:.15rem .28rem;text-align:center;color:var(--muted);font-size:.72rem;">-</td>`
+      :`<td data-label="สาขาวิชา" style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-major" data-i="${i}" placeholder="สาขา"></td>`;
+    tr.innerHTML=`<td data-label="ระดับ" style="padding:.3rem .45rem;font-weight:600;font-size:.78rem;color:var(--teal);">${lv}</td>
+      <td data-label="สถาบัน" style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-inst" data-i="${i}" placeholder="สถาบัน"></td>
       ${majorCell}
-      <td style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-period" data-i="${i}" placeholder="เช่น 2555-2558"></td>`;
+      <td data-label="ระยะเวลา" style="padding:.15rem .28rem;"><input type="text" class="edu-inp edu-period" data-i="${i}" placeholder="เช่น 2555-2558"></td>`;
     tb.appendChild(tr);
   });
 }
 
 // ===== LANG TABLE =====
 function buildLangTable() {
+  const isMobile = window.innerWidth < 600;
   const tb=document.getElementById('langBody'); tb.innerHTML='';
   LANG_ROWS.forEach((lang,i)=>{
     const tr=document.createElement('tr');
     const grps=['lang_speak','lang_write','lang_read'];
+    const grpLabels=['การพูด','การเขียน','การอ่าน'];
     const lvls=['ดี','ปานกลาง','พอใช้'];
-    tr.innerHTML=`<td style="padding:.28rem .42rem;font-weight:600;">${lang}</td>`+
-      grps.map(g=>lvls.map(lv=>`<td style="padding:.12rem;"><label style="cursor:pointer;display:flex;align-items:center;justify-content:center;"><input type="radio" name="${g}_${i}" value="${lv}" style="accent-color:var(--teal);"></label></td>`).join('')).join('');
+    if (isMobile) {
+      // Mobile: card layout with labeled groups
+      tr.innerHTML=`<td>${lang}</td>
+        <td>
+          <div class="lang-skill-group">
+            ${grps.map((g,gi)=>`<div>
+              <div class="lang-skill-label">${grpLabels[gi]}</div>
+              <div class="lang-radio-row">${lvls.map(lv=>`<label class="lang-radio-item"><input type="radio" name="${g}_${i}" value="${lv}"> ${lv}</label>`).join('')}</div>
+            </div>`).join('')}
+          </div>
+        </td>`;
+    } else {
+      tr.innerHTML=`<td style="padding:.28rem .42rem;font-weight:600;">${lang}</td>`+
+        grps.map(g=>lvls.map(lv=>`<td style="padding:.12rem;"><label style="cursor:pointer;display:flex;align-items:center;justify-content:center;"><input type="radio" name="${g}_${i}" value="${lv}" style="accent-color:var(--teal);"></label></td>`).join('')).join('');
+    }
     tb.appendChild(tr);
   });
 }
+// Rebuild lang table on resize crossing 600px
+let _langLastMobile = window.innerWidth < 600;
+window.addEventListener('resize', ()=>{
+  const m = window.innerWidth < 600;
+  if (m !== _langLastMobile) { _langLastMobile = m; buildLangTable(); }
+});
 
 // ===== DYNAMIC ROWS =====
 function addWorkRow() {
   const c=document.getElementById('workRows'),d=document.createElement('div');
   d.className='dyn-row'; d.style.gridTemplateColumns='1.4fr .85fr .95fr .95fr .8fr .8fr 32px';
-  [['','ชื่อบริษัท'],['','เช่น 2555-2558'],['','ตำแหน่ง'],['','ลักษณะงาน'],['','ค่าจ้าง'],['','เหตุผลที่ลาออก']].forEach(([_,ph])=>{
+  [['','ชื่อบริษัท / องค์กร'],['','ระยะเวลา เช่น 2555-2558'],['','ตำแหน่ง'],['','ลักษณะงาน'],['','ค่าจ้าง (บาท)'],['','เหตุผลที่ลาออก']].forEach(([_,ph])=>{
     const div=document.createElement('div'); div.className='field';
-    div.innerHTML=`<input type="text" placeholder="${ph}">`; d.appendChild(div);
+    div.innerHTML=`<label style="display:none;" class="mobile-label">${ph}</label><input type="text" placeholder="${ph}">`; d.appendChild(div);
   });
   const rm=document.createElement('button'); rm.className='btn-rm'; rm.textContent='×';
   rm.onclick=()=>d.remove(); d.appendChild(rm); c.appendChild(d);
+  // Show labels on mobile
+  if(window.innerWidth<600) d.querySelectorAll('.mobile-label').forEach(l=>l.style.display='block');
 }
 function addRefRow() {
   const c=document.getElementById('refRows'),d=document.createElement('div');
   d.className='dyn-row'; d.style.gridTemplateColumns='1.4fr 1fr 1fr 1fr 32px';
-  ['ชื่อ-นามสกุล','ที่อยู่','เบอร์โทร','อาชีพ'].forEach(ph=>{
+  [['ชื่อ-นามสกุล','ชื่อ-นามสกุล'],['ที่อยู่','ที่อยู่'],['เบอร์โทร','เบอร์โทร'],['อาชีพ','อาชีพ']].forEach(([lb,ph])=>{
     const div=document.createElement('div'); div.className='field';
-    div.innerHTML=`<input type="text" placeholder="${ph}">`; d.appendChild(div);
+    div.innerHTML=`<label style="display:none;" class="mobile-label">${lb}</label><input type="text" placeholder="${ph}">`; d.appendChild(div);
   });
   const rm=document.createElement('button'); rm.className='btn-rm'; rm.textContent='×';
   rm.onclick=()=>d.remove(); d.appendChild(rm); c.appendChild(d);
+  if(window.innerWidth<600) d.querySelectorAll('.mobile-label').forEach(l=>l.style.display='block');
 }
 
 // ===== COLLECT DATA =====
