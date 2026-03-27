@@ -209,8 +209,8 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
         <p style="color:var(--muted);font-size:.8rem;">อัปเดตล่าสุด: <span id="lastUpdate">-</span></p>
       </div>
 
-      <!-- ROW 1: ทั้งหมด + ใหม่ + ไม่ผ่าน + ติดต่อไม่ได้ -->
-      <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:.8rem;">
+      <!-- ROW 1: ทั้งหมด + ใหม่ + ไม่ผ่านคุณสมบัติ + ไม่ผ่านสัมภาษณ์/ปฏิเสธ + ติดต่อไม่ได้ -->
+      <div class="stats-row" style="grid-template-columns:repeat(5,1fr);margin-bottom:.8rem;">
         <div class="stat-card" style="cursor:pointer;" onclick="showView('applicants')">
           <div class="stat-num" id="statTotal">0</div>
           <div class="stat-label">📋 ใบสมัครทั้งหมด</div>
@@ -220,8 +220,12 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
           <div class="stat-label">🆕 รอพิจารณา</div>
         </div>
         <div class="stat-card danger" style="cursor:pointer;" onclick="showView('applicants')">
-          <div class="stat-num" id="statReject">0</div>
-          <div class="stat-label">❌ ไม่ผ่าน / ปฏิเสธ</div>
+          <div class="stat-num" id="statRejectQual">0</div>
+          <div class="stat-label">❌ ไม่ผ่านคุณสมบัติ</div>
+        </div>
+        <div class="stat-card danger" style="cursor:pointer;" onclick="showView('applicants')">
+          <div class="stat-num" id="statRejectInterview">0</div>
+          <div class="stat-label">🚫 ไม่ผ่านสัมภาษณ์ / ปฏิเสธร่วมงาน</div>
         </div>
         <div class="stat-card" style="cursor:pointer;" onclick="showView('applicants')">
           <div class="stat-num" id="statUnreachable" style="color:var(--warning);">0</div>
@@ -344,7 +348,8 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
               <option value="passed_interview">✅ ผ่านสัมภาษณ์</option>
               <option value="hired">🏢 รับเข้าทำงาน</option>
               <option value="resigned">🚪 ลาออกแล้ว</option>
-              <option value="rejected">❌ ไม่ผ่าน</option>
+              <option value="rejected">❌ ไม่ผ่านคุณสมบัติ</option>
+              <option value="rejected_interview">🚫 ไม่ผ่านสัมภาษณ์/ปฏิเสธ</option>
             </select></div>
             <button class="btn-reset" onclick="resetFilters()">↺ ล้างตัวกรอง</button>
           </div>
@@ -499,7 +504,8 @@ body { font-family:'IBM Plex Sans Thai','IBM Plex Sans',sans-serif; background:v
         <option value="passed_interview">✅ ผ่านสัมภาษณ์</option>
         <option value="hired">🏢 รับเข้าทำงาน</option>
         <option value="resigned">🚪 ลาออกแล้ว</option>
-        <option value="rejected">❌ ไม่ผ่าน</option>
+        <option value="rejected">❌ ไม่ผ่านคุณสมบัติ</option>
+        <option value="rejected_interview">🚫 ไม่ผ่านสัมภาษณ์/ปฏิเสธ</option>
       </select>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
@@ -654,8 +660,9 @@ function renderStats() {
   const passed     = allApps.filter(a=>a.status==='passed_interview').length;
   const hired      = allApps.filter(a=>a.status==='hired').length;
   const resigned   = allApps.filter(a=>a.status==='resigned').length;
-  const rejected   = allApps.filter(a=>['rejected'].includes(a.status)).length;
-  const unreachable= allApps.filter(a=>a.status==='unreachable').length;
+  const rejected        = allApps.filter(a=>a.status==='rejected').length;
+  const rejectedIntv    = allApps.filter(a=>a.status==='rejected_interview').length;
+  const unreachable     = allApps.filter(a=>a.status==='unreachable').length;
 
   // pipeline counts (cumulative — those who passed through each stage)
   const everShortlisted  = allApps.filter(a=>['shortlisted','interviewed','passed_interview','hired','resigned'].includes(a.status)).length;
@@ -668,7 +675,8 @@ function renderStats() {
 
   document.getElementById('statTotal').textContent       = total;
   document.getElementById('statNew').textContent         = newCount;
-  document.getElementById('statReject').textContent      = rejected;
+  document.getElementById('statRejectQual').textContent      = rejected;
+  document.getElementById('statRejectInterview').textContent = rejectedIntv;
   document.getElementById('statUnreachable').textContent = unreachable;
   document.getElementById('statShort').textContent       = shortlisted;
   document.getElementById('statInterviewed').textContent = interviewed;
@@ -689,13 +697,15 @@ function statusBadge(s) {
     new:'🆕 ใหม่', shortlisted:'⭐ ผ่านคุณสมบัติ',
     interviewed:'📅 นัดสัมภาษณ์', showed:'🙋 มาสัมแล้ว',
     passed_interview:'✅ ผ่านสัมภาษณ์', hired:'🏢 รับเข้าทำงาน',
-    resigned:'🚪 ลาออก', rejected:'❌ ไม่ผ่าน', unreachable:'📵 ติดต่อไม่ได้'
+    resigned:'🚪 ลาออก', rejected:'❌ ไม่ผ่านคุณสมบัติ',
+    rejected_interview:'🚫 ไม่ผ่านสัมภาษณ์/ปฏิเสธ', unreachable:'📵 ติดต่อไม่ได้'
   };
   const cls = {
     new:'status-new', shortlisted:'status-shortlisted',
     interviewed:'status-interviewed', showed:'status-showed',
     passed_interview:'status-passed', hired:'status-hired',
-    resigned:'status-resigned', rejected:'status-rejected', unreachable:'status-showed'
+    resigned:'status-resigned', rejected:'status-rejected',
+    rejected_interview:'status-rejected', unreachable:'status-showed'
   };
   return `<span class="status-badge ${cls[s]||'status-new'}">${map[s]||s}</span>`;
 }
@@ -768,7 +778,7 @@ async function loadAppDetail(id) {
 
 // ===== FILTERS =====
 // สถานะที่แสดงในหน้ารายชื่อผู้สมัคร (ยังไม่เข้า pipeline สัมภาษณ์/รับเข้า/ทำงาน)
-const APPLICANT_STATUSES = ['new','shortlisted','rejected','unreachable'];
+const APPLICANT_STATUSES = ['new','shortlisted','rejected','rejected_interview','unreachable'];
 
 function applyFilters() {
   const name = document.getElementById('fName').value.toLowerCase();
@@ -1403,51 +1413,84 @@ async function fillAndDownload(d, printMode=false) {
     put('D8',(d.prefix||'')+(d.nameTH||''));
     put('I10',d.position); put('Z10',d.salary);
     put('F14',d.address); put('G16',d.mobile); put('M16',d.email); put('Z16',d.lineId);
+
+    // ลักษณะที่อยู่อาศัย — template ใหม่: AC19 = หอพัก/อพาร์ตเมนต์ (มี / อยู่แล้ว)
     const lv=d.livingArr||'';
-    chk('J19',lv==='อาศัยอยู่กับครอบครัว'); chk('R19',lv==='บ้านตัวเอง');
+    chk('I19',lv==='อาศัยอยู่กับครอบครัว'); chk('R19',lv==='บ้านตัวเอง');
     chk('X19',lv==='บ้านเช่า'); chk('AC19',lv==='หอพัก/อพาร์ตเมนต์');
+
     put('F21',fd(d.birthDate)); put('Q21',d.age); put('Z21',d.race);
     put('D23',d.nationality); put('N23',d.religion); put('X23',d.height); put('AE23',d.weight);
+
+    // ภาวะทางทหาร — template ใหม่: N28=ยังไม่ฯ, X28=ได้รับการยกเว้น, AD28=ปลด
     const mil=d.military||'';
-    chk('G28',mil==='ยังไม่ได้รับการเกณฑ์'); chk('N28',mil==='ผ่านการเรียนวิชาทหาร (รด.)');
-    chk('W28',mil==='ได้รับการยกเว้น'); chk('AC28',mil==='ปลดเป็นทหารกองหนุน');
+    chk('N28',mil==='ยังไม่ได้รับการเกณฑ์'); chk('N28',mil==='ผ่านการเรียนวิชาทหาร (รด.)');
+    chk('X28',mil==='ได้รับการยกเว้น'); chk('AD28',mil==='ปลดเป็นทหารกองหนุน');
+
+    // สถานภาพ — template ใหม่: N31=โสด, O31=แต่งงาน, X31=หม้าย, AD31=แยกทางกัน
     const mar=d.marital||'';
-    chk('G31',mar==='โสด'); chk('N31',mar==='แต่งงาน'); chk('W31',mar==='หม้าย'); chk('AC31',mar==='แยกทางกัน');
+    chk('N31',mar==='โสด'); chk('N31',mar==='แต่งงาน'); chk('X31',mar==='หม้าย'); chk('AD31',mar==='แยกทางกัน');
+
+    // เพศ — template ใหม่: E34=ชาย, M34=หญิง (ไม่มี checkbox column ก่อน)
     chk('E34',d.gender==='ชาย'); chk('L34',d.gender==='หญิง');
+
     put('G38',d.fatherName); put('S38',d.fatherAge); put('AB38',d.fatherOcc);
     put('H40',d.motherName); put('S40',d.motherAge); put('AB40',d.motherOcc);
     put('F42',d.spouseName); put('V42',d.spouseWork);
     put('F44',d.spouseOcc); put('T44',d.children);
     put('AE44',fd(d.applyDate||d.submittedAt));
-    put('H50',d.siblings); put('S50',d.sibMale); put('Y50',d.sibFemale); put('AF50',d.childOrder);
+    put('H50',d.siblings); put('S50',d.sibMale); put('Y50',d.sibFemale); put('AG50',d.childOrder);
+
+    // การศึกษา
     const EL=['มัธยมศึกษาตอนต้น (ม.3)','มัธยมศึกษาตอนปลาย (ม.6)','ปวช.','ปวท./ปวส.','ปริญญาตรี','สูงกว่าปริญญาตรี','อื่น ๆ'];
     const ER=[63,65,67,69,71,73,75];
     const em={}; (d.education||[]).forEach(e=>{em[e.level]=e;});
     EL.forEach((l,i)=>{const r=ER[i];const e=em[l]||{};if(e.inst)put(`H${r}`,e.inst);if(e.major)put(`S${r}`,e.major);if(e.period)put(`AD${r}`,e.period);});
-    (d.workHistory||[]).slice(0,3).forEach((w,i)=>{const r=81+i;put(`B${r}`,w.company);put(`I${r}`,w.period);put(`M${r}`,w.pos);put(`R${r}`,w.desc);put(`AB${r}`,w.salary);put(`AE${r}`,w.resign);});
+
+    // ประวัติการทำงาน rows 81-83
+    (d.workHistory||[]).slice(0,3).forEach((w,i)=>{const r=81+i*2;put(`B${r}`,w.company);put(`I${r}`,w.period);put(`M${r}`,w.pos);put(`R${r}`,w.desc);put(`AB${r}`,w.salary);put(`AE${r}`,w.resign);});
+
+    // ภาษา
     const LR=[89,90,91,92];
     const SC={'ดี':'I','ปานกลาง':'L','พอใช้':'O'};
     const WC={'ดี':'R','ปานกลาง':'U','พอใช้':'X'};
     const RC={'ดี':'AA','ปานกลาง':'AD','พอใช้':'AG'};
     (d.languages||[]).slice(0,4).forEach((lg,i)=>{const r=LR[i];Object.entries(SC).forEach(([v,c])=>chk(`${c}${r}`,lg.speak===v));Object.entries(WC).forEach(([v,c])=>chk(`${c}${r}`,lg.write===v));Object.entries(RC).forEach(([v,c])=>chk(`${c}${r}`,lg.read===v));});
-    chk('G99',d.typing==='ไม่ได้'); chk('K99',d.typing==='ได้'); put('N99',d.typingSpeed);
-    chk('G102',d.computer==='ไม่ได้'); chk('K102',d.computer==='ได้'); put('N102',d.computerPrograms);
-    const drv=d.driving||'';
-    chk('G105',drv==='ไม่สามารถขับได้'); chk('N105',drv==='ขับได้ ไม่มีใบขับขี่'); chk('Z105',drv==='ขับได้มีใบขับขี่');
-    put('AC106',d.driveNo); put('M107',d.officeMachine);
-    put('I109',d.hobby); put('I111',d.sport); put('I113',d.specialKnowledge); put('I115',d.abilityOther);
-    const up=d.upcountry||'';
-    chk('K118',up==='ไม่ได้'); chk('O118',up==='ได้'); chk('R118',up==='other'); put('V118',d.upcountryNote);
-    put('R120',d.emergName); put('AF120',d.emergRelation);
-    put('D122',d.emergAddr); put('AD122',d.emergTel);
-    put('I124',d.jobSource);
-    chk('U126',d.illness==='ไม่เคย'); chk('Y126',d.illness==='เคย'); put('H128',d.illnessDetail);
-    chk('U130',d.prevApply==='ไม่เคย'); chk('Y130',d.prevApply==='เคย');
-    put('P132',d.friendInCo);
-    const refs=d.references||[];
+
+    // ความสามารถพิเศษ
+    chk('K99',d.typing==='ไม่ได้'); chk('K99',d.typing==='ได้'); put('N99',d.typingSpeed);
+    chk('K102',d.computer==='ไม่ได้'); chk('K102',d.computer==='ได้'); put('N102',d.computerPrograms);
+    const drv=d.driving||d['ขับรถ']||'';
+    chk('H105',drv==='ไม่สามารถขับได้'); chk('O105',drv==='ขับได้ ไม่มีใบขับขี่'); chk('Z105',drv==='ขับได้มีใบขับขี่');
+    put('M107',d.officeMachine||d['เครื่องสำนักงาน']||'');
+    put('I109',d.hobby||d['งานอดิเรก']||'');
+    put('I111',d.sport||d['กีฬา']||'');
+    put('I113',d.specialKnowledge||d['ความรู้พิเศษ']||'');
+    put('I115',d.abilityOther||d['ความสามารถอื่น']||'');
+
+    // ต่างจังหวัด
+    const up=d.upcountry||d['ต่างจังหวัด']||'';
+    chk('L118',up==='ไม่ได้'); chk('R118',up==='ได้'); put('V118',d.upcountryNote||d['ต่างจังหวัดหมายเหตุ']||'');
+
+    // ผู้ติดต่อฉุกเฉิน
+    put('R120',d.emergName); put('AF120',d.emergRelation||d['ความสัมพันธ์ฉุกเฉิน']||'');
+    put('D122',d.emergAddr||d['ที่อยู่ฉุกเฉิน']||''); put('AD122',d.emergTel);
+    put('I124',d.jobSource||d['แหล่งข่าว']||'');
+
+    // เคยป่วย / เคยสมัคร
+    const ill=d.illness||d['ประวัติป่วย']||'';
+    chk('Y126',ill==='ไม่เคย'); chk('Y126',ill==='เคย'); put('H128',d.illnessDetail||d['รายละเอียดป่วย']||'');
+    const prev=d.prevApply||d['เคยสมัคร']||'';
+    chk('Y130',prev==='ไม่เคย'); chk('Y130',prev==='เคย');
+
+    // ญาติ/เพื่อนในบริษัท
+    put('P132',d.friendInCo||d['รู้จักในบริษัท']||'');
+
+    // บุคคลอ้างอิง
+    const refs=Array.isArray(d.references)?d.references:[];
     if(refs[0]) put('B136',`${refs[0].name||''}  ที่อยู่: ${refs[0].addr||''}  โทร: ${refs[0].tel||''}  อาชีพ: ${refs[0].occ||''}`,12);
     if(refs[1]) put('B138',`${refs[1].name||''}  ที่อยู่: ${refs[1].addr||''}  โทร: ${refs[1].tel||''}  อาชีพ: ${refs[1].occ||''}`,12);
-    put('B145',d.selfIntro);
+    put('B145',d.selfIntro||d['แนะนำตัว']||'');
 
     // ใส่รูปถ่ายใน Excel (cell AE3:AI6)
     const photoData = d.photo || '';
@@ -1607,7 +1650,7 @@ async function interviewPass(id) {
   showToast('✅ ผ่านสัมภาษณ์ — ย้ายไปหน้าการรับเข้าทำงาน');
 }
 async function interviewFail(id) {
-  await updateStatus(id, 'rejected');
+  await updateStatus(id, 'rejected_interview');
   applyFilters();
   renderAllViews();
   showToast('❌ ไม่ผ่านสัมภาษณ์');
@@ -1672,7 +1715,7 @@ async function confirmStartDate() {
   showToast('🎉 รับเข้าทำงานแล้ว — ย้ายไปหน้าการทำงาน');
 }
 async function hiringReject(id) {
-  await updateStatus(id, 'rejected');
+  await updateStatus(id, 'rejected_interview');
   applyFilters();
   renderAllViews();
   showToast('🚫 ปฏิเสธการร่วมงานแล้ว');
