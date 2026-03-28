@@ -1406,8 +1406,8 @@ async function fillAndDownload(d, printMode=false) {
     const ws = wb.getWorksheet('ใบสมัครงาน');
     const AL = {horizontal:'left',vertical:'middle',wrapText:true};
     const AC = {horizontal:'center',vertical:'middle'};
-    function put(a,v,sz=14) { try { const c=ws.getCell(a); c.value=v?String(v):''; c.font={name:'Angsana New',size:sz}; c.alignment=AL; } catch(e){} }
-    function chk(a,ok) { try { const c=ws.getCell(a); c.value=ok?'/':''; c.font={name:'Angsana New',size:18,bold:true}; c.alignment=AC; } catch(e){} }
+    function put(a,v,sz=14) { try { const c=ws.getCell(a); c.value=v?String(v):''; c.font={name:'TH Sarabun New',size:sz}; c.alignment=AL; } catch(e){} }
+    function chk(a,ok) { try { const c=ws.getCell(a); c.value=ok?'/':''; c.font={name:'TH Sarabun New',size:18,bold:true}; c.alignment=AC; } catch(e){} }
     function fd(iso) { if(!iso)return''; const p=String(iso).split('-'); try{return`${+p[2]}/${+p[1]}/${+p[0]+543}`;}catch{return iso;} }
 
     put('D8',(d.prefix||'')+(d.nameTH||''));
