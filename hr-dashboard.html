@@ -1404,10 +1404,8 @@ async function fillAndDownload(d, printMode=false) {
     const wb = new ExcelJS.Workbook();
     await wb.xlsx.load(b64ToBuffer(TEMPLATE_B64));
     const ws = wb.getWorksheet('ใบสมัครงาน');
-    const AL = {horizontal:'left',vertical:'middle',wrapText:true};
-    const AC = {horizontal:'center',vertical:'middle'};
-    function put(a,v,sz=14) { try { const c=ws.getCell(a); c.value=v?String(v):''; c.font={name:'TH Sarabun New',size:sz}; c.alignment=AL; } catch(e){} }
-    function chk(a,ok) { try { const c=ws.getCell(a); c.value=ok?'/':''; c.font={name:'TH Sarabun New',size:18,bold:true}; c.alignment=AC; } catch(e){} }
+    function put(a,v) { try { const c=ws.getCell(a); c.value=v?String(v):''; } catch(e){} }
+    function chk(a,ok) { try { const c=ws.getCell(a); c.value=ok?'/':''; } catch(e){} }
     function fd(iso) { if(!iso)return''; const p=String(iso).split('-'); try{return`${+p[2]}/${+p[1]}/${+p[0]+543}`;}catch{return iso;} }
 
     put('D8',(d.prefix||'')+(d.nameTH||''));
@@ -1488,8 +1486,8 @@ async function fillAndDownload(d, printMode=false) {
 
     // บุคคลอ้างอิง
     const refs=Array.isArray(d.references)?d.references:[];
-    if(refs[0]) put('B136',`${refs[0].name||''}  ที่อยู่: ${refs[0].addr||''}  โทร: ${refs[0].tel||''}  อาชีพ: ${refs[0].occ||''}`,12);
-    if(refs[1]) put('B138',`${refs[1].name||''}  ที่อยู่: ${refs[1].addr||''}  โทร: ${refs[1].tel||''}  อาชีพ: ${refs[1].occ||''}`,12);
+    if(refs[0]) put('B136',`${refs[0].name||''}  ที่อยู่: ${refs[0].addr||''}  โทร: ${refs[0].tel||''}  อาชีพ: ${refs[0].occ||''}`);
+    if(refs[1]) put('B138',`${refs[1].name||''}  ที่อยู่: ${refs[1].addr||''}  โทร: ${refs[1].tel||''}  อาชีพ: ${refs[1].occ||''}`);
     put('B145',d.selfIntro||d['แนะนำตัว']||'');
 
     // ใส่รูปถ่ายใน Excel (cell AE3:AI6)
