@@ -412,7 +412,13 @@ header {
     <div class="card">
       <div class="card-title">ตำแหน่งที่สมัคร</div>
       <div class="fg2">
-        <div class="field s2"><label>ตำแหน่งที่ต้องการ <span class="req">*</span></label><input type="text" id="position" placeholder="ชื่อตำแหน่งงาน"><div class="err-msg" id="err-position">กรุณากรอกตำแหน่งที่ต้องการ</div></div>
+        <div class="field s2"><label>ตำแหน่งที่ต้องการ <span class="req">*</span></label>
+          <select id="position" onchange="document.getElementById('position').dispatchEvent(new Event('change'))">
+            <option value="">-- เลือกตำแหน่ง --</option>
+            <option>ฝ่ายผลิต</option>
+            <option>พนักงานคลังสินค้า</option>
+          </select>
+          <div class="err-msg" id="err-position">กรุณาเลือกตำแหน่งที่ต้องการ</div></div>
         <div class="field"><label>เงินเดือนที่ต้องการ (บาท/เดือน) <span class="req">*</span></label><input type="text" id="salary" placeholder="12,000"><div class="err-msg" id="err-salary">กรุณากรอกเงินเดือนที่ต้องการ</div></div>
         <div class="field"><label>วันที่สมัคร <span class="req">*</span></label><input type="date" id="applyDate"><div class="err-msg" id="err-applyDate">กรุณาระบุวันที่สมัคร</div></div>
       </div>
@@ -438,7 +444,7 @@ header {
           <div class="field"><label>เพศ <span class="req">*</span></label><div class="radio-group"><label class="radio-item"><input type="radio" name="gender" value="ชาย" onchange="toggleMilitary(this.value)"> ชาย</label><label class="radio-item"><input type="radio" name="gender" value="หญิง" onchange="toggleMilitary(this.value)"> หญิง</label></div><div class="err-msg" id="err-gender">กรุณาเลือกเพศ</div></div>
           <div class="field"><label>เชื้อชาติ <span class="req">*</span></label><input type="text" id="race" value="ไทย"><div class="err-msg" id="err-race">กรุณากรอกเชื้อชาติ</div></div>
           <div class="field"><label>สัญชาติ <span class="req">*</span></label><input type="text" id="nationality" value="ไทย"><div class="err-msg" id="err-nationality">กรุณากรอกสัญชาติ</div></div>
-          <div class="field"><label>ศาสนา <span class="req">*</span></label><input type="text" id="religion" placeholder="พุทธ"><div class="err-msg" id="err-religion">กรุณากรอกศาสนา</div></div>
+          <div class="field"><label>ศาสนา <span class="req">*</span></label><select id="religion"><option value="">--</option><option>พุทธ</option><option>คริสต์</option><option>อิสลาม</option><option>อื่นๆ</option></select><div class="err-msg" id="err-religion">กรุณาเลือกศาสนา</div></div>
           <div class="field"><label>ส่วนสูง (ซม.) <span class="req">*</span></label><input type="number" id="height" placeholder="170"><div class="err-msg" id="err-height">กรุณากรอกส่วนสูง</div></div>
           <div class="field"><label>น้ำหนัก (กก.) <span class="req">*</span></label><input type="number" id="weight" placeholder="65"><div class="err-msg" id="err-weight">กรุณากรอกน้ำหนัก</div></div>
         </div>
@@ -446,7 +452,7 @@ header {
       <div class="fg2" style="margin-top:.75rem;">
         <div class="field s2"><label>ที่อยู่ปัจจุบัน <span class="req">*</span></label><textarea id="address" rows="2" placeholder="บ้านเลขที่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์"></textarea><div class="err-msg" id="err-address">กรุณากรอกที่อยู่</div></div>
         <div class="field"><label>เบอร์โทรศัพท์มือถือ <span class="req">*</span></label><input type="tel" id="mobile" placeholder="08x-xxx-xxxx"><div class="err-msg" id="err-mobile">กรุณากรอกเบอร์โทร</div></div>
-        <div class="field"><label>อีเมล <span class="req">*</span></label><input type="email" id="email" placeholder="email@gmail.com"><div class="err-msg" id="err-email">กรุณากรอกอีเมล</div></div>
+        <div class="field"><label>อีเมล</label><input type="email" id="email" placeholder="email@gmail.com"></div>
         <div class="field"><label>ไอดีไลน์ <span class="req">*</span></label><input type="text" id="lineId"><div class="err-msg" id="err-lineId">กรุณากรอก Line ID</div></div>
         <div class="field"><label>ลักษณะที่อยู่อาศัย <span class="req">*</span></label><select id="livingArr"><option value="">--</option><option>อาศัยอยู่กับครอบครัว</option><option>บ้านตัวเอง</option><option>บ้านเช่า</option><option>หอพัก/อพาร์ตเมนต์</option></select><div class="err-msg" id="err-livingArr">กรุณาเลือกลักษณะที่อยู่อาศัย</div></div>
         <div class="field" id="militaryField" style="display:none;"><label>ภาวะทางทหาร <span class="req">*</span></label><select id="military"><option value="">--</option><option>ยังไม่ได้รับการเกณฑ์</option><option>ผ่านการเรียนวิชาทหาร (รด.)</option><option>ได้รับการยกเว้น</option><option>ปลดเป็นทหารกองหนุน</option></select><div class="err-msg" id="err-military">กรุณาเลือกภาวะทางทหาร</div></div>
@@ -509,7 +515,7 @@ header {
   <!-- STEP 3 -->
   <div class="step" id="step3">
     <div class="card">
-      <div class="card-title">ประวัติการทำงาน (เรียงลำดับก่อน-หลัง)</div>
+      <div class="card-title">ประวัติการทำงาน (เรียงลำดับอดีต-ปัจจุบัน)</div>
       <div class="work-header-labels" style="display:grid;grid-template-columns:1.4fr .85fr .95fr .95fr .8fr .8fr 32px;gap:.35rem;margin-bottom:.35rem;font-size:.7rem;font-weight:600;color:var(--muted);">
         <div>บริษัท/องค์กร</div><div>ระยะเวลาการทำงาน</div><div>ตำแหน่ง</div><div>ลักษณะงาน</div><div>ค่าจ้าง</div><div>เหตุผลที่ลาออก</div><div></div>
       </div>
@@ -706,7 +712,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadCompanySettings();
   document.getElementById('applyDate').value = new Date().toISOString().split('T')[0];
   buildEduTable(); buildLangTable();
-  addWorkRow(); addWorkRow(); addWorkRow();
+  addWorkRow();
   addRefRow(); addRefRow();
   buildStepDots();
 });
@@ -851,7 +857,6 @@ function validateStep(step) {
     ok=chkField('weight','err-weight')&&ok;
     ok=chkField('address','err-address')&&ok;
     ok=chkField('mobile','err-mobile')&&ok;
-    ok=chkField('email','err-email')&&ok;
     ok=chkField('lineId','err-lineId')&&ok;
     ok=chkField('livingArr','err-livingArr')&&ok;
     ok=chkField('marital','err-marital')&&ok;
