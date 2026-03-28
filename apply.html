@@ -81,10 +81,43 @@ header {
 .field-error { border-color:var(--danger) !important; }
 .err-msg { font-size:.68rem; color:var(--danger); margin-top:.2rem; display:none; }
 .err-msg.show { display:block; }
+/* edu-inp และ inputs ใน dynamic rows ก็ต้องแดงได้ */
+.edu-inp.field-error { border-color:var(--danger) !important; background:#fff5f5; }
+/* lang table row highlight เมื่อ error */
+#langBody tr.lang-err { outline:2px solid var(--danger); border-radius:4px; }
 
-.radio-group { display:flex; gap:1rem; flex-wrap:wrap; padding:.3rem 0; }
-.radio-item { display:flex; align-items:center; gap:.3rem; font-size:.84rem; cursor:pointer; color:var(--text); }
-.radio-item input { accent-color:var(--teal); }
+.radio-group { display:flex; gap:.6rem; flex-wrap:wrap; padding:.3rem 0; }
+.radio-item { display:flex; align-items:center; gap:.5rem; font-size:.84rem; cursor:pointer; color:var(--text); user-select:none; }
+/* ซ่อน native radio แล้วทำ custom แทน */
+.radio-item input[type=radio] {
+  appearance:none; -webkit-appearance:none;
+  width:20px; height:20px; flex-shrink:0;
+  border:2px solid var(--border);
+  border-radius:50%;
+  background:var(--surface2);
+  cursor:pointer;
+  transition:border-color .15s, background .15s;
+  position:relative;
+}
+.radio-item input[type=radio]::after {
+  content:'';
+  display:block;
+  width:10px; height:10px;
+  border-radius:50%;
+  background:var(--teal);
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%) scale(0);
+  transition:transform .15s cubic-bezier(.34,1.56,.64,1);
+}
+.radio-item input[type=radio]:checked {
+  border-color:var(--teal);
+  background:var(--teal-dim);
+}
+.radio-item input[type=radio]:checked::after {
+  transform:translate(-50%,-50%) scale(1);
+}
+.radio-item:has(input:checked) { color:var(--teal); font-weight:600; }
 
 .photo-box { width:110px; height:138px; border:1.5px dashed var(--border); border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer; background:var(--surface2); overflow:hidden; transition:all .2s; flex-shrink:0; }
 .photo-box:hover { border-color:var(--teal); box-shadow:0 0 12px var(--teal-dim); }
@@ -198,9 +231,10 @@ header {
   .field textarea { min-height:80px; }
 
   /* Radio groups — stack vertically and bigger hit area */
-  .radio-group { flex-direction:column; gap:.55rem; padding:.2rem 0; }
-  .radio-item { font-size:.9rem; padding:.2rem 0; }
-  .radio-item input[type=radio] { width:18px; height:18px; flex-shrink:0; }
+  .radio-group { flex-direction:column; gap:.6rem; padding:.2rem 0; }
+  .radio-item { font-size:.95rem; padding:.15rem 0; }
+  .radio-item input[type=radio] { width:22px; height:22px; }
+  .radio-item input[type=radio]::after { width:11px; height:11px; }
 
   /* Photo box */
   .photo-box { width:90px; height:113px; }
@@ -300,11 +334,12 @@ header {
   .lang-radio-item {
     display:flex;
     align-items:center;
-    gap:.3rem;
-    font-size:.78rem;
+    gap:.35rem;
+    font-size:.8rem;
     cursor:pointer;
   }
-  .lang-radio-item input { accent-color:var(--teal); width:15px; height:15px; }
+  .lang-radio-item input[type=radio] { width:18px; height:18px; }
+  .lang-radio-item input[type=radio]::after { width:9px; height:9px; }
 
   /* Work history dynamic rows → stacked */
   #workRows .dyn-row,
@@ -831,12 +866,17 @@ function validateStep(step) {
     ok=chkField('motherName','err-motherName')&&ok;
     ok=chkField('motherAge','err-motherAge')&&ok;
     ok=chkField('motherOcc','err-motherOcc')&&ok;
-    // ถ้ามีพี่น้อง > 1 ต้องกรอก sibMale/sibFemale/childOrder
+    // ถ้ามีพี่น้อง > 1 ต้องกรอก sibMale/sibFemale/childOrder และชื่อพี่น้องแต่ละคน
     const sibN=parseInt(document.getElementById('siblings')?.value)||1;
     if(sibN>1){
       ok=chkField('sibMale',null)&&ok;
       ok=chkField('sibFemale',null)&&ok;
       ok=chkField('childOrder',null)&&ok;
+      for(let i=0;i<sibN-1;i++){
+        const nameEl=document.getElementById('sibName_'+i);
+        if(nameEl && !nameEl.value.trim()){nameEl.classList.add('field-error');ok=false;}
+        else if(nameEl) nameEl.classList.remove('field-error');
+      }
     }
     // ถ้าแต่งงาน — ต้องกรอกข้อมูลคู่สมรส
     const mar=document.getElementById('marital')?.value;
@@ -845,13 +885,30 @@ function validateStep(step) {
       ok=chkField('spouseOcc','err-spouseOcc')&&ok;
       ok=chkField('spouseWork','err-spouseWork')&&ok;
     }
-    // ต้องกรอกการศึกษาอย่างน้อย 1 ระดับ
-    const hasEdu = EDU_LEVELS.some((_,i)=>{
-      const inst=document.querySelector(`.edu-inst[data-i="${i}"]`)?.value?.trim();
-      return inst && inst.length>0;
+    // การศึกษา — ต้องกรอกอย่างน้อย 1 ระดับ (สถาบัน + ระยะเวลา)
+    let hasEdu=false;
+    EDU_LEVELS.forEach((_,i)=>{
+      const instEl=document.querySelector(`.edu-inst[data-i="${i}"]`);
+      const periodEl=document.querySelector(`.edu-period[data-i="${i}"]`);
+      const inst=instEl?.value?.trim();
+      const period=periodEl?.value?.trim();
+      if(inst||period){
+        hasEdu=true;
+        // ถ้ากรอกอย่างใดอย่างหนึ่ง ต้องครบทั้งคู่
+        if(instEl && !inst){instEl.classList.add('field-error');ok=false;}
+        else if(instEl) instEl.classList.remove('field-error');
+        if(periodEl && !period){periodEl.classList.add('field-error');ok=false;}
+        else if(periodEl) periodEl.classList.remove('field-error');
+      } else {
+        if(instEl) instEl.classList.remove('field-error');
+        if(periodEl) periodEl.classList.remove('field-error');
+      }
     });
     if(!hasEdu){
-      showToast('⚠️ กรุณากรอกประวัติการศึกษาอย่างน้อย 1 ระดับ');
+      showToast('⚠️ กรุณากรอกประวัติการศึกษาอย่างน้อย 1 ระดับ (สถาบัน + ระยะเวลา)');
+      // highlight ช่องสถาบันแถวแรก
+      const firstInst=document.querySelector('.edu-inst[data-i="0"]');
+      if(firstInst) firstInst.classList.add('field-error');
       ok=false;
     }
   }
@@ -862,11 +919,22 @@ function validateStep(step) {
     let hasWork=false;
     workRowEls.forEach(row=>{
       const inputs=row.querySelectorAll('input');
-      const filled=[...inputs].filter(i=>i.value.trim());
-      if(filled.length>0) hasWork=true;
+      const company=inputs[0]?.value?.trim();
+      if(company){
+        hasWork=true;
+        // บังคับครบทุก field ในแถวที่มีบริษัท
+        inputs.forEach(inp=>{
+          if(!inp.value.trim()){inp.classList.add('field-error');ok=false;}
+          else inp.classList.remove('field-error');
+        });
+      } else {
+        inputs.forEach(inp=>inp.classList.remove('field-error'));
+      }
     });
     if(!hasWork){
-      showToast('⚠️ กรุณากรอกประวัติการทำงานอย่างน้อย 1 รายการ หรือระบุ "ไม่มีประสบการณ์" ในช่องบริษัท');
+      showToast('⚠️ กรุณากรอกประวัติการทำงานอย่างน้อย 1 รายการ หรือพิมพ์ "ไม่มีประสบการณ์" ในช่องบริษัท');
+      const firstInp=workRowEls[0]?.querySelector('input');
+      if(firstInp) firstInp.classList.add('field-error');
       ok=false;
     }
   }
@@ -875,24 +943,23 @@ function validateStep(step) {
   if (step===4) {
     // ภาษา — ต้องเลือกทุกช่องสำหรับภาษาไทยและอังกฤษ (index 0,1)
     const langRequired=[0,1];
+    let langOk=true;
     langRequired.forEach(i=>{
+      const row=document.getElementById('langBody')?.children[i];
+      let rowOk=true;
       ['lang_speak','lang_write','lang_read'].forEach(g=>{
-        const checked=document.querySelector(`input[name="${g}_${i}"]:checked`);
-        if(!checked){
-          ok=false;
-          // highlight row
-          const row=document.getElementById('langBody')?.children[i];
-          if(row) row.style.outline='2px solid var(--danger)';
-        } else {
-          const row=document.getElementById('langBody')?.children[i];
-          if(row) row.style.outline='';
-        }
+        if(!document.querySelector(`input[name="${g}_${i}"]:checked`)) rowOk=false;
       });
+      if(!rowOk){langOk=false; ok=false; if(row) row.classList.add('lang-err');}
+      else{if(row) row.classList.remove('lang-err');}
     });
-    if(!ok || document.querySelectorAll('#langBody tr[style*="outline"]').length>0){
-      if(ok) ok=false;
-      showToast('⚠️ กรุณาเลือกระดับภาษาไทยและภาษาอังกฤษให้ครบ');
-    }
+    if(!langOk) showToast('⚠️ กรุณาเลือกระดับภาษาไทยและภาษาอังกฤษให้ครบทุกช่อง');
+    // clear lang-err when radio clicked
+    document.querySelectorAll('#langBody input[type=radio]').forEach(r=>{
+      r.onchange=()=>{
+        const row=r.closest('tr'); if(row) row.classList.remove('lang-err');
+      };
+    });
     ok=chkRadio('typing','err-typing')&&ok;
     ok=chkRadio('computer','err-computer')&&ok;
     ok=chkRadio('driving','err-driving')&&ok;
@@ -908,21 +975,20 @@ function validateStep(step) {
     ok=chkField('emergRelation',null)&&ok;
     ok=chkField('emergAddr',null)&&ok;
     ok=chkField('emergTel',null)&&ok;
-    // บุคคลอ้างอิง — ต้องมีอย่างน้อย 2 คน
+    // บุคคลอ้างอิง — ถ้ากรอกชื่อแล้ว ต้องกรอก field อื่นในแถวให้ครบ
     const refRowEls=Array.from(document.getElementById('refRows').querySelectorAll('.dyn-row'));
-    const filledRefs=refRowEls.filter(row=>row.querySelectorAll('input')[0]?.value?.trim());
-    if(filledRefs.length<2){
-      showToast('⚠️ กรุณากรอกบุคคลอ้างอิงอย่างน้อย 2 คน');
-      ok=false;
-    } else {
-      // validate ทุก field ในแต่ละ ref row
-      filledRefs.forEach(row=>{
-        row.querySelectorAll('input').forEach(inp=>{
+    refRowEls.forEach(row=>{
+      const inputs=row.querySelectorAll('input');
+      const hasName=inputs[0]?.value?.trim();
+      if(hasName){
+        inputs.forEach(inp=>{
           if(!inp.value.trim()){inp.classList.add('field-error');ok=false;}
           else inp.classList.remove('field-error');
         });
-      });
-    }
+      } else {
+        inputs.forEach(inp=>inp.classList.remove('field-error'));
+      }
+    });
     ok=chkField('jobSource',null)&&ok;
     if(document.getElementById('jobSource')?.value==='อื่นๆ') ok=chkField('jobSourceOther',null)&&ok;
     ok=chkRadio('friendInCo','err-friendInCo')&&ok;
@@ -938,10 +1004,40 @@ function validateStep(step) {
 
   if(!ok){
     showToast('⚠️ กรุณากรอกข้อมูลที่จำเป็นให้ครบ');
-    setTimeout(()=>{const first=document.querySelector('.step.active .field-error,.step.active .err-msg.show,.step.active [style*="outline"]');if(first)first.scrollIntoView({behavior:'smooth',block:'center'});},100);
+    setTimeout(()=>{const first=document.querySelector('.step.active .field-error,.step.active .err-msg.show,.step.active .lang-err');if(first)first.scrollIntoView({behavior:'smooth',block:'center'});},100);
   }
   return ok;
 }
+
+// ===== REAL-TIME ERROR CLEARING =====
+document.addEventListener('input', e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'){
+    if(e.target.value.trim()){
+      e.target.classList.remove('field-error');
+      // ซ่อน err-msg ที่อยู่ถัดไป
+      const next=e.target.nextElementSibling;
+      if(next&&next.classList.contains('err-msg')) next.classList.remove('show');
+    }
+  }
+});
+document.addEventListener('change', e=>{
+  if(e.target.tagName==='SELECT'&&e.target.value){
+    e.target.classList.remove('field-error');
+    const next=e.target.nextElementSibling;
+    if(next&&next.classList.contains('err-msg')) next.classList.remove('show');
+  }
+  if(e.target.type==='radio'){
+    // ซ่อน err-msg ของ radio group นี้
+    const name=e.target.name;
+    const errId='err-'+name;
+    const errEl=document.getElementById(errId);
+    if(errEl) errEl.classList.remove('show');
+  }
+  if(e.target.type==='checkbox'&&e.target.checked){
+    const next=e.target.closest('label')?.nextElementSibling;
+    if(next&&next.classList.contains('err-msg')) next.classList.remove('show');
+  }
+});
 
 // ===== PHOTO =====
 function handlePhoto(e) {
